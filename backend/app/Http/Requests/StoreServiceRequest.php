@@ -33,4 +33,14 @@ class StoreServiceRequest extends FormRequest
             'color_to'=>'nullable|string|hex_color',
         ];
     }
+
+    public function messages() : array 
+    {
+        return [
+            'title.required'=>'กรุณาระบุชื่อบริการ',
+            'title.max'=>'ชื่อบริการต้องไม่เกิน 50 ตัวอักษร',
+            'link_url.required'=>'กรุณาระบุลิงค์ของบริการ',
+            'link_url.url'=>'รูปแบบลิงค์ไม่ถูกต้อง (ต้องขึ้นต้นด้วย http:// หรือ https://)',
+        ];   
+    }
 }
