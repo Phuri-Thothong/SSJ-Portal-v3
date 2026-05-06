@@ -8,5 +8,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/services', [ServiceController::class, 'index'])->name('api.services.index');
-Route::post('/services', [ServiceController::class, 'store'])->name('api.seervices.store');
+Route::get('/services', [ServiceController::class, 'index'])
+    ->name('api.services.index');
+Route::post('/services', [ServiceController::class, 'store'])
+    ->name('api.seervices.store');
+Route::get('services/{service}', [ServiceController::class, 'show'])
+    ->name('api.services.show')
+    ->whereNumber('service');
+Route::put('services/{service}', [ServiceController::class, 'update'])
+    ->name('api.services.update')
+    ->whereNumber('service');

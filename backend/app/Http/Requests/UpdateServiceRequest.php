@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreServiceRequest extends FormRequest
+class UpdateServiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class StoreServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'=>'required|string|max:50|unique:services,title,', //ต้องมีข้อมูล และห้ามเกิน 50 ตัวอักษร
+            'title'=>'required|string|max:50|unique:services,title,'.$this->route('service')->id, //ต้องมีข้อมูล และห้ามเกิน 50 ตัวอักษร
             'description'=>'nullable|string', //เป็นค่าว่างได้
             'icon'=>'sometimes|string', //ถ้ามีส่งมาค่อยตรวจ
             'link_url'=>'required|url',
