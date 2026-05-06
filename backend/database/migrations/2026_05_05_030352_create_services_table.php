@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('color_from')->default('#9CA3AF');
             $table->string('color_to')->default('#D1D5DB');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

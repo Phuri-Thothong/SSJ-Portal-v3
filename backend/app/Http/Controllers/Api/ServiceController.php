@@ -14,7 +14,10 @@ class ServiceController extends Controller
     public function index(){
         //ดึงข้อมูลจากตาราง services
         $services=Service::all();
-        return response()->json($services);
+        return response()->json([
+            'success' => true,
+            'data' => $services
+        ], 200);
     }
 
     public function store(StoreServiceRequest $request){
@@ -22,7 +25,7 @@ class ServiceController extends Controller
             $service=Service::create($request->validated());
             return response()->json([
                 'success'=>true,
-                'message'=>'เพิ่มบริการใหม่เรียบร้อยแล้ว',
+                'message'=>'เพิ่มข้อมูลใหม่เรียบร้อยแล้ว',
                 'data'=>$service,
             ], 201);
         } catch (\Exception $e) {
@@ -38,7 +41,7 @@ class ServiceController extends Controller
         return response()->json([
             'success'=>true,
             'data'=>$service,
-        ]);
+        ], 200);
     }
 
     public function update(UpdateServiceRequest $request, Service $service){
@@ -49,7 +52,7 @@ class ServiceController extends Controller
                 'success'=>true,
                 'message'=>'อัปเดตข้อมูลเรียบร้อยแล้ว',
                 'data'=>$service,
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             Log::error('Update Service Error: '.$e->getMessage());
             return response()->json([
@@ -64,13 +67,61 @@ class ServiceController extends Controller
             $service->delete();
             return response()->json([
                 'success'=>true,
-                'message'=>'ลบบริการเรียบร้อยแล้ว',
+                'message'=>'ย้ายข้อมูลไปยังถังขยะเรียบร้อยแล้ว',
             ], 200);
         } catch (\Exception $e) {
             Log::error('Service Deletion Error: '.$e->getMessage());
             return response()->json([
                 'success'=>false,
-                'message'=>'ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
+                'message'=>'ไม่สามารถย้ายข้อมูลไปยังถังขยะได้ กรุณาลองใหม่อีกครั้ง'
+            ], 500);
+        }
+    }
+
+    public function trashed(){
+        $services=Service::onlyTrashed()->get();
+        return response()->json([
+            'success'=>true,
+            'data'=>$services,
+        ], 200);
+    }
+
+    public function showTrashed(Service $service){
+        return response()->json([
+            'success'=>true,
+            'data'=>$service,
+        ], 200);
+    }
+
+    public function restore(Service $service){
+        try {
+            $service->restore();
+            return response()->json([
+                'success'=>true,
+                'message'=>'กู้คืนข้อมูลจากถังขยะเรียบร้อยแล้ว',
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Service Restoration Error: '.$e->getMessage());
+            return response()->json([
+                'success'=>false,
+                'message'=>'ไม่สามารถกู้คืนข้อมูลจากถังขยะได้ กรุณาลองใหม่อีกครั้ง',
+            ], 500);
+        }
+        
+    }
+
+    public function forceDelete(Service $service){
+        try {
+            $service->forceDelete();
+            return response()->json([
+                'success'=>true,
+                'message'=>'ลบข้อมูลถาวรเรียบร้อยแล้ว',
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Service Force Deletion Error: '.$e->getMessage());
+            return response()->json([
+                'success'=>false,
+                'message'=>'ไม่สามารถลบข้อมูลถาวรได้ กรุณาลองใหม่อีกครั้ง',
             ], 500);
         }
     }
