@@ -51,7 +51,19 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function destroy(){
-        
+    public function destroy(Service $service){
+        try {
+            $service->delete();
+            return response()->json([
+                'success'=>true,
+                'message'=>'ลบบริการเรียบร้อยแล้ว',
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Service Deletion Error: '.$e->getMessage());
+            return response()->json([
+                'success'=>false,
+                'message'=>'ไม่สามารถลบข้อมูลได้'
+            ], 500);
+        }
     }
 }

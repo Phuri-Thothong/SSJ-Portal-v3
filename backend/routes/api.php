@@ -18,3 +18,6 @@ Route::get('services/{service}', [ServiceController::class, 'show'])
 Route::put('services/{service}', [ServiceController::class, 'update'])
     ->name('api.services.update')
     ->whereNumber('service');
+Route::delete('services/{service}', [ServiceController::class, 'destroy'])
+    ->name('api.services.delete')
+    ->whereNumber('service');
