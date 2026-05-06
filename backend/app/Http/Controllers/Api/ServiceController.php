@@ -29,7 +29,7 @@ class ServiceController extends Controller
             Log::error('Service Creation Error: '.$e->getMessage());
             return response()->json([
                 'success'=>false,
-                'message'=>'ไม่สามารถเพิ่มข้อมูลได้',
+                'message'=>'ไม่สามารถเพิ่มข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
             ], 500);
         }
     } 
@@ -42,13 +42,21 @@ class ServiceController extends Controller
     }
 
     public function update(UpdateServiceRequest $request, Service $service){
-        //$service=ข้อมูลตัวเดิม, $request=ข้อมูลตัวใหม่
-        $service->update($request->validated());
-        return response()->json([
-            'success'=>true,
-            'message'=>'อัปเดตข้อมูลเรียบร้อยแล้ว',
-            'data'=>$service,
-        ]);
+        //$service=ข้อมูลตัวเดิมจากตาราง, $request=ข้อมูลตัวใหม่ที่แอดมินกรอก
+        try {
+            $service->update($request->validated());
+            return response()->json([
+                'success'=>true,
+                'message'=>'อัปเดตข้อมูลเรียบร้อยแล้ว',
+                'data'=>$service,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Update Service Error: '.$e->getMessage());
+            return response()->json([
+                'success'=>false,
+                'message'=>'ไม่สามารถอัปเดตข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+            ], 500);
+        }
     }
 
     public function destroy(Service $service){
@@ -62,7 +70,7 @@ class ServiceController extends Controller
             Log::error('Service Deletion Error: '.$e->getMessage());
             return response()->json([
                 'success'=>false,
-                'message'=>'ไม่สามารถลบข้อมูลได้'
+                'message'=>'ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
             ], 500);
         }
     }

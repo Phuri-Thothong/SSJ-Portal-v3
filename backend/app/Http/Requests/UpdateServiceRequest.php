@@ -39,7 +39,7 @@ class UpdateServiceRequest extends FormRequest
         return [
             'title.required'=>'กรุณาระบุชื่อบริการ',
             'title.max'=>'ชื่อบริการต้องไม่เกิน 50 ตัวอักษร',
-            'titlr.unique'=>'ชื่อบริการนี้มีอยู่แล้วในระบบ กรุณาใช้ชื่ออื่น',
+            'title.unique'=>'ชื่อบริการนี้มีอยู่แล้วในระบบ กรุณาใช้ชื่ออื่น',
             'link_url.required'=>'กรุณาระบุลิงค์ของบริการ',
             'link_url.url'=>'รูปแบบลิงค์ไม่ถูกต้อง (ต้องขึ้นต้นด้วย http:// หรือ https://)',
         ];   
