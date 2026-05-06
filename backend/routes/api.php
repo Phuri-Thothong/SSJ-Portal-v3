@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/services', [ServiceController::class, 'index'])->name('api.services.index');
+Route::post('/services', [ServiceController::class, 'store'])->name('api.seervices.store');
