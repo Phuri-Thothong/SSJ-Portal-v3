@@ -2,7 +2,12 @@
 
 @import 'tailwindcss';
 
+:root {
+  font-family: 'Sarabun';
+}
+
 body {
+    font-family: 'Sarabun';
     background-image: url('assets/background.jpg');
     background-size: cover;
     background-position: center;
