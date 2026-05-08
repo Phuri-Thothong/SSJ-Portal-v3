@@ -1,16 +1,16 @@
 <div class="min-h-screen flex flex-col">
-  <div class="grow p-8">
-  <app-hero-banner/>
-  @if (filteredServices().length > 0) {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      @for (service of filteredServices(); track service.id) {
-        <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
-        <app-service-card [service]="service" />
-      }
-    </div>
-  } @else {
-    <app-no-results/>
-  }
+  <div class="grow p-6 md:p-12 max-w-7xl mx-auto w-full">
+    <app-hero-banner />
+    @if (filteredServices().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (service of filteredServices(); track service.id) {
+          <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
+          <app-service-card [service]="service" />
+        }
+      </div>
+    } @else {
+      <app-no-results />
+    }
   </div>
-  <app-footer/>
+  <app-footer />
 </div>
