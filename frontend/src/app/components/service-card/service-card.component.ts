@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Service } from '../../models/service.model';
 
 @Component({
@@ -12,6 +12,15 @@ import { Service } from '../../models/service.model';
 export class ServiceCardComponent {
   //รับ obj. จากคอมโพเนนต์ App มาเป็น prop.
   @Input() service!: Service;
+
+  mouseX = 0;
+  mouseY = 0;
+
+  onMouseMove(event: MouseEvent) {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.mouseX = event.clientX - rect.left;
+    this.mouseY = event.clientY - rect.top;
+  }
 
   getStatusConfig() {
     switch (this.service.status) {

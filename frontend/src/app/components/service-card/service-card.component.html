@@ -1,19 +1,33 @@
-<div class="relative h-full">
+<div class="relative h-full group" (mousemove)="onMouseMove($event)">
   <div class="glass-card p-6 flex flex-col h-full cursor-pointer">
     <div
       class="h-36 rounded-3xl shrink-0 flex items-center justify-center relative shadow-inner overflow-hidden"
+      [style.--x.px]="mouseX"
+      [style.--y.px]="mouseY"
       [style.background]="
         'linear-gradient(135deg, ' + service.color_from + ', ' + service.color_to + ')'
       "
     >
+      <div
+        class="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style="
+          background: radial-gradient(
+            circle at var(--x) var(--y),
+            rgba(255, 255, 255, 0.4) 0%,
+            transparent 70%
+          );
+        "
+      ></div>
+
       <i
         [class]="
           service.icon +
-          ' text-5xl text-white drop-shadow-lg transition-transform duration-500 group-hover:scale-110'
+          ' text-5xl text-white drop-shadow-lg transition-transform duration-500 group-hover:scale-110 relative z-10'
         "
       ></i>
+
       @let config = getStatusConfig();
-      <div class="absolute top-4 right-4">
+      <div class="absolute top-4 right-4 z-20">
         <div
           class="flex items-center justify-center h-8 w-8 rounded-full border-2 border-white shadow-md"
           [ngClass]="config.color"
@@ -25,7 +39,6 @@
 
     <div class="pt-6 text-center flex flex-col grow">
       <h2 class="text-xl font-bold text-slate-800 mb-2">{{ service.title }}</h2>
-
       <p class="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-2">
         {{ service.description || 'ไม่มีคำอธิบายเพิ่มเติม' }}
       </p>
