@@ -1,0 +1,55 @@
+<div class="relative w-full mb-12">
+  <div
+    class="w-full bg-linear-to-r from-blue-600 to-teal-400 py-16 px-4 rounded-[2.5rem] shadow-2xl relative overflow-hidden"
+  >
+    <div
+      class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"
+    ></div>
+    <div
+      class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-10 -mb-10 blur-2xl"
+    ></div>
+
+    <div class="max-w-7xl mx-auto text-center text-white relative z-10">
+      <h1 class="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg tracking-tight">
+        ยินดีต้อนรับ เข้าสู่ระบบบริการสารสนเทศภายใน
+      </h1>
+      <p class="text-lg md:text-xl opacity-90 font-medium">สำนักงานสาธารณสุขจังหวัดนครศรีธรรมราช</p>
+      <p class="text-sm opacity-75 mt-3 italic font-light">
+        "เข้าถึงบริการและระบบงานต่าง ๆ ขององค์กรได้ในที่เดียว"
+      </p>
+    </div>
+  </div>
+
+  <div class="flex justify-center -translate-y-1/2 relative z-10 px-4">
+    <div class="relative w-full max-w-xl group">
+      <div
+        class="absolute -inset-1 bg-linear-to-r from-blue-400 to-teal-400 rounded-full blur opacity-25 group-focus-within:opacity-50 transition duration-1000 group-focus-within:duration-200"
+      ></div>
+
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none z-20">
+          <i
+            class="fa-solid fa-magnifying-glass text-blue-500/80 transition-all group-focus-within:text-blue-600 group-focus-within:scale-110"
+          ></i>
+        </div>
+
+        <input
+          type="text"
+          [value]="searchService.searchTerm()"
+          (input)="onSearchChange($event)"
+          placeholder="ค้นหาบริการที่ต้องการ..."
+          class="block w-full pl-16 pr-12 py-4 bg-white/40 backdrop-blur-sm border border-white/60 rounded-full shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] text-slate-800 text-lg placeholder:text-slate-600 outline-none focus:ring-0 focus:bg-white/60 focus:border-white/80 transition-all duration-300"
+        />
+
+        @if (searchService.searchTerm() !== '') {
+          <button
+            (click)="searchService.clearSearch()"
+            class="absolute inset-y-0 right-4 flex items-center px-2 text-slate-400 hover:text-rose-500 transition-colors z-30"
+          >
+            <i class="fa-solid fa-circle-xmark text-xl"></i>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

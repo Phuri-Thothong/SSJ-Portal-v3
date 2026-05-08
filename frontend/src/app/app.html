@@ -1,6 +1,7 @@
 <div class="min-h-screen p-8">
+  <app-hero-banner/>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-    @for (service of services(); track service.id) {
+    @for (service of filteredServices(); track service.id) {
       <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
       <app-service-card [service]="service" />
     }

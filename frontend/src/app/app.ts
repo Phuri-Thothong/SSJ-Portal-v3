@@ -1,12 +1,14 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { DataService } from './services/data.service';
 import { Service } from './models/service.model';
 import { ServiceCardComponent } from './components/service-card/service-card.component';
+import { HeroBannerComponent } from './components/hero-banner/hero-banner.component';
+import { SearchService } from './services/search.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ServiceCardComponent], 
+  imports: [ServiceCardComponent, HeroBannerComponent], 
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -14,7 +16,10 @@ export class App implements OnInit {
   // รับข้อมูล Array ที่ได้จาก Backend
   services = signal<Service[]>([]);
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService, 
+    public searchService: SearchService
+  ) {}
 
   ngOnInit() {
     this.dataService.getServices().subscribe({
@@ -28,4 +33,16 @@ export class App implements OnInit {
       error: (err) => console.error('เกิดข้อผิดพลาด:', err)
     });
   }
+
+  filteredServices = computed(() => {
+    const term = this.searchService.searchTerm().toLowerCase();
+    const allServices = this.services();
+    
+    if (!term) return allServices;
+
+    return allServices.filter(s => 
+      s.title.toLowerCase().includes(term) || 
+      s.description?.toLowerCase().includes(term)
+    );
+  });
 }

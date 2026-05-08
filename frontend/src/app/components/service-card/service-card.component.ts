@@ -44,7 +44,7 @@ export class ServiceCardComponent {
         };
       case 'maintenance':
         return {
-          background: 'linear-gradient(to right, #94a3b8, #64748b)',
+          background: 'linear-gradient(to right, #64748b, #94a3b8)',
           cursor: 'not-allowed',
           opacity: '0.8',
           'box-shadow': 'none',
