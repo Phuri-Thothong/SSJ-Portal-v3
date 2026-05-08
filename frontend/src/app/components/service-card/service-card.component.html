@@ -1,3 +1,48 @@
-<div style="border: 1px solid red; padding: 10px;">
-  <p>ข้อมูลที่ได้รับคือ: {{ service.title }}</p>
+<div class="relative h-full">
+  <div class="glass-card p-6 flex flex-col h-full cursor-pointer">
+    <div
+      class="h-36 rounded-3xl shrink-0 flex items-center justify-center relative shadow-inner overflow-hidden"
+      [style.background]="
+        'linear-gradient(135deg, ' + service.color_from + ', ' + service.color_to + ')'
+      "
+    >
+      <i
+        [class]="
+          service.icon +
+          ' text-5xl text-white drop-shadow-lg transition-transform duration-500 group-hover:scale-110'
+        "
+      ></i>
+      @let config = getStatusConfig();
+      <div class="absolute top-4 right-4">
+        <div
+          class="flex items-center justify-center h-8 w-8 rounded-full border-2 border-white shadow-md"
+          [ngClass]="config.color"
+        >
+          <i class="fa-solid text-[12px] text-white" [ngClass]="config.icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-6 text-center flex flex-col grow">
+      <h2 class="text-xl font-bold text-slate-800 mb-2">{{ service.title }}</h2>
+
+      <p class="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-2">
+        {{ service.description || 'ไม่มีคำอธิบายเพิ่มเติม' }}
+      </p>
+
+      <a
+        [href]="service.link_url"
+        [ngStyle]="getButtonStyles()"
+        class="mt-auto w-full py-3 text-white font-bold flex items-center justify-center gap-3 transition-all active:scale-95 shadow-md group rounded-full"
+        [class.pointer-events-none]="service.status === 'maintenance'"
+      >
+        <span>{{ service.status === 'maintenance' ? 'ปิดปรับปรุง' : 'เข้าใช้งาน' }}</span>
+        <i
+          class="fa-solid text-lg inline-block transition-transform group-hover:translate-x-1.5"
+          [ngClass]="service.status === 'maintenance' ? 'fa-screwdriver-wrench' : 'fa-arrow-right'"
+        >
+        </i>
+      </a>
+    </div>
+  </div>
 </div>

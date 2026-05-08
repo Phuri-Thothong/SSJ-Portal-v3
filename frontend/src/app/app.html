@@ -1,7 +1,8 @@
-<div class="container">
-  <p>จำนวนข้อมูล: {{ services().length }}</p>
-  @for (service of services(); track service.id) {
-    <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
-    <app-service-card [service]="service"/>
-  }
+<div class="min-h-screen p-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    @for (service of services(); track service.id) {
+      <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
+      <app-service-card [service]="service" />
+    }
+  </div>
 </div>
