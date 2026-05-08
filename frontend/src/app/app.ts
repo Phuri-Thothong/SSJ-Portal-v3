@@ -4,11 +4,12 @@ import { Service } from './models/service.model';
 import { ServiceCardComponent } from './components/service-card/service-card.component';
 import { HeroBannerComponent } from './components/hero-banner/hero-banner.component';
 import { SearchService } from './services/search.service';
+import { NoResultsComponent } from './components/no-results/no-results.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ServiceCardComponent, HeroBannerComponent], 
+  imports: [ServiceCardComponent, HeroBannerComponent, NoResultsComponent], 
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
