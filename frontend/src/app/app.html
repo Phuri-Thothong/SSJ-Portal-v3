@@ -8,6 +8,9 @@
           <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
           <app-service-card [service]="service" />
         }
+        @if (adminService.isAdminMode()) {
+          <app-add-service-card />
+        }
       </div>
     } @else {
       <app-no-results />

@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-admin-tool',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-tool.component.html',
   styleUrl: './admin-tool.component.css',
 })
 export class AdminToolComponent {
-  isAdminMode = signal(false);
+  public adminService = inject(AdminService);
   isHovered = false;
 
   toggleMode() {
-    this.isAdminMode.update(val => !val);
+    this.adminService.toggleAdminMode();
   }
 }
