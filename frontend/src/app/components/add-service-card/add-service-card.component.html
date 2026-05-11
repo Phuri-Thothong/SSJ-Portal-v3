@@ -1,11 +1,11 @@
-<div (click)="openModal()" 
+<div (click)="adminService.openFormModal()" 
      class="group h-full min-h-87.5 border-2 border-dashed border-slate-300 rounded-[2.5rem] 
             flex flex-col items-center justify-center gap-6 cursor-pointer
-            hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-500">
+            hover:border-blue-400 hover:bg-blue-50/50 transition-colors duration-500">
   
   <div class="w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center 
-              text-slate-300 group-hover:scale-110 transition-all duration-500">
-    <i class="fa-solid fa-plus text-3xl transition-transform duration-500 group-hover:rotate-90 group-hover:text-blue-500"></i>
+              text-slate-300 group-hover:scale-110 transition-transform duration-500">
+    <i class="fa-solid fa-plus text-3xl transition-transform duration-500 group-hover:rotate-360 group-hover:text-blue-500"></i>
   </div>
   
   <div class="text-center">
