@@ -13,6 +13,15 @@ import { SearchService } from '../../services/search.service';
 export class HeroBannerComponent {
   constructor(public searchService: SearchService) {}
 
+  mouseX = 0;
+  mouseY = 0;
+
+  onMouseMove(event: MouseEvent) {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.mouseX = event.clientX - rect.left;
+    this.mouseY = event.clientY - rect.top;
+  }
+
   onSearchChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchService.updateSearchTerm(value);
