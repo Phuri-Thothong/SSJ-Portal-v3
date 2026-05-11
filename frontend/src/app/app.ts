@@ -7,11 +7,12 @@ import { SearchService } from './services/search.service';
 import { NoResultsComponent } from './components/no-results/no-results.component';
 import { FooterComponent } from "./components/footer/footer.component";
 import { NavbarComponent } from "./components/navbar/navbar.component";
+import { AdminToolComponent } from "./components/admin-tool/admin-tool.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ServiceCardComponent, HeroBannerComponent, NoResultsComponent, FooterComponent, NavbarComponent], 
+  imports: [ServiceCardComponent, HeroBannerComponent, NoResultsComponent, FooterComponent, NavbarComponent, AdminToolComponent], 
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
