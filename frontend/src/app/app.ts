@@ -6,11 +6,12 @@ import { HeroBannerComponent } from './components/hero-banner/hero-banner.compon
 import { SearchService } from './services/search.service';
 import { NoResultsComponent } from './components/no-results/no-results.component';
 import { FooterComponent } from "./components/footer/footer.component";
+import { NavbarComponent } from "./components/navbar/navbar.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ServiceCardComponent, HeroBannerComponent, NoResultsComponent, FooterComponent], 
+  imports: [ServiceCardComponent, HeroBannerComponent, NoResultsComponent, FooterComponent, NavbarComponent], 
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

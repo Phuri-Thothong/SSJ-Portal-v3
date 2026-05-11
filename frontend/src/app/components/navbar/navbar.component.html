@@ -1,0 +1,41 @@
+<nav class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm px-6 py-3">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    
+    <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 min-w-0.5">
+      <span class="hidden sm:inline text-xs text-slate-400 px-3 font-medium">
+        ขนาดตัวอักษร
+      </span>
+
+      <div class="flex space-x-1">
+        <button (click)="fontSizeService.setSize('small')"
+                class="px-2 sm:px-3 py-1 rounded-lg text-sm transition-all"
+                [class]="fontSizeService.currentSize() === 'small' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
+          ก
+        </button>
+
+        <button (click)="fontSizeService.setSize('medium')"
+                class="px-2 sm:px-3 py-1 rounded-lg text-base transition-all"
+                [class]="fontSizeService.currentSize() === 'medium' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
+          ก
+        </button>
+
+        <button (click)="fontSizeService.setSize('large')"
+                class="px-2 sm:px-3 py-1 rounded-lg text-lg transition-all"
+                [class]="fontSizeService.currentSize() === 'large' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
+          ก
+        </button>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-3 border-l pl-8 border-slate-200">
+      <div class="text-right hidden sm:block">
+        <p class="text-sm font-bold text-slate-800 leading-none">ชื่อผู้ใช้งาน</p>
+        <p class="text-sm text-blue-600 font-medium uppercase tracking-wider mt-1">กลุ่มงาน</p>
+      </div>
+      <div class="h-10 w-10 bg-linear-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white shadow-md ring-2 ring-white cursor-pointer hover:scale-110 transition-transform">
+        <i class="text-base fa-solid fa-user-tie"></i>
+      </div>
+    </div>
+
+  </div>
+</nav>
