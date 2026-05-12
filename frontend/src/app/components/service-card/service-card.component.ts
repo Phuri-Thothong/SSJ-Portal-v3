@@ -24,13 +24,25 @@ export class ServiceCardComponent {
 
   getStatusConfig() {
     switch (this.service.status) {
-      case 'online':
-        return { color: 'bg-green-500', icon: 'fa-check' };
-      case 'maintenance':
-        return { color: 'bg-orange-500', icon: 'fa-screwdriver-wrench' };
-      default:
-        return { color: 'bg-slate-400', icon: 'fa-question' };
-    }
+    case 'online':
+      return { 
+        color: 'bg-emerald-500',
+        icon: 'fa-check', 
+        label: 'พร้อมใช้งาน' 
+      };
+    case 'maintenance':
+      return { 
+        color: 'bg-amber-500',
+        icon: 'fa-screwdriver-wrench', 
+        label: 'ไม่พร้อมใช้งาน' 
+      };
+    default:
+      return { 
+        color: 'bg-slate-400', 
+        icon: 'fa-question', 
+        label: 'ไม่ทราบสถานะ' 
+      };
+  }
   }
 
   getButtonStyles() {

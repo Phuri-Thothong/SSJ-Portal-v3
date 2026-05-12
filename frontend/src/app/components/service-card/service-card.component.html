@@ -1,5 +1,5 @@
 <div class="relative h-full group" (mousemove)="onMouseMove($event)">
-  <div class="glass-card p-6 flex flex-col h-full cursor-pointer">
+  <div class="glass-card p-6 flex flex-col h-full min-h-92 cursor-pointer">
     <div
       class="h-36 rounded-3xl shrink-0 flex items-center justify-center relative shadow-inner overflow-hidden"
       [style.--x.px]="mouseX"
@@ -27,7 +27,7 @@
       ></i>
 
       @let config = getStatusConfig();
-      <div class="absolute top-4 right-4 z-20">
+      <div class="absolute top-4 right-4 z-20" [title]="config.label">
         <div
           class="flex items-center justify-center h-8 w-8 rounded-full border-2 border-white shadow-md"
           [ngClass]="config.color"
@@ -38,7 +38,7 @@
     </div>
 
     <div class="pt-6 text-center flex flex-col grow">
-      <h2 class="text-xl font-bold text-slate-800 mb-2">{{ service.title }}</h2>
+      <h2 class="text-xl font-bold text-slate-800 mb-2 line-clamp-1">{{ service.title }}</h2>
       <p class="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-2">
         {{ service.description || 'ไม่มีคำอธิบายเพิ่มเติม' }}
       </p>
