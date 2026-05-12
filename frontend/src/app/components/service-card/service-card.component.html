@@ -45,6 +45,7 @@
 
       <a
         [href]="service.link_url"
+        [target]="service.is_new_tab ? '_blank' : '_self'"
         [ngStyle]="getButtonStyles()"
         class="mt-auto w-full py-3 text-white font-bold flex items-center justify-center gap-3 transition-all active:scale-95 shadow-md group rounded-full"
         [class.pointer-events-none]="service.status === 'maintenance'"

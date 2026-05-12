@@ -11,7 +11,11 @@ export class AdminService {
   editingService = signal<Service | null>(null);
   // เก็บตัวจริงไว้ใช้อ้างอิงตอนบันทึกการแก้ไข
   originalService: Service | null = null;
-  toastState = signal({ show: false, message: '' });
+  toastState = signal({ 
+    show: false, 
+    message: '', 
+    type: 'success' as 'success' | 'danger' 
+  });
 
   readonly availableIcons = [
     "fa-solid fa-house", "fa-solid fa-gear", "fa-solid fa-user",
@@ -36,7 +40,7 @@ export class AdminService {
     { from: '#fbcfe8', to: '#38bdf8' },
     { from: '#06b6d4', to: '#3b82f6' },
     { from: '#f97316', to: '#dc2626' },
-    { from: '#c026d3', to: '#9333ea' },
+    { from: '#f5d0fe', to: '#9333ea' },
     { from: '#a3e635', to: '#10b981' },
   ];
 
@@ -71,12 +75,26 @@ export class AdminService {
     this.isModalOpen.set(false);
   }
 
-  showSuccessToast(message: string) {
-    this.toastState.set({ show: true, message });
-    setTimeout(() => this.hideToast(), 3000);
+  showToast(message: string, type: 'success' | 'danger' = 'success') {
+    this.toastState.set({ show: true, message, type });
+    this.playNotificationSound(type);
+    setTimeout(() => this.hideToast(), 10000);
   }
 
   hideToast() {
-    this.toastState.set({ show: false, message: '' });
+    this.toastState.set({ ...this.toastState(), show: false });
+  }
+
+  private playNotificationSound(type: 'success' | 'danger') {
+    try {
+      const audioPath = type === 'success' 
+        ? '/assets/sounds/success.mp3' 
+        : '/assets/sounds/error.mp3';
+      const audio = new Audio(audioPath);
+      audio.volume = 1; 
+      audio.play();
+    } catch (error) {
+      console.warn('ไม่สามารถเล่นเสียงแจ้งเตือนได้:', error);
+    }
   }
 }

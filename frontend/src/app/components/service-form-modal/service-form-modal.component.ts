@@ -51,7 +51,7 @@ export class ServiceFormModalComponent {
     this.dataService.createService(data).subscribe({
       next: (res) => {
         if (res.success) {
-          this.adminService.showSuccessToast(res.message ?? 'ดำเนินการสำเร็จ');
+          this.adminService.showToast(res.message ?? 'ดำเนินการสำเร็จ');
           this.adminService.closeModal();
           this.dataService.refreshServices();
         }
@@ -72,7 +72,11 @@ export class ServiceFormModalComponent {
             }
           }, 100);
         } else {
-          alert('เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง');
+          let errorMsg = 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ กรุณาลองใหม่อีกครั้ง';
+          if (err.status === 500) errorMsg = 'เซิร์ฟเวอร์เกิดข้อผิดพลาด';
+          if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการรัน Backend';
+          if (err.status === 404) errorMsg = 'ไม่พบที่อยู่ API';
+          this.adminService.showToast(errorMsg, 'danger');
         }
       },
     });

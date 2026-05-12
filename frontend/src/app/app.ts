@@ -1,6 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { DataService } from './services/data.service';
-import { Service } from './models/service.model';
 import { ServiceCardComponent } from './components/service-card/service-card.component';
 import { HeroBannerComponent } from './components/hero-banner/hero-banner.component';
 import { SearchService } from './services/search.service';
@@ -11,11 +10,13 @@ import { AdminToolComponent } from './components/admin-tool/admin-tool.component
 import { AddServiceCardComponent } from './components/add-service-card/add-service-card.component';
 import { AdminService } from './services/admin.service';
 import { ServiceFormModalComponent } from './components/service-form-modal/service-form-modal.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     ServiceCardComponent,
     HeroBannerComponent,
     NoResultsComponent,
@@ -32,10 +33,7 @@ export class App implements OnInit {
   // รับข้อมูล Array ที่ได้จาก Backend
   public dataService = inject(DataService);
   public adminService = inject(AdminService);
-
-  constructor(
-    public searchService: SearchService,
-  ) {}
+  public searchService = inject(SearchService);
 
   ngOnInit() {
     this.dataService.refreshServices();
