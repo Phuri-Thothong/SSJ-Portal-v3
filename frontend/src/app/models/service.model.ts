@@ -12,3 +12,9 @@ export interface Service {
   updated_at?: string;
   deleted_at?: string|null;
 }
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}

@@ -10,6 +10,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AdminToolComponent } from './components/admin-tool/admin-tool.component';
 import { AddServiceCardComponent } from './components/add-service-card/add-service-card.component';
 import { AdminService } from './services/admin.service';
+import { ServiceFormModalComponent } from './components/service-form-modal/service-form-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -22,37 +23,27 @@ import { AdminService } from './services/admin.service';
     NavbarComponent,
     AdminToolComponent,
     AddServiceCardComponent,
+    ServiceFormModalComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App implements OnInit {
   // รับข้อมูล Array ที่ได้จาก Backend
-  services = signal<Service[]>([]);
-
+  public dataService = inject(DataService);
   public adminService = inject(AdminService);
 
   constructor(
-    private dataService: DataService,
     public searchService: SearchService,
   ) {}
 
   ngOnInit() {
-    this.dataService.getServices().subscribe({
-      next: (response) => {
-        if (response.success) {
-          // เก็บข้อมูลที่ดึงมาใส่ตัวแปร services เพื่อเอาไปวนลูปใน HTML
-          this.services.set(response.data);
-          console.log(this.services());
-        }
-      },
-      error: (err) => console.error('เกิดข้อผิดพลาด:', err),
-    });
+    this.dataService.refreshServices();
   }
 
   filteredServices = computed(() => {
     const term = this.searchService.searchTerm().toLowerCase();
-    const allServices = this.services();
+    const allServices = this.dataService.services();;
 
     if (!term) return allServices;
 
