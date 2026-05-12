@@ -11,6 +11,7 @@ import { AddServiceCardComponent } from './components/add-service-card/add-servi
 import { AdminService } from './services/admin.service';
 import { ServiceFormModalComponent } from './components/service-form-modal/service-form-modal.component';
 import { CommonModule } from '@angular/common';
+import { DeleteConfirmModalComponent } from "./components/delete-confirm-modal/delete-confirm-modal.component";
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ import { CommonModule } from '@angular/common';
     AdminToolComponent,
     AddServiceCardComponent,
     ServiceFormModalComponent,
-  ],
+    DeleteConfirmModalComponent
+],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

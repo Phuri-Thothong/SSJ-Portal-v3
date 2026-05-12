@@ -1,4 +1,4 @@
-<div class="relative h-full group" (mousemove)="onMouseMove($event)">
+<div class="relative h-full group transition-all duration-300 hover:-translate-y-2" (mousemove)="onMouseMove($event)">
   @if (adminService.isAdminMode()) {
     <div class="absolute -top-3 -right-3 flex gap-2 z-1 animate-in fade-in zoom-in duration-300">
       <button

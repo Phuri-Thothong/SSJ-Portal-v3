@@ -1,8 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Service } from '../models/service.model';
+import { DataService } from './data.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
+  private dataService = inject(DataService);
   isAdminMode = signal(false);
   isEditMode = signal(false);
   isModalOpen = signal(false);
@@ -109,9 +111,23 @@ export class AdminService {
 
   confirmSoftDelete() {
     const service = this.serviceToDelete();
-    if (!service) return;
+    if (!service || !service.id) return;
     console.log('เริ่มย้ายลงถังขยะ (Soft Delete):', service.title);
-    this.closeDeleteModal();
+    this.dataService.deleteService(service.id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.showToast(res.message || 'ย้ายข้อมูลไปยังถังขยะเรียบร้อยแล้ว');
+          this.closeDeleteModal();
+          this.dataService.refreshServices();
+        }
+      },
+      error: (err) => {
+        let errorMsg = 'ไม่สามารถลบข้อมูลได้ในขณะนี้';
+        if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
+        this.showToast(errorMsg, 'danger');
+        console.error('Delete error:', err);
+      }
+    });
   }
 
   showToast(message: string, type: 'success' | 'danger' = 'success') {

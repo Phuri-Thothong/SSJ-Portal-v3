@@ -35,4 +35,8 @@ export class DataService {
   updateService(id: number, service: Service): Observable<ApiResponse<Service>> {
     return this.http.put<ApiResponse<Service>>(`${this.apiURL}/${id}`, service);
   }
+
+  deleteService(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiURL}/${id}`);
+  }
 }

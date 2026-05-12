@@ -22,6 +22,9 @@
 @if (adminService.isModalOpen()) {
   <app-service-form-modal />
 }
+@if (adminService.isDeleteModalOpen()) {
+  <app-delete-confirm-modal />
+}
 @if (adminService.toastState(); as toast) {
   @if (toast.show) {
     <div
