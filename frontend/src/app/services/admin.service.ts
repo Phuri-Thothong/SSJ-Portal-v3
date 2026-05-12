@@ -4,30 +4,52 @@ import { Service } from '../models/service.model';
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   isAdminMode = signal(false);
-  isModalOpen = signal(false);
   isEditMode = signal(false);
+  isModalOpen = signal(false);
+  isDeleteModalOpen = signal(false);
 
   // ข้อมูลที่กำลังแก้ไข-ตัวก๊อปปี้
   editingService = signal<Service | null>(null);
   // เก็บตัวจริงไว้ใช้อ้างอิงตอนบันทึกการแก้ไข
   originalService: Service | null = null;
-  toastState = signal({ 
-    show: false, 
-    message: '', 
-    type: 'success' as 'success' | 'danger' 
+  serviceToDelete = signal<Service | null>(null);
+  toastState = signal({
+    show: false,
+    message: '',
+    type: 'success' as 'success' | 'danger',
   });
 
   readonly availableIcons = [
-    "fa-solid fa-house", "fa-solid fa-gear", "fa-solid fa-user",
-    "fa-solid fa-file-medical", "fa-solid fa-stethoscope", "fa-solid fa-pills",
-    "fa-solid fa-laptop-medical", "fa-solid fa-hospital", "fa-solid fa-calendar-check",
-    "fa-solid fa-briefcase-medical", "fa-solid fa-notes-medical", "fa-solid fa-user-doctor",
-    "fa-solid fa-heart-pulse", "fa-solid fa-syringe", "fa-solid fa-tooth",
-    "fa-solid fa-microscope", "fa-solid fa-ambulance", "fa-solid fa-shield-halved",
-    "fa-solid fa-chart-line", "fa-solid fa-database", "fa-solid fa-folder-open",
-    "fa-solid fa-print", "fa-solid fa-comments", "fa-solid fa-network-wired",
-    "fa-solid fa-brain", "fa-solid fa-graduation-cap", "fa-solid fa-money-bill-transfer",
-    "fa-solid fa-map-location-dot", "fa-solid fa-boxes-stacked", "fa-solid fa-utensils",
+    'fa-solid fa-house',
+    'fa-solid fa-gear',
+    'fa-solid fa-user',
+    'fa-solid fa-file-medical',
+    'fa-solid fa-stethoscope',
+    'fa-solid fa-pills',
+    'fa-solid fa-laptop-medical',
+    'fa-solid fa-hospital',
+    'fa-solid fa-calendar-check',
+    'fa-solid fa-briefcase-medical',
+    'fa-solid fa-notes-medical',
+    'fa-solid fa-user-doctor',
+    'fa-solid fa-heart-pulse',
+    'fa-solid fa-syringe',
+    'fa-solid fa-tooth',
+    'fa-solid fa-microscope',
+    'fa-solid fa-ambulance',
+    'fa-solid fa-shield-halved',
+    'fa-solid fa-chart-line',
+    'fa-solid fa-database',
+    'fa-solid fa-folder-open',
+    'fa-solid fa-print',
+    'fa-solid fa-comments',
+    'fa-solid fa-network-wired',
+    'fa-solid fa-brain',
+    'fa-solid fa-graduation-cap',
+    'fa-solid fa-money-bill-transfer',
+    'fa-solid fa-map-location-dot',
+    'fa-solid fa-boxes-stacked',
+    'fa-solid fa-utensils',
   ];
 
   readonly availableGradients = [
@@ -45,7 +67,7 @@ export class AdminService {
   ];
 
   toggleAdminMode() {
-    this.isAdminMode.update(val => !val);
+    this.isAdminMode.update((val) => !val);
   }
 
   openAddModal() {
@@ -54,11 +76,11 @@ export class AdminService {
     this.editingService.set({
       title: '',
       description: '',
-      icon: 'fa-solid fa-star', 
-      link_url: '',             
-      is_new_tab: false,        
-      status: 'online',         
-      color_from: '#475569',  
+      icon: 'fa-solid fa-star',
+      link_url: '',
+      is_new_tab: false,
+      status: 'online',
+      color_from: '#475569',
       color_to: '#94a3b8',
     });
     this.isModalOpen.set(true);
@@ -75,10 +97,27 @@ export class AdminService {
     this.isModalOpen.set(false);
   }
 
+  openDeleteConfirm(service: Service) {
+    this.serviceToDelete.set(service);
+    this.isDeleteModalOpen.set(true);
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen.set(false);
+    this.serviceToDelete.set(null);
+  }
+
+  confirmSoftDelete() {
+    const service = this.serviceToDelete();
+    if (!service) return;
+    console.log('เริ่มย้ายลงถังขยะ (Soft Delete):', service.title);
+    this.closeDeleteModal();
+  }
+
   showToast(message: string, type: 'success' | 'danger' = 'success') {
     this.toastState.set({ show: true, message, type });
     this.playNotificationSound(type);
-    setTimeout(() => this.hideToast(), 10000);
+    setTimeout(() => this.hideToast(), 5000);
   }
 
   hideToast() {
@@ -87,11 +126,10 @@ export class AdminService {
 
   private playNotificationSound(type: 'success' | 'danger') {
     try {
-      const audioPath = type === 'success' 
-        ? '/assets/sounds/success.mp3' 
-        : '/assets/sounds/error.mp3';
+      const audioPath =
+        type === 'success' ? '/assets/sounds/success.mp3' : '/assets/sounds/error.mp3';
       const audio = new Audio(audioPath);
-      audio.volume = 1; 
+      audio.volume = 1;
       audio.play();
     } catch (error) {
       console.warn('ไม่สามารถเล่นเสียงแจ้งเตือนได้:', error);

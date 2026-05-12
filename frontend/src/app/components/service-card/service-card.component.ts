@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Service } from '../../models/service.model';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-service-card',
@@ -12,6 +13,7 @@ import { Service } from '../../models/service.model';
 export class ServiceCardComponent {
   //รับ obj. จากคอมโพเนนต์ App มาเป็น prop.
   @Input() service!: Service;
+  public adminService = inject(AdminService);
 
   mouseX = 0;
   mouseY = 0;
@@ -22,27 +24,37 @@ export class ServiceCardComponent {
     this.mouseY = event.clientY - rect.top;
   }
 
+  handleEdit(event: Event) {
+    event.stopPropagation();
+    this.adminService.openEditModal(this.service);
+  }
+
+  handleDelete(event: Event) {
+    event.stopPropagation();
+    this.adminService.openDeleteConfirm(this.service);
+  }
+
   getStatusConfig() {
     switch (this.service.status) {
-    case 'online':
-      return { 
-        color: 'bg-emerald-500',
-        icon: 'fa-check', 
-        label: 'พร้อมใช้งาน' 
-      };
-    case 'maintenance':
-      return { 
-        color: 'bg-amber-500',
-        icon: 'fa-screwdriver-wrench', 
-        label: 'ไม่พร้อมใช้งาน' 
-      };
-    default:
-      return { 
-        color: 'bg-slate-400', 
-        icon: 'fa-question', 
-        label: 'ไม่ทราบสถานะ' 
-      };
-  }
+      case 'online':
+        return {
+          color: 'bg-emerald-500',
+          icon: 'fa-check',
+          label: 'พร้อมใช้งาน',
+        };
+      case 'maintenance':
+        return {
+          color: 'bg-amber-500',
+          icon: 'fa-screwdriver-wrench',
+          label: 'ไม่พร้อมใช้งาน',
+        };
+      default:
+        return {
+          color: 'bg-slate-400',
+          icon: 'fa-question',
+          label: 'ไม่ทราบสถานะ',
+        };
+    }
   }
 
   getButtonStyles() {

@@ -40,7 +40,8 @@ export class ServiceFormModalComponent {
 
   handleSave() {
     const data = this.adminService.editingService();
-    if (!data) return;
+    // ถ้าไม่มีข้อมูล หรือเป็นโหมดแก้ไขแต่ไม่มี ID ให้เด้งออก
+    if (!data || (this.adminService.isEditMode() && !data.id)) return;
 
     // ถ้าเปิด Custom Picker อยู่ ให้แปลงสี Hex เป็น Tailwind arbitrary value
     if (this.isShowCustomPicker()) {
@@ -48,7 +49,13 @@ export class ServiceFormModalComponent {
       data.color_to = this.customTo();
     }
 
-    this.dataService.createService(data).subscribe({
+    this.formErrors.set(null);
+
+    const request$ = this.adminService.isEditMode()
+      ? this.dataService.updateService(data.id!, data)
+      : this.dataService.createService(data);
+
+    request$.subscribe({
       next: (res) => {
         if (res.success) {
           this.adminService.showToast(res.message ?? 'ดำเนินการสำเร็จ');
@@ -65,16 +72,13 @@ export class ServiceFormModalComponent {
             const firstErrorKey = Object.keys(errors)[0];
             const errorElement = document.getElementById(`error-${firstErrorKey}`);
             if (errorElement) {
-              errorElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-              });
+              errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
           }, 100);
         } else {
           let errorMsg = 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ กรุณาลองใหม่อีกครั้ง';
           if (err.status === 500) errorMsg = 'เซิร์ฟเวอร์เกิดข้อผิดพลาด';
-          if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการรัน Backend';
+          if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
           if (err.status === 404) errorMsg = 'ไม่พบที่อยู่ API';
           this.adminService.showToast(errorMsg, 'danger');
         }

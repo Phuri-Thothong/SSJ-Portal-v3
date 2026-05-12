@@ -1,4 +1,23 @@
 <div class="relative h-full group" (mousemove)="onMouseMove($event)">
+  @if (adminService.isAdminMode()) {
+    <div class="absolute -top-3 -right-3 flex gap-2 z-1 animate-in fade-in zoom-in duration-300">
+      <button
+        (click)="handleEdit($event)"
+        class="w-10 h-10 bg-amber-400 hover:bg-amber-500 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
+        title="แก้ไขบริการ"
+      >
+        <i class="fa-solid fa-pen-to-square"></i>
+      </button>
+
+      <button
+        (click)="handleDelete($event)"
+        class="w-10 h-10 bg-rose-500 hover:bg-rose-600 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
+        title="ลบบริการ"
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  }
   <div class="glass-card p-6 flex flex-col h-full min-h-92 cursor-pointer">
     <div
       class="h-36 rounded-3xl shrink-0 flex items-center justify-center relative shadow-inner overflow-hidden"
@@ -49,8 +68,16 @@
     </div>
 
     <div class="pt-6 text-center flex flex-col grow">
-      <h2 class="text-xl font-bold text-slate-800 mb-2 line-clamp-1">{{ service.title }}</h2>
-      <p class="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-2">
+      <h2
+        [title]="service.title"
+        class="text-xl font-bold text-slate-800 mb-2 line-clamp-1 cursor-help"
+      >
+        {{ service.title }}
+      </h2>
+      <p
+        [title]="service.description || 'ไม่มีคำอธิบายเพิ่มเติม'"
+        class="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-2 cursor-help"
+      >
         {{ service.description || 'ไม่มีคำอธิบายเพิ่มเติม' }}
       </p>
 

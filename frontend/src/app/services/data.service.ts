@@ -24,11 +24,15 @@ export class DataService {
           // อัปเดต Signal ข้อมูลจะไหลไปยังทุกคอมโพเนนต์ที่ใช้ Signal services
           this.services.set(res.data ?? []);
         }
-      }
+      },
     });
   }
 
   createService(service: Service): Observable<ApiResponse<Service>> {
     return this.http.post<ApiResponse<Service>>(this.apiURL, service);
+  }
+
+  updateService(id: number, service: Service): Observable<ApiResponse<Service>> {
+    return this.http.put<ApiResponse<Service>>(`${this.apiURL}/${id}`, service);
   }
 }
