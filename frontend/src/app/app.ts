@@ -13,6 +13,7 @@ import { ServiceFormModalComponent } from './components/service-form-modal/servi
 import { CommonModule } from '@angular/common';
 import { DeleteConfirmModalComponent } from "./components/delete-confirm-modal/delete-confirm-modal.component";
 import { TrashBannerComponent } from "./components/trash-banner/trash-banner.component";
+import { ServiceSkeletonComponent } from "./components/service-skeleton/service-skeleton.component";
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,8 @@ import { TrashBannerComponent } from "./components/trash-banner/trash-banner.com
     AddServiceCardComponent,
     ServiceFormModalComponent,
     DeleteConfirmModalComponent,
-    TrashBannerComponent
+    TrashBannerComponent,
+    ServiceSkeletonComponent
 ],
   templateUrl: './app.html',
   styleUrl: './app.css',
