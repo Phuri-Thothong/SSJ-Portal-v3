@@ -11,4 +11,12 @@ import { AdminService } from '../../services/admin.service';
 })
 export class DeleteConfirmModalComponent {
   public adminService = inject(AdminService);
+
+  onConfirm() {
+    this.adminService.confirmSoftDelete();
+  }
+
+  onCancel() {
+    this.adminService.closeModal();
+  }
 }
