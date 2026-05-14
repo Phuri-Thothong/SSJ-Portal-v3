@@ -113,7 +113,6 @@ export class AdminService {
   confirmSoftDelete() {
     const service = this.activeService();
     if (!service || !service.id) return;
-    console.log('เริ่มย้ายลงถังขยะ: ', service.title);
     this.dataService.deleteService(service.id).subscribe({
       next: (res) => {
         if (res.success) {
@@ -134,13 +133,12 @@ export class AdminService {
   confirmRestore() {
     const service = this.activeService();
     if (!service || !service.id) return;
-    console.log('เริ่มกู้คืนข้อมูล: ', service.title);
     this.dataService.restoreService(service.id).subscribe({
       next: (res) => {
         if (res.success) {
           this.showToast(res.message || 'กู้คืนข้อมูลเรียบร้อยแล้ว');
           this.closeModal();
-          this.dataService.refreshServices(false);
+          this.dataService.refreshServices(this.isTrashMode());
         }
       },
       error: (err) => {
@@ -148,6 +146,26 @@ export class AdminService {
         if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
         this.showToast(errorMsg, 'danger');
         console.error('Restore error:', err);
+      },
+    });
+  }
+
+  confirmForceDelete() {
+    const service = this.activeService();
+    if (!service || !service.id) return;
+    this.dataService.forceDeleteService(service.id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.showToast(res.message || 'ลบข้อมูลออกจากถังขยะเรียบร้อยแล้ว');
+          this.closeModal();
+          this.dataService.refreshServices(this.isTrashMode());
+        }
+      },
+      error: (err) => {
+        let errorMsg = 'ไม่สามารถลบข้อมูลออกจากถังขยะได้ในขณะนี้';
+        if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
+        this.showToast(errorMsg, 'danger');
+        console.error('Force Delete error:', err);
       },
     });
   }

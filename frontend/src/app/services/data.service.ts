@@ -54,5 +54,9 @@ export class DataService {
 
   restoreService(id: number): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.apiURL}/trashed/${id}/restore`, {});
+  }
+  
+  forceDeleteService(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiURL}/trashed/${id}/force-delete`);
   } 
 }

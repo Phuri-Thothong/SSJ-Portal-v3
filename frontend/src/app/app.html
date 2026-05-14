@@ -38,7 +38,7 @@
 @if (adminService.activeService() && (adminService.modalMode() === 'add' || adminService.modalMode() === 'edit')) {
   <app-service-form-modal />
 }
-@if (adminService.activeService() && adminService.modalMode() === 'delete') {
+@if (adminService.activeService() && (adminService.modalMode() === 'delete' || adminService.modalMode() === 'force')) {
   <app-delete-confirm-modal />
 }
 @if (adminService.activeService() && adminService.modalMode() === 'restore') {

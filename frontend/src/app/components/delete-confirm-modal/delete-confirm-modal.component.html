@@ -11,17 +11,23 @@
       <div
         class="w-16 h-16 bg-rose-100 text-rose-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 shadow-inner"
       >
-        <i class="fa-solid fa-trash-can"></i>
+        <i [class]="isSoftDelete ? 'fa-solid fa-trash-can' : 'fa-solid fa-eraser'"></i>
       </div>
-      <h3 class="text-xl font-bold text-slate-800 mb-3">ลบข้อมูลลงถังขยะ?</h3>
+      <h3 class="text-xl font-bold">
+        {{ isSoftDelete ? 'ลบข้อมูลลงถังขยะ?' : 'ยืนยันการลบถาวร?' }}
+      </h3>
       @if (adminService.activeService(); as service) {
         <p class="text-sm text-slate-700 mb-8 leading-relaxed">
-          คุณต้องการย้ายบริการ
+          {{ isSoftDelete ? 'คุณต้องการย้ายบริการ' : 'คุณต้องการลบบริการ' }}
           <span class="font-bold text-rose-700">"{{ service.title }}"</span>
-          ไปยังถังขยะใช่หรือไม่?
+          {{ isSoftDelete ? 'ไปยังถังขยะใช่หรือไม่?' : 'ออกจากถังขยะถาวรหรือไม่?' }}
           <br />
           <span class="text-rose-700 mt-2 block">
-            *** ข้อมูลนี้จะยังสามารถกู้คืนได้จากเมนูถังขยะ ***
+            {{
+              isSoftDelete
+                ? '*** ข้อมูลนี้จะยังสามารถกู้คืนได้จากเมนูถังขยะ ***'
+                : '*** ข้อมูลนี้จะหายไปจากระบบและไม่สามารถกู้คืนได้อีก ***'
+            }}
           </span>
         </p>
       }
@@ -36,7 +42,7 @@
           (click)="onConfirm()"
           class="text-sm flex-1 py-3 px-4 rounded-2xl font-bold text-white bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-200 transition-all active:scale-95"
         >
-          ย้ายลงถังขยะ
+          {{ isSoftDelete ? 'ย้ายลงถังขยะ' : 'ลบถาวร' }}
         </button>
       </div>
     </div>

@@ -41,7 +41,8 @@ export class ServiceCardComponent {
   }
 
   handleForceDelete(event: Event) {
-    
+    event.stopPropagation();
+    this.adminService.openModal('force', this.service);
   }
 
   getStatusConfig() {

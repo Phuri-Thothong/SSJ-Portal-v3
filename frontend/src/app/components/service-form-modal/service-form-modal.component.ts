@@ -14,7 +14,9 @@ import { DataService } from '../../services/data.service';
 export class ServiceFormModalComponent {
   public adminService = inject(AdminService);
   private dataService = inject(DataService);
-  public isEditMode = (this.adminService.modalMode() === 'edit') ? true : false;
+  get isEditMode(): boolean {
+    return this.adminService.modalMode() === 'edit';
+  }
 
   isShowCustomPicker = signal(false);
   customFrom = signal('#3b82f6');

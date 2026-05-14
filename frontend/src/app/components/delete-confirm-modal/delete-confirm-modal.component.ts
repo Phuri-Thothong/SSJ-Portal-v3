@@ -11,9 +11,16 @@ import { AdminService } from '../../services/admin.service';
 })
 export class DeleteConfirmModalComponent {
   public adminService = inject(AdminService);
+  get isSoftDelete(): boolean {
+    return this.adminService.modalMode() === 'delete';
+  }
 
   onConfirm() {
-    this.adminService.confirmSoftDelete();
+    if (this.isSoftDelete) {
+      this.adminService.confirmSoftDelete();
+    } else {
+      this.adminService.confirmForceDelete();
+    }    
   }
 
   onCancel() {
