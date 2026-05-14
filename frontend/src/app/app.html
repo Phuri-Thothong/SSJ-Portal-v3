@@ -1,22 +1,33 @@
 <app-navbar />
 <div class="min-h-screen flex flex-col">
-  <div class="grow p-6 md:p-12 max-w-7xl mx-auto w-full">
+  <div class="grow p-6 md:p-12 max-w-7xl mx-auto w-full transition-all duration-500"
+    [class.opacity-40]="dataService.isLoading()"
+    [class.pointer-events-none]="dataService.isLoading()"
+  >
     @if (adminService.isTrashMode()) {
       <app-trash-banner />
     }
     <app-hero-banner />
-    @if (filteredServices().length > 0) {
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        @for (service of filteredServices(); track service.id) {
-          <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
-          <app-service-card [service]="service" />
-        }
-        @if (adminService.isAdminMode() && !adminService.isTrashMode()) {
-          <app-add-service-card />
-        }
+    @if (dataService.isLoading()) {
+      <div class="flex justify-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
       </div>
     } @else {
-      <app-no-results />
+      @if (filteredServices().length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          @for (service of filteredServices(); track service.id) {
+            <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
+            <app-service-card 
+              [service]="service"
+              [isInTrash]="adminService.isTrashMode()" />
+          }
+          @if (adminService.isAdminMode() && !adminService.isTrashMode()) {
+            <app-add-service-card />
+          }
+        </div>
+      } @else {
+        <app-no-results />
+      }
     }
   </div>
   <app-footer />

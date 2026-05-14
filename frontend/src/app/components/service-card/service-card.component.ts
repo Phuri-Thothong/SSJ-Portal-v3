@@ -13,6 +13,7 @@ import { AdminService } from '../../services/admin.service';
 export class ServiceCardComponent {
   //รับ obj. จากคอมโพเนนต์ App มาเป็น prop.
   @Input() service!: Service;
+  @Input() isInTrash: boolean = false;
   public adminService = inject(AdminService);
 
   mouseX = 0;
@@ -32,6 +33,14 @@ export class ServiceCardComponent {
   handleDelete(event: Event) {
     event.stopPropagation();
     this.adminService.openDeleteConfirm(this.service);
+  }
+
+  handleRestore(event: Event) {
+
+  }
+
+  handleForceDelete(event: Event) {
+    
   }
 
   getStatusConfig() {

@@ -78,7 +78,7 @@ export class AdminService {
       }
       return nextMode;
     });
-    this.dataService.refreshServices();
+    this.dataService.refreshServices(this.isTrashMode());
   }
 
   toggleTrashMode() {
@@ -87,7 +87,7 @@ export class AdminService {
       return;
     }
     this.isTrashMode.update((val) => !val);
-    // this.dataService.refreshServices();
+    this.dataService.refreshServices(this.isTrashMode());
   }
 
   openAddModal() {

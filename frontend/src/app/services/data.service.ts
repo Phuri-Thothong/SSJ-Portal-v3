@@ -8,6 +8,7 @@ import { ApiResponse, Service } from '../models/service.model';
 })
 export class DataService {
   private apiURL = 'http://localhost:8000/api/services';
+  public isLoading = signal(false);
 
   services = signal<Service[]>([]);
 
@@ -17,14 +18,25 @@ export class DataService {
     return this.http.get<ApiResponse<Service[]>>(this.apiURL);
   }
 
-  refreshServices() {
-    this.getServices().subscribe({
+  getTrashedServices(): Observable<ApiResponse<Service[]>> {
+    return this.http.get<ApiResponse<Service[]>>(`${this.apiURL}/trashed`);
+  }
+
+  refreshServices(isTrashMode: boolean = false) {
+    this.isLoading.set(true);
+    const request$ = isTrashMode ? this.getTrashedServices() : this.getServices();
+    request$.subscribe({
       next: (res) => {
         if (res.success) {
           // อัปเดต Signal ข้อมูลจะไหลไปยังทุกคอมโพเนนต์ที่ใช้ Signal services
           this.services.set(res.data ?? []);
+          setTimeout(() => this.isLoading.set(false), 100);
         }
       },
+      error: (err) => {
+        this.isLoading.set(false)
+        console.error('ไม่สามารถโหลดข้อมูลได้: ', err);
+      }
     });
   }
 

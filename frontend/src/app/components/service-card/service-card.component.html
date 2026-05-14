@@ -1,6 +1,22 @@
 <div class="relative h-full group transition-all duration-300 hover:-translate-y-2" (mousemove)="onMouseMove($event)">
-  @if (adminService.isAdminMode()) {
-    <div class="absolute -top-3 -right-3 flex gap-2 z-1 animate-in fade-in zoom-in duration-300">
+  <div class="absolute -top-3 -right-3 flex gap-2 z-1 animate-in fade-in zoom-in duration-300">
+    @if (isInTrash) {
+      <button
+        (click)="handleEdit($event)"
+        class="w-10 h-10 bg-teal-500 hover:bg-teal-600 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
+        title="กู้คืนบริการ"
+      >
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+
+      <button
+        (click)="handleDelete($event)"
+        class="w-10 h-10 bg-rose-600 hover:bg-rose-700 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
+        title="ลบบริการถาวร"
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    } @else if (adminService.isAdminMode()) {
       <button
         (click)="handleEdit($event)"
         class="w-10 h-10 bg-amber-400 hover:bg-amber-500 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
@@ -16,8 +32,9 @@
       >
         <i class="fa-solid fa-trash"></i>
       </button>
-    </div>
-  }
+      
+    }
+  </div>
   <div class="glass-card p-6 flex flex-col h-full min-h-92 cursor-pointer">
     <div
       class="h-36 rounded-3xl shrink-0 flex items-center justify-center relative shadow-inner overflow-hidden"
