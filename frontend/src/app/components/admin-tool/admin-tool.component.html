@@ -1,26 +1,61 @@
-<div class="fixed bottom-8 right-8 z-50">
-  <div class="absolute bottom-full right-0 mb-4 px-4 py-2 bg-slate-900 text-white text-xs rounded-xl 
-              opacity-0 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-xl"
-       [class.opacity-100]="isHovered">
-    {{ adminService.isAdminMode() ? 'สลับเป็นโหมดผู้ใช้' : 'สลับโหมดจัดการ' }}
-    <div class="absolute top-full right-5 -mt-1 border-4 border-transparent border-t-slate-900"></div>
-  </div>
-
-  <div class="coin-wrapper" 
-       [class.is-flipped]="adminService.isAdminMode()"
-       (mouseenter)="isHovered = true" 
-       (mouseleave)="isHovered = false"
-       (click)="toggleMode()">
-    
-    <div class="coin-inner">
-      <div class="coin-front shadow-2xl ring-4 ring-slate-200">
-        <i class="fa-solid fa-user-shield text-xl"></i>
-        <div class="shine-effect"></div>
+<div class="fixed bottom-8 right-8 z-50 flex flex-col gap-4 items-end">
+  @if (adminService.isAdminMode()) {
+    <div class="relative group">
+      <div
+        class="absolute bottom-full right-0 mb-4 px-4 py-2 bg-slate-900 text-white text-xs rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-xl"
+      >
+        {{ adminService.isTrashMode() ? 'ดูบริการทั้ังหมด' : 'ดูถังขยะ' }}
+        <div
+          class="absolute top-full right-5 -mt-1 border-4 border-transparent border-t-slate-900"
+        ></div>
       </div>
 
-      <div class="coin-back shadow-2xl ring-4 ring-orange-200">
-        <i class="fa-solid fa-user-gear text-xl"></i>
-        <div class="shine-effect"></div>
+      <div
+        class="coin-wrapper w-14 h-14"
+        [class.is-flipped]="adminService.isTrashMode()"
+        (click)="adminService.toggleTrashMode()"
+      >
+        <div class="coin-inner">
+          <div class="coin-front shadow-2xl ring-4 ring-rose-200 bg-rose-500 text-white">
+            <i class="fa-solid fa-trash-can text-xl"></i>
+            <div class="shine-effect"></div>
+          </div>
+          <div class="coin-back shadow-2xl ring-4 ring-emerald-200 bg-emerald-500 text-white">
+            <i class="fa-solid fa-boxes-stacked text-xl"></i>
+            <div class="shine-effect"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="relative group">
+    <div
+      class="absolute bottom-full right-0 mb-4 px-4 py-2 bg-slate-900 text-white text-xs rounded-xl opacity-0 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-xl"
+      [class.opacity-100]="isHovered"
+    >
+      {{ adminService.isAdminMode() ? 'สลับเป็นโหมดผู้ใช้' : 'สลับโหมดจัดการ' }}
+      <div
+        class="absolute top-full right-5 -mt-1 border-4 border-transparent border-t-slate-900"
+      ></div>
+    </div>
+
+    <div
+      class="coin-wrapper"
+      [class.is-flipped]="adminService.isAdminMode()"
+      (mouseenter)="isHovered = true"
+      (mouseleave)="isHovered = false"
+      (click)="toggleMode()"
+    >
+      <div class="coin-inner">
+        <div class="coin-front shadow-2xl ring-4 ring-slate-200 bg-slate-800 text-white">
+          <i class="fa-solid fa-user-shield text-xl"></i>
+          <div class="shine-effect"></div>
+        </div>
+
+        <div class="coin-back shadow-2xl ring-4 ring-orange-200 bg-orange-500 text-white">
+          <i class="fa-solid fa-user-gear text-xl"></i>
+          <div class="shine-effect"></div>
+        </div>
       </div>
     </div>
   </div>

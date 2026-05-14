@@ -6,6 +6,7 @@ import { DataService } from './data.service';
 export class AdminService {
   private dataService = inject(DataService);
   isAdminMode = signal(false);
+  isTrashMode = signal(false);
   isEditMode = signal(false);
   isModalOpen = signal(false);
   isDeleteModalOpen = signal(false);
@@ -69,7 +70,24 @@ export class AdminService {
   ];
 
   toggleAdminMode() {
-    this.isAdminMode.update((val) => !val);
+    this.isAdminMode.update((val) => {
+      const nextMode = !val;
+      //ถ้าจะปิดโหมดแอดมินให้ปิดโหมดถังขยะด้วย
+      if (!nextMode) {
+        this.isTrashMode.set(false);
+      }
+      return nextMode;
+    });
+    this.dataService.refreshServices();
+  }
+
+  toggleTrashMode() {
+    if (!this.isAdminMode()) {
+      this.isTrashMode.set(false);
+      return;
+    }
+    this.isTrashMode.update((val) => !val);
+    // this.dataService.refreshServices();
   }
 
   openAddModal() {
@@ -126,7 +144,7 @@ export class AdminService {
         if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
         this.showToast(errorMsg, 'danger');
         console.error('Delete error:', err);
-      }
+      },
     });
   }
 

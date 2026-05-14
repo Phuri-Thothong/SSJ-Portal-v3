@@ -41,12 +41,7 @@
   transform: translateZ(1px);
 }
 
-.coin-front {
-  background-color: #334155;
-}
-
 .coin-back {
-  background-color: #f97316;
   transform: rotateY(180deg) translateZ(1px);
 }
 

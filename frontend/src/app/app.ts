@@ -12,6 +12,7 @@ import { AdminService } from './services/admin.service';
 import { ServiceFormModalComponent } from './components/service-form-modal/service-form-modal.component';
 import { CommonModule } from '@angular/common';
 import { DeleteConfirmModalComponent } from "./components/delete-confirm-modal/delete-confirm-modal.component";
+import { TrashBannerComponent } from "./components/trash-banner/trash-banner.component";
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,8 @@ import { DeleteConfirmModalComponent } from "./components/delete-confirm-modal/d
     AdminToolComponent,
     AddServiceCardComponent,
     ServiceFormModalComponent,
-    DeleteConfirmModalComponent
+    DeleteConfirmModalComponent,
+    TrashBannerComponent
 ],
   templateUrl: './app.html',
   styleUrl: './app.css',

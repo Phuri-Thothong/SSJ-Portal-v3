@@ -1,6 +1,9 @@
 <app-navbar />
 <div class="min-h-screen flex flex-col">
   <div class="grow p-6 md:p-12 max-w-7xl mx-auto w-full">
+    @if (adminService.isTrashMode()) {
+      <app-trash-banner />
+    }
     <app-hero-banner />
     @if (filteredServices().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -8,7 +11,7 @@
           <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
           <app-service-card [service]="service" />
         }
-        @if (adminService.isAdminMode()) {
+        @if (adminService.isAdminMode() && !adminService.isTrashMode()) {
           <app-add-service-card />
         }
       </div>

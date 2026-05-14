@@ -1,0 +1,8 @@
+.trash-glass-card {
+    background: rgba(255, 251, 252, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(225, 29, 72, 0.2);
+    border-radius: 2rem;
+    box-shadow: 0 15px 35px -5px rgba(225, 29, 72, 0.1);
+}

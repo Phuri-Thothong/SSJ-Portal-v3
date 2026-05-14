@@ -1,4 +1,4 @@
-<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<div class="fixed inset-0 z-100 flex items-center justify-center p-4">
   <div
     class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
     (click)="adminService.closeDeleteModal()"
@@ -34,7 +34,7 @@
 
       <button
         (click)="adminService.confirmSoftDelete()"
-        class="flex-1 py-3 px-4 rounded-2xl font-bold text-white bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+        class="flex-1 py-3 px-4 rounded-2xl font-bold text-white bg-linear-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2"
       >
         <i class="fa-solid fa-trash"></i>
         ย้ายไปยังถังขยะ
