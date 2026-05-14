@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { DeleteConfirmModalComponent } from "./components/delete-confirm-modal/delete-confirm-modal.component";
 import { TrashBannerComponent } from "./components/trash-banner/trash-banner.component";
 import { ServiceSkeletonComponent } from "./components/service-skeleton/service-skeleton.component";
+import { RestoreConfirmModalComponent } from "./components/restore-confirm-modal/restore-confirm-modal.component";
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,8 @@ import { ServiceSkeletonComponent } from "./components/service-skeleton/service-
     ServiceFormModalComponent,
     DeleteConfirmModalComponent,
     TrashBannerComponent,
-    ServiceSkeletonComponent
+    ServiceSkeletonComponent,
+    RestoreConfirmModalComponent
 ],
   templateUrl: './app.html',
   styleUrl: './app.css',

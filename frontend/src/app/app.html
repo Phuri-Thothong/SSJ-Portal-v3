@@ -41,6 +41,9 @@
 @if (adminService.activeService() && adminService.modalMode() === 'delete') {
   <app-delete-confirm-modal />
 }
+@if (adminService.activeService() && adminService.modalMode() === 'restore') {
+  <app-restore-confirm-modal />
+}
 @if (adminService.toastState(); as toast) {
   @if (toast.show) {
     <div
