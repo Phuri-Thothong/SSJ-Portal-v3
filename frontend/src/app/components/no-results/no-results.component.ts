@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { SearchService } from '../../services/search.service';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-no-results',
@@ -10,4 +11,5 @@ import { SearchService } from '../../services/search.service';
 })
 export class NoResultsComponent {
   searchService = inject(SearchService);
+  adminService = inject(AdminService);
 }
