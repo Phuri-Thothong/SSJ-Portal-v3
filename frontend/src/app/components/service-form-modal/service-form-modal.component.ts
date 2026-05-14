@@ -14,6 +14,7 @@ import { DataService } from '../../services/data.service';
 export class ServiceFormModalComponent {
   public adminService = inject(AdminService);
   private dataService = inject(DataService);
+  public isEditMode = (this.adminService.modalMode() === 'edit') ? true : false;
 
   isShowCustomPicker = signal(false);
   customFrom = signal('#3b82f6');
@@ -21,12 +22,12 @@ export class ServiceFormModalComponent {
   formErrors = signal<any>(null);
 
   selectIcon(icon: string) {
-    const data = this.adminService.editingService();
+    const data = this.adminService.activeService();
     if (data) data.icon = icon;
   }
 
   selectGradient(from: string, to: string) {
-    const data = this.adminService.editingService();
+    const data = this.adminService.activeService();
     if (data) {
       data.color_from = from;
       data.color_to = to;
@@ -39,9 +40,9 @@ export class ServiceFormModalComponent {
   }
 
   handleSave() {
-    const data = this.adminService.editingService();
+    const data = this.adminService.activeService();
     // ถ้าไม่มีข้อมูล หรือเป็นโหมดแก้ไขแต่ไม่มี ID ให้เด้งออก
-    if (!data || (this.adminService.isEditMode() && !data.id)) return;
+    if (!data || (this.isEditMode && !data.id)) return;
 
     // ถ้าเปิด Custom Picker อยู่ ให้แปลงสี Hex เป็น Tailwind arbitrary value
     if (this.isShowCustomPicker()) {
@@ -51,7 +52,7 @@ export class ServiceFormModalComponent {
 
     this.formErrors.set(null);
 
-    const request$ = this.adminService.isEditMode()
+    const request$ = this.isEditMode
       ? this.dataService.updateService(data.id!, data)
       : this.dataService.createService(data);
 

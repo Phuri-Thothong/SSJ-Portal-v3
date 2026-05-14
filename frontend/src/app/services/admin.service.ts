@@ -7,15 +7,12 @@ export class AdminService {
   private dataService = inject(DataService);
   isAdminMode = signal(false);
   isTrashMode = signal(false);
-  isEditMode = signal(false);
-  isModalOpen = signal(false);
-  isDeleteModalOpen = signal(false);
 
-  // ข้อมูลที่กำลังแก้ไข-ตัวก๊อปปี้
-  editingService = signal<Service | null>(null);
-  // เก็บตัวจริงไว้ใช้อ้างอิงตอนบันทึกการแก้ไข
-  originalService: Service | null = null;
-  serviceToDelete = signal<Service | null>(null);
+  // เก็บข้อมูล Service ที่กำลังถูกจัดการ
+  activeService = signal<Service | null>(null);
+  // Modal ที่กำลังเปิดอยู่
+  modalMode = signal<'add' | 'edit' | 'delete' | 'restore' | 'force' | null>(null);
+  
   toastState = signal({
     show: false,
     message: '',
@@ -90,53 +87,39 @@ export class AdminService {
     this.dataService.refreshServices(this.isTrashMode());
   }
 
-  openAddModal() {
-    this.isEditMode.set(false);
-    this.originalService = null;
-    this.editingService.set({
-      title: '',
-      description: '',
-      icon: 'fa-solid fa-star',
-      link_url: '',
-      is_new_tab: false,
-      status: 'online',
-      color_from: '#475569',
-      color_to: '#94a3b8',
-    });
-    this.isModalOpen.set(true);
-  }
-
-  openEditModal(service: any) {
-    this.isEditMode.set(true);
-    this.originalService = service;
-    this.editingService.set({ ...service });
-    this.isModalOpen.set(true);
+  openModal(mode: 'add' | 'edit' | 'delete' | 'restore' | 'force', service: Service | null = null) {
+    this.modalMode.set(mode);
+    if (mode === 'add') {
+      this.activeService.set({
+        title: '',
+        description: '',
+        icon: 'fa-solid fa-star',
+        link_url: '',
+        is_new_tab: false,
+        status: 'online',
+        color_from: '#475569',
+        color_to: '#94a3b8',
+      } as Service);
+    } else {
+      this.activeService.set(service);
+    }
   }
 
   closeModal() {
-    this.isModalOpen.set(false);
-  }
-
-  openDeleteConfirm(service: Service) {
-    this.serviceToDelete.set(service);
-    this.isDeleteModalOpen.set(true);
-  }
-
-  closeDeleteModal() {
-    this.isDeleteModalOpen.set(false);
-    this.serviceToDelete.set(null);
+    this.modalMode.set(null);
+    this.activeService.set(null);
   }
 
   confirmSoftDelete() {
-    const service = this.serviceToDelete();
+    const service = this.activeService();
     if (!service || !service.id) return;
-    console.log('เริ่มย้ายลงถังขยะ (Soft Delete):', service.title);
+    console.log('เริ่มย้ายลงถังขยะ: ', service.title);
     this.dataService.deleteService(service.id).subscribe({
       next: (res) => {
         if (res.success) {
           this.showToast(res.message || 'ย้ายข้อมูลไปยังถังขยะเรียบร้อยแล้ว');
-          this.closeDeleteModal();
-          this.dataService.refreshServices();
+          this.closeModal();
+          this.dataService.refreshServices(false);
         }
       },
       error: (err) => {
@@ -144,6 +127,27 @@ export class AdminService {
         if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
         this.showToast(errorMsg, 'danger');
         console.error('Delete error:', err);
+      },
+    });
+  }
+
+  confirmRestore() {
+    const service = this.activeService();
+    if (!service || !service.id) return;
+    console.log('เริ่มกู้คืนข้อมูล: ', service.title);
+    this.dataService.restoreService(service.id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.showToast(res.message || 'กู้คืนข้อมูลเรียบร้อยแล้ว');
+          this.closeModal();
+          this.dataService.refreshServices(false);
+        }
+      },
+      error: (err) => {
+        let errorMsg = 'ไม่สามารถกู้คืนข้อมูลได้ในขณะนี้';
+        if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
+        this.showToast(errorMsg, 'danger');
+        console.error('Restore error:', err);
       },
     });
   }

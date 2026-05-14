@@ -27,16 +27,17 @@ export class ServiceCardComponent {
 
   handleEdit(event: Event) {
     event.stopPropagation();
-    this.adminService.openEditModal(this.service);
+    this.adminService.openModal('edit', this.service);
   }
 
   handleDelete(event: Event) {
     event.stopPropagation();
-    this.adminService.openDeleteConfirm(this.service);
+    this.adminService.openModal('delete', this.service);
   }
 
   handleRestore(event: Event) {
-
+    event.stopPropagation();
+    this.adminService.openModal('restore', this.service);
   }
 
   handleForceDelete(event: Event) {

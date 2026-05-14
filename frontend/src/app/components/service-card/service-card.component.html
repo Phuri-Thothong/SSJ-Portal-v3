@@ -2,7 +2,7 @@
   <div class="absolute -top-3 -right-3 flex gap-2 z-1 animate-in fade-in zoom-in duration-300">
     @if (isInTrash) {
       <button
-        (click)="handleEdit($event)"
+        (click)="handleRestore($event)"
         class="w-10 h-10 bg-teal-500 hover:bg-teal-600 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
         title="กู้คืนบริการ"
       >
@@ -10,7 +10,7 @@
       </button>
 
       <button
-        (click)="handleDelete($event)"
+        (click)="handleForceDelete($event)"
         class="w-10 h-10 bg-rose-600 hover:bg-rose-700 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"
         title="ลบบริการถาวร"
       >

@@ -35,10 +35,10 @@
   <app-footer />
   <app-admin-tool />
 </div>
-@if (adminService.isModalOpen()) {
+@if (adminService.activeService() && (adminService.modalMode() === 'add' || adminService.modalMode() === 'edit')) {
   <app-service-form-modal />
 }
-@if (adminService.isDeleteModalOpen()) {
+@if (adminService.activeService() && adminService.modalMode() === 'delete') {
   <app-delete-confirm-modal />
 }
 @if (adminService.toastState(); as toast) {
