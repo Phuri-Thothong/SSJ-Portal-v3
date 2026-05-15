@@ -8,19 +8,19 @@
 
       <div class="flex space-x-1">
         <button (click)="fontSizeService.setSize('small')"
-                class="px-2 sm:px-3 py-1 rounded-lg text-sm transition-all"
+                class="px-2 sm:px-3 py-1 rounded-lg text-sm transition-all cursor-pointer"
                 [class]="fontSizeService.currentSize() === 'small' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
           ก
         </button>
 
         <button (click)="fontSizeService.setSize('medium')"
-                class="px-2 sm:px-3 py-1 rounded-lg text-base transition-all"
+                class="px-2 sm:px-3 py-1 rounded-lg text-base transition-all cursor-pointer"
                 [class]="fontSizeService.currentSize() === 'medium' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
           ก
         </button>
 
         <button (click)="fontSizeService.setSize('large')"
-                class="px-2 sm:px-3 py-1 rounded-lg text-lg transition-all"
+                class="px-2 sm:px-3 py-1 rounded-lg text-lg transition-all cursor-pointer"
                 [class]="fontSizeService.currentSize() === 'large' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
           ก
         </button>
