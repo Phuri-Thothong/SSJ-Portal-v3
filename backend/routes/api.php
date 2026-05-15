@@ -4,9 +4,9 @@ use App\Http\Controllers\Api\ServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
 // === Soft Delete ===
 //แสดงข้อมูลที่อยู่ในถังขยะทุกตัว
