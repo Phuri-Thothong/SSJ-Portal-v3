@@ -15,6 +15,7 @@ import { RestoreConfirmModalComponent } from '../restore-confirm-modal/restore-c
 import { DataService } from '../../services/data.service';
 import { AdminService } from '../../services/admin.service';
 import { SearchService } from '../../services/search.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-service-portal',
@@ -42,6 +43,7 @@ export class ServicePortalComponent implements OnInit {
   public dataService = inject(DataService);
   public adminService = inject(AdminService);
   public searchService = inject(SearchService);
+  public authService = inject(AuthService);
 
   ngOnInit() {
     this.dataService.refreshServices();

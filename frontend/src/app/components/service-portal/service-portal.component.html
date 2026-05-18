@@ -39,7 +39,9 @@
     }
   </div>
   <app-footer />
-  <app-admin-tool />
+  @if (authService.isAdmin()) {
+    <app-admin-tool />
+  }
 </div>
 @if (adminService.activeService() && (adminService.modalMode() === 'add' || adminService.modalMode() === 'edit')) {
   <app-service-form-modal />
