@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Route;
 // === Public Routes ===
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login');
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+    ->name('forgot-password');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->name('reset-password');
 // === Protected Routes ===
 Route::middleware('auth:sanctum')->group(function () {
     // --- Auth Management ---
