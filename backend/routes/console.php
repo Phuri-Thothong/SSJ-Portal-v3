@@ -14,3 +14,5 @@ Schedule::call(function(){
         ->where('deleted_at', '<', now()->subDays(30))
         ->forceDelete();
 })->daily();
+
+Schedule::command('auth:clear-resets')->hourly();
