@@ -34,13 +34,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->user()->currentAccessToken()->delete();
         return response()->json([
             'success' => true,
             'message' => 'ออกจากระบบบเรียบร้อยแล้ว'
-        ]);
+        ], 200);
     }
 
     public function me(Request $request)

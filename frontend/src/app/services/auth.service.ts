@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthResponse, User } from '../models/user.model';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, finalize, Observable, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -32,7 +32,7 @@ export class AuthService {
 
   logout() {
     return this.http.post(`${this.apiURL}/logout`, {}).pipe(
-      tap(() => {
+      finalize(() => {
         localStorage.removeItem('ssj_token');
         sessionStorage.removeItem('ssj_token');
         this.currentUser.set(null);
