@@ -30,6 +30,10 @@ export class AuthService {
       );
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiURL}/forgot-password`, { email });
+  }
+
   logout() {
     return this.http.post(`${this.apiURL}/logout`, {}).pipe(
       finalize(() => {
