@@ -29,12 +29,21 @@
 
     <div class="flex items-center space-x-3 border-l pl-8 border-slate-200">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-slate-800 leading-none">ชื่อผู้ใช้งาน</p>
-        <p class="text-sm text-blue-600 font-medium uppercase tracking-wider mt-1">กลุ่มงาน</p>
+        <p class="text-sm font-bold text-slate-800 leading-none">
+          {{ authService.currentUser()?.name || 'กำลังโหลด...' }}
+        </p>
+        <p class="text-sm text-blue-600 font-medium uppercase tracking-wider mt-1">
+          {{ authService.currentUser()?.workgroup || 'กลุ่มงาน' }}
+        </p>
       </div>
       <div class="h-10 w-10 bg-linear-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white shadow-md ring-2 ring-white cursor-pointer hover:scale-110 transition-transform">
         <i class="text-base fa-solid fa-user-tie"></i>
       </div>
+      <button (click)="onLogout()"
+        class="h-10 w-10 rounded-full bg-slate-100 hover:bg-rose-600 text-slate-500 hover:text-rose-50 border border-slate-200 hover:border-rose-200 shadow-xs flex items-center justify-center transition-all cursor-pointer active:scale-95"
+              title="ออกจากระบบ">
+        <i class="fa-solid fa-right-from-bracket text-sm"></i>
+      </button>
     </div>
 
   </div>
