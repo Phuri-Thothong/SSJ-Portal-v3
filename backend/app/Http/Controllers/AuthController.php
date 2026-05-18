@@ -16,17 +16,20 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $token = $user->createToken('ssj_portal_token')->plainTextToken;
             return response()->json([
                 'success' => true,
+                'token' => $token,
                 'message' => 'เข้าสู่ระบบสำเร็จ',
-                'user' => Auth::user(),
+                'user' => $user,
             ], 200);
         }
         return response()->json([
             'success' => false,
             'message' => 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'
-        ], 400);
+        ], 401);
     }
 
     public function logout(Request $request)
@@ -40,10 +43,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function me()
+    public function me(Request $request)
     {
         return response()->json([
-            'user' => Auth::user()
-        ]);
+            'success' => true,
+            'user' => $request->user(),
+        ], 200);
     }
 }

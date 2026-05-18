@@ -19,6 +19,7 @@ export class LoginComponent {
   credentials = {
     username: '',
     password: '',
+    remember: false,
   };
 
   isLoading = signal(false);
