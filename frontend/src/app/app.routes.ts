@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ServicePortalComponent } from './components/service-portal/service-portal.component';
 import { authGuard } from './core/guards/auth.guard';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
@@ -19,6 +20,10 @@ export const routes: Routes = [
     {
         path: 'forgot-password',
         component: ForgotPasswordComponent,
+    },
+    {
+        path: 'reset-password',
+        component: ResetPasswordComponent,
     },
     { path: '', redirectTo: 'login', pathMatch: 'full'},
     { path: '**', redirectTo: 'login'},

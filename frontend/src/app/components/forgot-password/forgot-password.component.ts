@@ -41,8 +41,8 @@ export class ForgotPasswordComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        const errorMessage = err.error?.message || 'ไม่สามารถเชื่อมต่อระบบได้';
-        this.adminService.showToast(errorMessage, 'danger');
+        const errorMsg = err.error?.message || 'ไม่สามารถเชื่อมต่อระบบได้';
+        this.adminService.showToast(errorMsg, 'danger');
       },
       complete: () => this.isLoading.set(false)
     });
