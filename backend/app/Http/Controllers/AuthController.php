@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -57,6 +58,7 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email|exists:users,email']);
         $token = Str::random(60);
+
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $request->email],
             [
@@ -64,10 +66,29 @@ class AuthController extends Controller
                 'created_at' => Carbon::now(),
             ]
         );
-        Log::info("ลิงก์รีเซ็ตรหัสผ่าน SSJ Portal: http://localhost:4200/reset-password?token={$token}&email={$request->email}");
+
+        $link = "http://localhost:4200/reset-password?token={$token}&email={$request->email}";
+        
+        $botToken = env('TELEGRAM_BOT_TOKEN');
+        $chatId = env('TELEGRAM_CHAT_ID');
+
+        try {
+            Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                'chat_id' => $chatId,
+                'text' => "🔔 <b>[คำขอกู้รหัสผ่าน SSJ Portal]</b>\n\n" .
+                          "📧 อีเมลเจ้าหน้าที่: {$request->email}\n" .
+                          "⏰ เวลาที่ยื่นคำขอ: " . Carbon::now()->format('Y-m-d H:i:s') . "\n\n" .
+                          "🔗 แอดมินสามารถคลิกลิงก์นี้ หรือคัดลอกส่งให้เจ้าหน้าที่ได้โดยตรง:\n" .
+                          "<a href=\"{$link}\">{$link}</a>",
+                'parse_mode' => 'HTML',
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Telegram Bot Error: " . $e->getMessage());
+        }
+        
         return response()->json([
             'success' => true,
-            'message' => 'ระบบได้ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลของคุณแล้ว (โปรดเช็คใน laravel.log)',
+            'message' => 'ระบบได้ส่งสัญญาณแจ้งเตือนการกู้รหัสผ่านไปยังผู้ดูแลระบบเรียบร้อยแล้ว',
         ]);
     }
 
@@ -78,6 +99,7 @@ class AuthController extends Controller
             'email' => 'required|email|exists:users,email',
             'password' => 'required|string|min:6',
         ]);
+        
         $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
 
         if (!$record || !Hash::check($request->token, $record->token)) {
@@ -92,7 +114,9 @@ class AuthController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
         $user->password = Hash::make($request->password);
         $user->save();
+
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        
         return response()->json(['success' => true, 'message' => 'เปลี่ยนรหัสผ่านใหม่สำเร็จแล้ว']);
     }
 }
