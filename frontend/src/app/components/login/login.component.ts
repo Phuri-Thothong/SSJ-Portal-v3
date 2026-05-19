@@ -24,6 +24,7 @@ export class LoginComponent {
   };
 
   isLoading = signal(false);
+  showPassword = signal(false);
 
   onLogin(event: Event) {
     event.preventDefault();
