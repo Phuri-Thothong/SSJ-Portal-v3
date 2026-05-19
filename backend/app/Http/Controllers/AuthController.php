@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -56,7 +57,13 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ], [
+            'email.required' => 'กรุณากรอกอีเมลเจ้าหน้าที่',
+            'email.email' => 'รูปแบบอีเมลไม่ถูกต้อง',
+            'email.exists' => 'ไม่พบอีเมลนี้ในระบบสำนักงาน',
+        ]);
         $token = Str::random(60);
 
         DB::table('password_reset_tokens')->updateOrInsert(
@@ -68,7 +75,7 @@ class AuthController extends Controller
         );
 
         $link = "http://localhost:4200/reset-password?token={$token}&email={$request->email}";
-        
+
         $botToken = env('TELEGRAM_BOT_TOKEN');
         $chatId = env('TELEGRAM_CHAT_ID');
 
@@ -76,16 +83,16 @@ class AuthController extends Controller
             Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
                 'chat_id' => $chatId,
                 'text' => "🔔 <b>[คำขอกู้รหัสผ่าน SSJ Portal]</b>\n\n" .
-                          "📧 อีเมลเจ้าหน้าที่: {$request->email}\n" .
-                          "⏰ เวลาที่ยื่นคำขอ: " . Carbon::now()->format('Y-m-d H:i:s') . "\n\n" .
-                          "🔗 แอดมินสามารถคลิกลิงก์นี้ หรือคัดลอกส่งให้เจ้าหน้าที่ได้โดยตรง:\n" .
-                          "<a href=\"{$link}\">{$link}</a>",
+                    "📧 อีเมลเจ้าหน้าที่: {$request->email}\n" .
+                    "⏰ เวลาที่ยื่นคำขอ: " . Carbon::now()->format('Y-m-d H:i:s') . "\n\n" .
+                    "🔗 แอดมินสามารถคลิกลิงก์นี้ หรือคัดลอกส่งให้เจ้าหน้าที่ได้โดยตรง:\n" .
+                    "<a href=\"{$link}\">{$link}</a>",
                 'parse_mode' => 'HTML',
             ]);
         } catch (\Exception $e) {
             Log::error("Telegram Bot Error: " . $e->getMessage());
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'ระบบได้ส่งสัญญาณแจ้งเตือนการกู้รหัสผ่านไปยังผู้ดูแลระบบเรียบร้อยแล้ว',
@@ -97,9 +104,30 @@ class AuthController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email|exists:users,email',
-            'password' => 'required|string|min:6',
+            'password' => [
+                'required',
+                'string',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+                function ($attribute, $value, $fail) use ($request) {
+                    $user = \App\Models\User::where('email', $request->email)->first();
+                    if ($user && Hash::check($value, $user->password)) {
+                        $fail('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิมที่ใช้งานอยู่');
+                    }
+                },
+            ],
+        ], [
+            'password.required' => 'กรุณากรอกรหัสผ่านใหม่',
+            'password.min' => 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษร',
+            'password.letters' => 'รหัสผ่านต้องประกอบด้วยตัวอักษรภาษาอังกฤษ',
+            'password.mixed_case' => 'รหัสผ่านต้องมีทั้งตัวพิมพ์เล็ก (a-z) และตัวพิมพ์ใหญ่ (A-Z) รวมกัน',
+            'password.numbers' => 'รหัสผ่านต้องมีตัวเลขประกอบอยู่ด้วยอย่างน้อย 1 ตัว',
+            'password.symbols' => 'รหัสผ่านต้องมีอักขระพิเศษประกอบอยู่ด้วยอย่างน้อย 1 ตัว (เช่น @, #, $, %)',
         ]);
-        
+
         $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
 
         if (!$record || !Hash::check($request->token, $record->token)) {
@@ -110,13 +138,13 @@ class AuthController extends Controller
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
             return response()->json(['success' => false, 'message' => 'ลิงก์นี้หมดอายุการใช้งานแล้ว'], 400);
         }
-        
+
         $user = \App\Models\User::where('email', $request->email)->first();
         $user->password = Hash::make($request->password);
         $user->save();
 
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-        
+
         return response()->json(['success' => true, 'message' => 'เปลี่ยนรหัสผ่านใหม่สำเร็จแล้ว']);
     }
 }

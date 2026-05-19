@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import { PasswordValidationService } from '../../services/password-validation.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -17,15 +18,53 @@ export class ResetPasswordComponent implements OnInit {
   public adminService = inject(AdminService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private passwordValidator = inject(PasswordValidationService)
 
   formData = {
     email: '',
     token: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   };
 
   isLoading = signal(false);
+  isSubmitted = signal(false);
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
+
+  get passwordValue(): string {
+    return this.formData.password || '';
+  }
+
+  get hasMinLength(): boolean {
+    return this.passwordValidator.hasMinLength(this.passwordValue);
+  }
+
+  get hasUpperCase(): boolean {
+    return this.passwordValidator.hasUpperCase(this.passwordValue);
+  }
+
+  get hasLowerCase(): boolean {
+    return this.passwordValidator.hasLowerCase(this.passwordValue);
+  }
+
+  get hasNumber(): boolean {
+    return this.passwordValidator.hasNumber(this.passwordValue);
+  }
+
+  get hasSpecialChar(): boolean {
+    return this.passwordValidator.hasSpecialChar(this.passwordValue);
+  }
+
+  get isPasswordValid(): boolean {
+    return this.passwordValidator.isPasswordValid(this.passwordValue);
+  }
+
+  getRuleState(isValid: boolean): string {
+    if (isValid) return 'passed';
+    if (this.isSubmitted() && !isValid) return 'error';
+    return 'default';
+  }
 
   ngOnInit(): void {
     this.formData.email = this.route.snapshot.queryParams['email'] || '';
@@ -40,9 +79,16 @@ export class ResetPasswordComponent implements OnInit {
   onResetPassword(event: Event) {
     event.preventDefault();
 
+    this.isSubmitted.set(true);
+
     if (!this.formData.password || !this.formData.confirmPassword) {
       this.adminService.showToast('กรุณากรอกรหัสผ่านใหม่ให้ครบถ้วน', 'danger');
       return;
+    }
+
+    if (!this.isPasswordValid) {
+      this.adminService.showToast('กรุณาตั้งรหัสผ่านให้ตรงตามเงื่อนไข', 'danger');
+      return; 
     }
 
     if (this.formData.password !== this.formData.confirmPassword) {
@@ -72,7 +118,7 @@ export class ResetPasswordComponent implements OnInit {
         const errorMsg = err.error?.message || 'การรีเซ็ตรหัสผ่านล้มเหลว';
         this.adminService.showToast(errorMsg, 'danger');
       },
-      complete: () => this.isLoading.set(false)
+      complete: () => this.isLoading.set(false),
     });
   }
 }
