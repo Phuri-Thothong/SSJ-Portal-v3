@@ -124,6 +124,7 @@ export class ResetPasswordComponent implements OnInit {
       email: this.formData.email,
       token: this.formData.token,
       password: this.formData.password,
+      password_confirmation: this.formData.confirmPassword,
     };
 
     this.authService.resetPassword(payload).subscribe({

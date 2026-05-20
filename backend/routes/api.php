@@ -2,25 +2,32 @@
 
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // === Public Routes ===
 Route::post('/login', [AuthController::class, 'login'])
-    ->name('login');
+    ->name('api.login');
+Route::post('/activate-account', [AuthController::class, 'activateAccount'])
+    ->name('api.activate-account');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
-    ->name('forgot-password');
+    ->name('api.forgot-password');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])
-    ->name('reset-password');
+    ->name('api.reset-password');
 Route::post('/password/check-token', [AuthController::class, 'checkToken'])
-    ->name('check-token');
+    ->name('api.check-token');
 // === Protected Routes ===
 Route::middleware('auth:sanctum')->group(function () {
     // --- Auth Management ---
     Route::get('/me', [AuthController::class, 'me'])
-        ->name('me');
+        ->name('api.me');
     Route::post('/logout', [AuthController::class, 'logout'])
-        ->name('logout');
+        ->name('api.logout');
+    Route::post('/2fa/setup', [TwoFactorController::class, 'setup2FA'])
+        ->name('api.2fa.setup');
+    Route::post('/2fa/verify', [TwoFactorController::class, 'verify2FA'])
+        ->name('api.2fa.verify');
 
     Route::prefix('services')->group(function () {
         // --- [ทุกคนดูได้] ทั้งแอดมินและเจ้าหน้าที่ทั่วไป ---

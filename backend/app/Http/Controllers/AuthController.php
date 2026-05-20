@@ -121,6 +121,7 @@ class AuthController extends Controller
             'password' => [
                 'required',
                 'string',
+                'confirmed',
                 Password::min(8)
                     ->letters()
                     ->mixedCase()
@@ -177,5 +178,41 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'โทเค็นถูกต้องและพร้อมใช้งาน'
         ], 200);
+    }
+
+    public function activateAccount(Request $request)
+    {
+        $request->validate([
+            'national_id' =>  'required|digits:13',
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|digits:10',
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+            ],
+        ], [
+            'national_id.required' => 'กรุณากรอกเลขประจำตัวประชาชน',
+            'national_id_digits' => 'เลขประจำตัวประชาชนต้องเป็นตัวเลข 13 หลัก',
+            'username.required' => 'กรุณาตั้งชื่อผู้ใช้งาน',
+            'username.unique' => 'ชื่อผู้ใช้งานนี้ถูกใช้ไปแล้ว กรุณาตั้งชื่อใหม่',
+            'email.required' => 'กรุณากรอกอีเมลสำหรับติดต่อ',
+            'email.email' => 'รูปแบบอีเมลไม่ถูกต้อง',
+            'email.unique' => 'อีเมลนี้ถูกใช้ลงทะเบียนในระบบแล้ว',
+            'phone.digits' => 'เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลักเท่านั้น',
+            'password.required' => 'กรุณากรอกรหัสผ่านใหม่',
+            'password.confirmed' => 'รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน',
+            'password.min' => 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร',
+            'password.letters' => 'รหัสผ่านต้องประกอบด้วยตัวอักษรภาษาอังกฤษ',
+            'password.mixed_case' => 'รหัสผ่านต้องมีทั้งตัวพิมพ์เล็ก (a-z) และตัวพิมพ์ใหญ่ (A-Z) รวมกัน',
+            'password.numbers' => 'รหัสผ่านต้องมีตัวเลขประกอบอยู่ด้วยอย่างน้อย 1 ตัว',
+            'password.symbols' => 'รหัสผ่านต้องมีอักขระพิเศษประกอบอยู่ด้วยอย่างน้อย 1 ตัว (เช่น @, #, $, %)',
+        ]);
     }
 }
