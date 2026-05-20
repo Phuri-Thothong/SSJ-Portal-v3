@@ -14,10 +14,17 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('username')->unique();
-            $table->string('password');
+            $table->string('national_id', 13)->unique();
             $table->string('workgroup')->nullable();
             $table->string('role')->default('user');
+            $table->string('username')->unique()->nullable();
+            $table->string('password')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('phone')->nullable();
+            $table->boolean('is_activated')->default(false);
+            $table->timestamp('activated_at')->nullable();
+            $table->text('google2fa_secret')->nullable();
+            $table->boolean('google2fa_enabled')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

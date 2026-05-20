@@ -21,10 +21,17 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'national_id',
         'username',
         'password',
+        'email',
+        'phone',
         'workgroup',
         'role',
+        'is_activated',
+        'activated_at',
+        'google2fa_secret',
+        'google2fa_enabled',
     ];
 
     /**
@@ -35,6 +42,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google2fa_secret',
     ];
 
     /**
@@ -47,6 +55,10 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_activated' => 'boolean',
+            'activated_at' => 'datetime',
+            'google2fa_secret' => 'encrypted',
+            'google2fa_enabled' => 'boolean',
         ];
     }
 }
