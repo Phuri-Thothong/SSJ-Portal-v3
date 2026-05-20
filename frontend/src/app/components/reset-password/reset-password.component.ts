@@ -9,7 +9,7 @@ import { PasswordValidationService } from '../../services/password-validation.se
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink], 
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css',
 })
@@ -18,7 +18,7 @@ export class ResetPasswordComponent implements OnInit {
   public adminService = inject(AdminService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private passwordValidator = inject(PasswordValidationService)
+  private passwordValidator = inject(PasswordValidationService);
 
   formData = {
     email: '',
@@ -31,6 +31,8 @@ export class ResetPasswordComponent implements OnInit {
   isSubmitted = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
+  isCheckingToken = signal(true);
+  isTokenValid = signal(true);
 
   get passwordValue(): string {
     return this.formData.password || '';
@@ -71,14 +73,34 @@ export class ResetPasswordComponent implements OnInit {
     this.formData.token = this.route.snapshot.queryParams['token'] || '';
 
     if (!this.formData.token || !this.formData.email) {
-      this.adminService.showToast('ลิงก์กู้คืนรหัสผ่านไม่ถูกต้องหรือไม่สมบูรณ์', 'danger');
-      this.router.navigate(['/login']);
+      this.isTokenValid.set(false);
+      this.isCheckingToken.set(false);
+      return;
     }
+
+    const checkPayload = {
+      token: this.formData.token,
+      email: this.formData.email
+    };
+
+    this.authService.checkResetToken(checkPayload).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.isTokenValid.set(true);
+        }
+        this.isCheckingToken.set(false);
+      },
+      error: (err) => {
+        this.isTokenValid.set(false);
+        this.isCheckingToken.set(false);
+        const errorMsg = err.error?.message || 'ลิงก์กู้คืนรหัสผ่านหมดอายุหรือไม่ถูกต้อง';
+        this.adminService.showToast(errorMsg, 'danger');
+      }
+    });
   }
 
   onResetPassword(event: Event) {
     event.preventDefault();
-
     this.isSubmitted.set(true);
 
     if (!this.formData.password || !this.formData.confirmPassword) {

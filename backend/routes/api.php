@@ -12,6 +12,8 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->name('forgot-password');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])
     ->name('reset-password');
+Route::post('/password/check-token', [AuthController::class, 'checkToken'])
+    ->name('check-token');
 // === Protected Routes ===
 Route::middleware('auth:sanctum')->group(function () {
     // --- Auth Management ---

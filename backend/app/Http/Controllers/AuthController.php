@@ -104,6 +104,20 @@ class AuthController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email|exists:users,email',
+        ]);
+
+        $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
+
+        if (!$record || !Hash::check($request->token, $record->token)) {
+            return response()->json(['success' => false, 'message' => 'โทเค็นไม่ถูกต้องหรือหมดอายุ'], 400);
+        }
+
+        if (Carbon::parse($record->created_at)->addHours(1)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return response()->json(['success' => false, 'message' => 'ลิงก์นี้หมดอายุการใช้งานแล้ว'], 400);
+        }
+
+        $request->validate([
             'password' => [
                 'required',
                 'string',
@@ -128,16 +142,6 @@ class AuthController extends Controller
             'password.symbols' => 'รหัสผ่านต้องมีอักขระพิเศษประกอบอยู่ด้วยอย่างน้อย 1 ตัว (เช่น @, #, $, %)',
         ]);
 
-        $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
-
-        if (!$record || !Hash::check($request->token, $record->token)) {
-            return response()->json(['success' => false, 'message' => 'โทเค็นไม่ถูกต้องหรือหมดอายุ'], 400);
-        }
-
-        if (Carbon::parse($record->created_at)->addHours(1)->isPast()) {
-            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-            return response()->json(['success' => false, 'message' => 'ลิงก์นี้หมดอายุการใช้งานแล้ว'], 400);
-        }
 
         $user = \App\Models\User::where('email', $request->email)->first();
         $user->password = Hash::make($request->password);
@@ -146,5 +150,32 @@ class AuthController extends Controller
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
         return response()->json(['success' => true, 'message' => 'เปลี่ยนรหัสผ่านใหม่สำเร็จแล้ว']);
+    }
+
+    public function checkToken(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'email' => 'required|email'
+        ]);
+        $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
+        if (!$record || !Hash::check($request->token, $record->token)) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'ลิงก์กู้คืนรหัสผ่านไม่ถูกต้อง หรือถูกใช้งานไปแล้ว'
+            ], 400);
+        }
+        if (Carbon::parse($record->created_at)->addHours(1)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            
+            return response()->json([
+                'success' => false, 
+                'message' => 'ลิงก์กู้คืนรหัสผ่านหมดอายุความปลอดภัยแล้ว'
+            ], 400);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'โทเค็นถูกต้องและพร้อมใช้งาน'
+        ], 200);
     }
 }

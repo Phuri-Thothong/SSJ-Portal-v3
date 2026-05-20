@@ -61,4 +61,8 @@ export class AuthService {
       }),
     );
   }
+
+  checkResetToken(payload: { token: string; email: string }) {
+    return this.http.post<any>(`${this.apiURL}/password/check-token`, payload);
+  }
 }
