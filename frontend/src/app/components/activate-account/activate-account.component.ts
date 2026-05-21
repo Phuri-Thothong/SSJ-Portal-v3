@@ -139,7 +139,7 @@ export class ActivateAccountComponent implements OnInit {
     this.authService.activateAccount(this.activateForm.value).subscribe({
       next: (response) => {
         this.isLoading.set(false);
-        this.successMessage = response.message;
+        this.successMessage.set(response?.message || 'เปิดใช้งานบัญชีบุคลากรเสร็จสิ้นสมบูรณ์!');
         this.activateForm.reset();
       },
       error: (err) => {
@@ -149,7 +149,7 @@ export class ActivateAccountComponent implements OnInit {
             const errorMessages = Object.values(validationErrors).flat();
             this.errorMessage.set(errorMessages.join(' และ '));
           } else {
-            this.errorMessage.set(err.error.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่');
+            this.errorMessage.set(err.error?.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่');
           }
       }
     })

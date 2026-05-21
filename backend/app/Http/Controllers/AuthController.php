@@ -258,5 +258,34 @@ class AuthController extends Controller
             'password.numbers' => 'รหัสผ่านต้องมีตัวเลขประกอบอยู่ด้วยอย่างน้อย 1 ตัว',
             'password.symbols' => 'รหัสผ่านต้องมีอักขระพิเศษประกอบอยู่ด้วยอย่างน้อย 1 ตัว (เช่น @, #, $, %)',
         ]);
+
+        $user = User::where('national_id', $request->national_id)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลบุคลากรรายนี้ในระบบ',
+            ], 404);
+        }
+
+        if ($user->is_activated) {
+            return response()->json([
+                'success' => false,
+                'message' => 'บัญชีนี้เคยถูกเปิดใช้งานในระบบไปเรียบร้อยแล้ว',
+            ], 400);
+        }
+
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->password = bcrypt($request->password);
+        $user->is_activated = 1;
+        $user->activated_at = now();
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'เปิดใช้งานบัญชีบุคลากรในระบบ สสจ. เรียบร้อยแล้ว',
+        ], 200);
     }
 }
