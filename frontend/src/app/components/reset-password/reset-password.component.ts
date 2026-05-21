@@ -5,11 +5,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { PasswordValidationService } from '../../services/password-validation.service';
+import { PasswordChecklistComponent } from '../shared/password-checklist/password-checklist.component';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink], 
+  imports: [CommonModule, FormsModule, RouterLink, PasswordChecklistComponent], 
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css',
 })
@@ -34,38 +35,8 @@ export class ResetPasswordComponent implements OnInit {
   isCheckingToken = signal(true);
   isTokenValid = signal(true);
 
-  get passwordValue(): string {
-    return this.formData.password || '';
-  }
-
-  get hasMinLength(): boolean {
-    return this.passwordValidator.hasMinLength(this.passwordValue);
-  }
-
-  get hasUpperCase(): boolean {
-    return this.passwordValidator.hasUpperCase(this.passwordValue);
-  }
-
-  get hasLowerCase(): boolean {
-    return this.passwordValidator.hasLowerCase(this.passwordValue);
-  }
-
-  get hasNumber(): boolean {
-    return this.passwordValidator.hasNumber(this.passwordValue);
-  }
-
-  get hasSpecialChar(): boolean {
-    return this.passwordValidator.hasSpecialChar(this.passwordValue);
-  }
-
   get isPasswordValid(): boolean {
-    return this.passwordValidator.isPasswordValid(this.passwordValue);
-  }
-
-  getRuleState(isValid: boolean): string {
-    if (isValid) return 'passed';
-    if (this.isSubmitted() && !isValid) return 'error';
-    return 'default';
+    return this.passwordValidator.isPasswordValid(this.formData.password || '');
   }
 
   ngOnInit(): void {
