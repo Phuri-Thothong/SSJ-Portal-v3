@@ -1,55 +1,55 @@
-<div class="modal-header border-0 pb-0 flex justify-between items-center p-6">
+<div class="modal-header border-0 pb-6 flex justify-between items-center p-6">
   <h4 class="modal-title font-bold text-xl text-slate-800">เปิดใช้งานบัญชีบุคลากร</h4>
-  <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer" (click)="onClose()">
+  <button
+    type="button"
+    class="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+    (click)="onClose()"
+  >
     <i class="fa-solid fa-xmark text-xl"></i>
   </button>
 </div>
 
-<div class="modal-body px-6 pb-2">
-  <div class="stepper-wrapper mb-6">
-    <div class="stepper-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
-      <div class="step-counter">1</div>
-      <div class="step-name">ยืนยันตัวตน</div>
-    </div>
-    <div class="stepper-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
-      <div class="step-counter">2</div>
-      <div class="step-name">ข้อมูลบัญชี</div>
-    </div>
-    <div class="stepper-item" [class.active]="currentStep === 3" [class.completed]="successMessage !== ''">
-      <div class="step-counter">3</div>
-      <div class="step-name">รหัสผ่าน</div>
-    </div>
-  </div>
-
-  @if (errorMessage) {
-    <div class="text-center bg-rose-50 text-rose-600 p-3 rounded-xl mb-4 text-sm font-medium border border-rose-100">
-      {{ errorMessage }}
-    </div>
-  }
+@if (!successMessage) {
   
-  @if (successMessage) {
-    <div class="text-center bg-teal-50 text-teal-600 p-3 rounded-xl mb-4 text-sm font-bold border border-teal-100">
-      {{ successMessage }}
-    </div>
-  }
+  <form [formGroup]="activateForm" (ngSubmit)="handleFormSubmit()" class="text-left">
+    
+    <div class="modal-body px-6 pb-2">
+      <div class="stepper-wrapper mb-6">
+        <div class="stepper-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+          <div class="step-counter">1</div>
+          <div class="step-name">ยืนยันตัวตน</div>
+        </div>
+        <div class="stepper-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+          <div class="step-counter">2</div>
+          <div class="step-name">ข้อมูลบัญชี</div>
+        </div>
+        <div class="stepper-item" [class.active]="currentStep === 3" [class.completed]="successMessage !== ''">
+          <div class="step-counter">3</div>
+          <div class="step-name">รหัสผ่าน</div>
+        </div>
+      </div>
 
-  @if (!successMessage) {
-    <form [formGroup]="activateForm" class="text-left space-y-4">
-      
+      @if (errorMessage) {
+        <div class="text-center bg-rose-50 text-rose-600 p-3 rounded-xl mb-4 text-sm font-medium border border-rose-100">
+          {{ errorMessage }}
+        </div>
+      }
+
       @if (currentStep === 1) {
         <div class="step-content animate-in fade-in slide-in-from-bottom-2 duration-300">
           <h5 class="mb-4 text-slate-500 font-medium text-sm">กรอกเลขบัตรประชาชนเพื่อตรวจสอบสิทธิ์</h5>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">เลขประจำตัวประชาชน 13 หลัก</label>
-            <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700" 
-                   formControlName="national_id" 
-                   placeholder="xxxxxxxxxxxxx" maxlength="13"
-                   [class.border-rose-300]="activateForm.get('national_id')?.invalid && activateForm.get('national_id')?.touched">
-            
+            <input
+              type="text"
+              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700"
+              formControlName="national_id"
+              placeholder="xxxxxxxxxxxxx"
+              maxlength="13"
+              [class.border-rose-300]="activateForm.get('national_id')?.invalid && activateForm.get('national_id')?.touched"
+            />
             @if (activateForm.get('national_id')?.invalid && activateForm.get('national_id')?.touched) {
-              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">
-                กรุณากรอกเลขบัตรประชาชนให้ครบ 13 หลัก (เฉพาะตัวเลข)
-              </div>
+              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">กรุณากรอกเลขบัตรประชาชนให้ครบ 13 หลัก (เฉพาะตัวเลข)</div>
             }
           </div>
         </div>
@@ -60,29 +60,36 @@
           <h5 class="text-slate-500 font-medium text-sm mb-2">ตั้งค่าข้อมูลบัญชีและช่องทางติดต่อ</h5>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">ชื่อผู้ใช้งาน (Username)</label>
-            <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700" 
-                   formControlName="username" placeholder="ตั้งชื่อผู้ใช้งาน (ภาษาอังกฤษ/ตัวเลข)">
-            
+            <input
+              type="text"
+              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700"
+              formControlName="username"
+              placeholder="ตั้งชื่อผู้ใช้งาน (ภาษาอังกฤษ/ตัวเลข)"
+            />
             @if (activateForm.get('username')?.invalid && activateForm.get('username')?.touched) {
-              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">
-                กรุณาตั้งชื่อผู้ใช้งานอย่างน้อย 4 ตัวอักษร
-              </div>
+              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">กรุณาตั้งชื่อผู้ใช้งานอย่างน้อย 4 ตัวอักษร</div>
             }
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">อีเมลติดต่อ (Email)</label>
-            <input type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700" 
-                   formControlName="email" placeholder="example@nst.go.th">
+            <input
+              type="email"
+              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700"
+              formControlName="email"
+              placeholder="example@nst.go.th"
+            />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">เบอร์โทรศัพท์</label>
-            <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700" 
-                   formControlName="phone" placeholder="08xxxxxxxx" maxlength="10">
-            
+            <input
+              type="text"
+              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700"
+              formControlName="phone"
+              placeholder="08xxxxxxxx"
+              maxlength="10"
+            />
             @if (activateForm.get('phone')?.invalid && activateForm.get('phone')?.touched) {
-              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">
-                กรุณากรอกเบอร์โทรศัพท์ 10 หลัก (เฉพาะตัวเลข)
-              </div>
+              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">กรุณากรอกเบอร์โทรศัพท์ 10 หลัก (เฉพาะตัวเลข)</div>
             }
           </div>
         </div>
@@ -93,65 +100,110 @@
           <h5 class="text-slate-500 font-medium text-sm mb-2">กำหนดรหัสผ่านสำหรับการเข้าสู่ระบบ</h5>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">รหัสผ่านใหม่ (Password)</label>
-            <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700" 
-                   formControlName="password" placeholder="รหัสผ่านอย่างน้อย 8 ตัวอักษร">
+            <div class="relative">
+              <i class="fa-solid fa-key absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="รหัสผ่านใหม่อย่างน้อย 8 ตัวอักษร"
+                class="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700 font-medium"
+              />
+              <button
+                type="button"
+                class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors cursor-pointer focus:outline-none"
+                (mousedown)="showPassword.set(true)"
+                (mouseup)="showPassword.set(false)"
+                (mouseleave)="showPassword.set(false)"
+                (touchstart)="showPassword.set(true)"
+                (touchend)="showPassword.set(false)"
+              >
+                <i class="fa-solid" [ngClass]="showPassword() ? 'fa-eye' : 'fa-eye-slash'"></i>
+              </button>
+            </div>
+            <app-password-checklist
+              [passwordValue]="activateForm.get('password')?.value || ''"
+              [isSubmitted]="activateForm.get('password')?.touched || false"
+            ></app-password-checklist>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">ยืนยันรหัสผ่านใหม่ (Confirm)</label>
-            <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700" 
-                   formControlName="password_confirmation" placeholder="กรอกรหัสผ่านอีกครั้ง">
-            
+            <div class="relative">
+              <i class="fa-solid fa-check-double absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                formControlName="password_confirmation"
+                placeholder="กรอกรหัสผ่านอีกครั้ง"
+                class="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none transition-all placeholder:text-slate-300 text-slate-700 font-medium"
+              />
+              <button
+                type="button"
+                class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors cursor-pointer focus:outline-none"
+                (mousedown)="showConfirmPassword.set(true)"
+                (mouseup)="showConfirmPassword.set(false)"
+                (mouseleave)="showConfirmPassword.set(false)"
+                (touchstart)="showConfirmPassword.set(true)"
+                (touchend)="showConfirmPassword.set(false)"
+              >
+                <i class="fa-solid" [ngClass]="showConfirmPassword() ? 'fa-eye' : 'fa-eye-slash'"></i>
+              </button>
+            </div>
             @if (activateForm.hasError('mismatch') && activateForm.get('password_confirmation')?.touched) {
-              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">
-                รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน!
-              </div>
+              <div class="text-rose-500 text-xs mt-1.5 ml-1 font-medium">รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน!</div>
             }
           </div>
-            <app-password-checklist
-                [passwordValue]="activateForm.get('password')?.value || ''" 
-                [isSubmitted]="activateForm.get('password')?.touched || false">
-            </app-password-checklist>
         </div>
       }
-    </form>
-  }
-</div>
+    </div>
 
-@if (!successMessage) {
-  <div class="modal-footer border-0 pb-6 px-6 pt-4 flex justify-between items-center w-full">
-    
-    <button type="button" class="px-5 py-2.5 rounded-xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-0" 
-            [disabled]="currentStep === 1"
-            [class.invisible]="currentStep === 1" 
-            (click)="prevStep()">
-      ย้อนกลับ
-    </button>
-
-    @if (currentStep < totalSteps) {
-      <button type="button" class="px-8 py-2.5 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/30" 
-              (click)="nextStep()">
-        ถัดไป
+    <div class="modal-footer border-0 pb-6 px-6 pt-4 flex justify-between items-center w-full">
+      <button
+        type="button"
+        class="px-5 py-2.5 rounded-xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors disabled:opacity-0"
+        [disabled]="currentStep === 1"
+        [class.invisible]="currentStep === 1"
+        (click)="prevStep()"
+      >
+        ย้อนกลับ
       </button>
-    }
 
-    @if (currentStep === totalSteps) {
-      <button type="button" class="px-8 py-2.5 bg-teal-500 text-white font-bold rounded-xl hover:bg-teal-600 transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-50 flex items-center" 
-              (click)="onSubmit()" 
-              [disabled]="isLoading || activateForm.invalid">
-        @if (isLoading) {
-          <i class="fa-solid fa-circle-notch animate-spin mr-2"></i> กำลังประมวลผล...
-        } @else {
-          เปิดใช้งานบัญชี
-        }
-      </button>
-    }
-  </div>
-}
+      @if (currentStep < totalSteps) {
+        <button
+          type="submit"
+          class="px-8 py-2.5 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/30"
+        >
+          ถัดไป
+        </button>
+      }
+
+      @if (currentStep === totalSteps) {
+        <button
+          type="submit"
+          class="px-8 py-2.5 bg-teal-500 text-white font-bold rounded-xl hover:bg-teal-600 transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-50 flex items-center"
+          [disabled]="isLoading || activateForm.invalid"
+        >
+          @if (isLoading) {
+            <i class="fa-solid fa-circle-notch animate-spin mr-2"></i> กำลังประมวลผล...
+          } @else {
+            เปิดใช้งานบัญชี
+          }
+        </button>
+      }
+    </div>
+  </form> }
 
 @if (successMessage) {
+  <div class="modal-body px-6 pb-2">
+    <div class="text-center bg-teal-50 text-teal-600 p-4 rounded-xl mb-4 text-base font-bold border border-teal-100">
+      <i class="fa-solid fa-circle-check text-2xl mb-2 block"></i>
+      {{ successMessage }}
+    </div>
+  </div>
   <div class="modal-footer border-0 pb-8 pt-4 flex justify-center w-full">
-    <button type="button" class="px-8 py-3 bg-teal-500 text-white font-bold rounded-full hover:bg-teal-600 transition-colors shadow-lg shadow-teal-500/30"
-            (click)="onClose()">
+    <button
+      type="button"
+      class="px-8 py-3 bg-teal-500 text-white font-bold rounded-full hover:bg-teal-600 transition-colors shadow-lg shadow-teal-500/30"
+      (click)="onClose()"
+    >
       กลับไปหน้าเข้าสู่ระบบ
     </button>
   </div>

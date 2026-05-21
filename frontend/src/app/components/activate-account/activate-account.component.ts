@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,9 @@ export class ActivateAccountComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   ngOnInit(): void {
     this.initForm();
@@ -103,6 +106,14 @@ export class ActivateAccountComponent implements OnInit {
         this.errorMessage = err.error.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่';
       }
     })
+  }
+
+  handleFormSubmit(): void {
+    if (this.currentStep < this.totalSteps) {
+      this.nextStep();
+    } else {
+      this.onSubmit();
+    }
   }
 
   onClose() {
