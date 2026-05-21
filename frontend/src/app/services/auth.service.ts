@@ -30,8 +30,17 @@ export class AuthService {
       );
   }
 
-  verifyNationalId(national_id: string): Observable<any> {
-    return this.http.post(`${this.apiURL}/verify-national-id`, { national_id: national_id });
+  verifyStep1(national_id: string): Observable<any> {
+    return this.http.post(`${this.apiURL}/verify-step1`, {
+       national_id: national_id, 
+    });
+  }
+
+  verifyStep2(username: string, email: string): Observable<any> {
+    return this.http.post(`${this.apiURL}/verify-step2`, { 
+      username: username,
+      email: email,
+    });
   }
 
   activateAccount(data: any): Observable<any> {

@@ -76,7 +76,7 @@ export class ActivateAccountComponent implements OnInit {
       const national_id = this.activateForm.get('national_id')?.value;
       this.isLoading.set(true);
 
-      this.authService.verifyNationalId(national_id).subscribe({
+      this.authService.verifyStep1(national_id).subscribe({
         next: (res) => {
           this.isLoading.set(false);
           if (res && res.success) {
@@ -86,6 +86,29 @@ export class ActivateAccountComponent implements OnInit {
         error: (err) => {
           this.isLoading.set(false);
         this.errorMessage.set(err.error?.message || 'ไม่พบข้อมูลบุคลากรรายนี้ในระบบ หรือบัญชีนี้ถูกเปิดใช้งานไปแล้ว');
+        }
+      });
+    } else if (this.currentStep() === 2) {
+      const username = this.activateForm.get('username')?.value;
+      const email = this.activateForm.get('email')?.value;
+      this.isLoading.set(true);
+
+      this.authService.verifyStep2(username, email).subscribe({
+        next: (res) => {
+          this.isLoading.set(false);
+          if (res && res.success) {
+            this.currentStep.set(3);
+          }
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          const validationErrors = err.error?.errors;
+          if (validationErrors) {
+            const errorMessages = Object.values(validationErrors).flat();
+            this.errorMessage.set(errorMessages.join(' และ '));
+          } else {
+            this.errorMessage.set(err.error?.errorMessage || 'ชื่อผู้ใช้งานหรืออีเมลนี้มีผู้ใช้ในระบบแล้ว');
+          }
         }
       });
     } else {
@@ -121,7 +144,13 @@ export class ActivateAccountComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่');
+          const validationErrors = err.error?.errors;
+          if (validationErrors) {
+            const errorMessages = Object.values(validationErrors).flat();
+            this.errorMessage.set(errorMessages.join(' และ '));
+          } else {
+            this.errorMessage.set(err.error.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่');
+          }
       }
     })
   }

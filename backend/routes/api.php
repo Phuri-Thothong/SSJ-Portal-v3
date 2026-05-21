@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Route;
 // === Public Routes ===
 Route::post('/login', [AuthController::class, 'login'])
     ->name('api.login');
-Route::post('/verify-national-id', [AuthController::class, 'verifyNationalId'])
-    ->name('api.verify-national-id');
+Route::post('/verify-step1', [AuthController::class, 'verifyStep1'])
+    ->name('api.verify-step1');
+    Route::post('/verify-step2', [AuthController::class, 'verifyStep2'])
+    ->name('api.verify-step2');
 Route::post('/activate-account', [AuthController::class, 'activateAccount'])
     ->name('api.activate-account');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
