@@ -1,11 +1,13 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { PasswordChecklistComponent } from "../shared/password-checklist/password-checklist.component";
 
 @Component({
   selector: 'app-activate-account',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, PasswordChecklistComponent],
   templateUrl: './activate-account.component.html',
   styleUrl: './activate-account.component.css',
 })

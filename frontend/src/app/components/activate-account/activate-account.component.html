@@ -107,11 +107,10 @@
               </div>
             }
           </div>
-          <ul class="text-slate-400 text-xs list-disc pl-5 space-y-1">
-            <li>ความยาวอย่างน้อย 8 ตัวอักษร</li>
-            <li>มีทั้งตัวพิมพ์เล็กและตัวพิมพ์ใหญ่ผสมกัน</li>
-            <li>มีตัวเลขและอักขระพิเศษอย่างน้อย 1 ตัว</li>
-          </ul>
+            <app-password-checklist
+                [passwordValue]="activateForm.get('password')?.value || ''" 
+                [isSubmitted]="activateForm.get('password')?.touched || false">
+            </app-password-checklist>
         </div>
       }
     </form>
