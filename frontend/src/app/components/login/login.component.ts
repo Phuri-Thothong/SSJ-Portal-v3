@@ -4,11 +4,12 @@ import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ActivateAccountComponent } from "../activate-account/activate-account.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink, ActivateAccountComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -25,6 +26,7 @@ export class LoginComponent {
 
   isLoading = signal(false);
   showPassword = signal(false);
+  showActivateModal = false;
 
   onLogin(event: Event) {
     event.preventDefault();

@@ -30,6 +30,10 @@ export class AuthService {
       );
   }
 
+  activateAccount(data: any): Observable<any> {
+    return this.http.post(`${this.apiURL}/activate-account`, data);
+  }
+
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.apiURL}/forgot-password`, { email });
   }
