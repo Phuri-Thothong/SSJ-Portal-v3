@@ -180,10 +180,32 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function verifyNationalId(Request $request)
+    {
+        $request->validate([
+            'national_id' => 'required|digits:13|exists:users,national_id',
+        ], [
+            'national_id.exists' => 'ไม่พบข้อมูลเลขประจำตัวประชาชนนี้ในระบบบุคลากร',
+        ]);
+
+        $user = User::where('national_id', $request->national_id)->first();
+        if ($user->is_activated) {
+            return response()->json([
+                'success' => false,
+                'message' => 'บัญชีนี้เคยถูกเปิดใช้งานในระบบไปเรียบร้อยแล้ว',
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'ตรวจสอบสิทธิ์ผ่านเรียบร้อย'
+        ], 200);
+    }
+
     public function activateAccount(Request $request)
     {
         $request->validate([
-            'national_id' =>  'required|digits:13',
+            'national_id' =>  'required|digits:13|exists:users,national_id',
             'username' => 'required|string|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|digits:10',
@@ -200,6 +222,7 @@ class AuthController extends Controller
         ], [
             'national_id.required' => 'กรุณากรอกเลขประจำตัวประชาชน',
             'national_id_digits' => 'เลขประจำตัวประชาชนต้องเป็นตัวเลข 13 หลัก',
+            'national_id.exists'   => 'เลขประจำตัวประชาชนไม่ถูกต้องหรือไม่พบในระบบ',
             'username.required' => 'กรุณาตั้งชื่อผู้ใช้งาน',
             'username.unique' => 'ชื่อผู้ใช้งานนี้ถูกใช้ไปแล้ว กรุณาตั้งชื่อใหม่',
             'email.required' => 'กรุณากรอกอีเมลสำหรับติดต่อ',

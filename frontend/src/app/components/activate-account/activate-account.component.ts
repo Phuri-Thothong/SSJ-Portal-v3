@@ -18,11 +18,11 @@ export class ActivateAccountComponent implements OnInit {
 
   activateForm! : FormGroup;
 
-  currentStep = 1;
+  currentStep = signal(1);
   totalSteps = 3;
-  isLoading = false;
-  errorMessage = '';
-  successMessage = '';
+  isLoading = signal(false);
+  errorMessage = signal('');
+  successMessage = signal('');
 
   showPassword = signal(false);
   showConfirmPassword = signal(false);
@@ -36,7 +36,7 @@ export class ActivateAccountComponent implements OnInit {
       national_id: ['', [Validators.required, Validators.pattern(/^\d{13}$/)]],
       username: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^0\d{9}$/)]],
+      phone: ['', [Validators.pattern(/^0\d{9}$/)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       password_confirmation: ['', [Validators.required]],
     }, {
@@ -65,51 +65,69 @@ export class ActivateAccountComponent implements OnInit {
   }
 
   nextStep(): void {
-    this.errorMessage = '';
+    this.errorMessage.set('');
 
-    if (this.isStepValid(this.currentStep)) {
-      if (this.currentStep < this.totalSteps) {
-        this.currentStep++;
-      }
+    if (!this.isStepValid(this.currentStep())) {
+      this.errorMessage.set('กรุณากรอกข้อมูลในขั้นตอนนี้ให้ถูกต้องและครบถ้วนก่อนไปขั้นตอนถัดไป');
+      return;
+    }
+
+    if (this.currentStep() === 1) {
+      const national_id = this.activateForm.get('national_id')?.value;
+      this.isLoading.set(true);
+
+      this.authService.verifyNationalId(national_id).subscribe({
+        next: (res) => {
+          this.isLoading.set(false);
+          if (res && res.success) {
+            this.currentStep.set(2);
+          }
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+        this.errorMessage.set(err.error?.message || 'ไม่พบข้อมูลบุคลากรรายนี้ในระบบ หรือบัญชีนี้ถูกเปิดใช้งานไปแล้ว');
+        }
+      });
     } else {
-      this.errorMessage = 'กรุณากรอกข้อมูลในขั้นตอนนี้ให้ถูกต้องและครบถ้วนก่อนไปขั้นตอนถัดไป';
+      if (this.currentStep() < this.totalSteps) {
+        this.currentStep.update(step => step + 1);
+      }
     }
   }
 
   prevStep(): void {
-    this.errorMessage = '';
-    if (this.currentStep > 1) {
-      this.currentStep--;
+    this.errorMessage.set('');
+    if (this.currentStep() > 1) {
+      this.currentStep.update(step => step - 1);
     }
   }
 
   onSubmit(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage.set('');
+    this.successMessage.set('');
 
     if (this.activateForm.invalid) {
-      this.errorMessage = 'กรุณาตรวจสอบข้อมูลและข้อกำหนดรหัสผ่านอีกครั้ง';
+      this.errorMessage.set('กรุณาตรวจสอบข้อมูลและข้อกำหนดรหัสผ่านอีกครั้ง');
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     this.authService.activateAccount(this.activateForm.value).subscribe({
       next: (response) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.successMessage = response.message;
         this.activateForm.reset();
-        this.currentStep = 1;
       },
       error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = err.error.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่';
+        this.isLoading.set(false);
+        this.errorMessage.set(err.error.message || 'เกิดข้อผิดพลาดจากระบบหลังบ้าน กรุณาลองเข้าใหม่');
       }
     })
   }
 
   handleFormSubmit(): void {
-    if (this.currentStep < this.totalSteps) {
+    if (this.currentStep() < this.totalSteps) {
       this.nextStep();
     } else {
       this.onSubmit();

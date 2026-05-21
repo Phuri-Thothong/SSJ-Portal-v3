@@ -30,6 +30,10 @@ export class AuthService {
       );
   }
 
+  verifyNationalId(national_id: string): Observable<any> {
+    return this.http.post(`${this.apiURL}/verify-national-id`, { national_id: national_id });
+  }
+
   activateAccount(data: any): Observable<any> {
     return this.http.post(`${this.apiURL}/activate-account`, data);
   }
