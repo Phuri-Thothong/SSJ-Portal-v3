@@ -8,6 +8,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private apiURL = 'http://localhost:8000/api';
 
+  rememberMeOption: boolean = false;
   currentUser = signal<User | null>(null);
   isAdmin = computed(() => this.currentUser()?.role === 'admin');
 
@@ -90,7 +91,11 @@ export class AuthService {
     }).pipe(
       tap((res) => {
         if (res.success && res.token && res.user) {
-          localStorage.setItem('ssj_token', res.token);
+          if (this.rememberMeOption) {
+            localStorage.setItem('ssj_token', res.token);
+          } else {
+            sessionStorage.setItem('ssj_token', res.token);
+          }
           this.currentUser.set(res.user);
         }
       })
@@ -104,7 +109,11 @@ export class AuthService {
     }).pipe(
       tap((res) => {
         if (res.success && res.token && res.user) {
-          localStorage.setItem('ssj_token', res.token);
+          if (this.rememberMeOption) {
+            localStorage.setItem('ssj_token', res.token);
+          } else {
+            sessionStorage.setItem('ssj_token', res.token);
+          }
           this.currentUser.set(res.user);
         }
       })

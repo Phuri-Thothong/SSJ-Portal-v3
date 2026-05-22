@@ -47,6 +47,7 @@ export class LoginComponent {
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
         if (res.success) {
+          this.authService.rememberMeOption = this.credentials.remember;
           this.tempNationalId = res.national_id || '';
           if (res.google2fa_enabled === 1) {
             this.loginStep.set('VERIFY_2FA');

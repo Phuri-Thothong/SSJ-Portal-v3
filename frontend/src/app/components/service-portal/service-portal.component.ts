@@ -46,6 +46,7 @@ export class ServicePortalComponent implements OnInit {
   public authService = inject(AuthService);
 
   ngOnInit() {
+    this.authService.checkMe().subscribe();
     this.dataService.refreshServices();
   }
 
