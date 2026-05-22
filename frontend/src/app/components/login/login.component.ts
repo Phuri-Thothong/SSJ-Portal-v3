@@ -5,6 +5,7 @@ import { AdminService } from '../../services/admin.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ActivateAccountComponent } from "../activate-account/activate-account.component";
+import * as QRCode from 'qrcode';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,12 @@ export class LoginComponent {
 
   isLoading = signal(false);
   showPassword = signal(false);
+  loginStep = signal<'NORMAL' | 'SETUP_2FA' | 'VERIFY_2FA'>('NORMAL');
+  qrCodeImage = signal<string>('');
+  google2faSecret = signal<string>('');
+  isRememberDevice = signal<boolean>(false);
+  otpCode = signal<string>('');
+  tempNationalId = '';
   showActivateModal = false;
 
   onLogin(event: Event) {
@@ -50,5 +57,15 @@ export class LoginComponent {
       },
       complete: () => this.isLoading.set(false)
     });
+  }
+
+  async generateAndShowQRCode(qrCodeUrl: string, secret: string) {
+    try {
+      const base64Image = await QRCode.toDataURL(qrCodeUrl);
+      this.qrCodeImage.set(base64Image);
+      this.google2faSecret.set(secret);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
