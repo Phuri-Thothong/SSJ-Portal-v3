@@ -46,12 +46,20 @@ export class LoginComponent {
 
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
-        const mockQrUrl = res.qr_code_url || 'otpauth://totp/SSJ-Portal?secret=NSTPHOFFICE2026';
-        const mockSecret = res.google2fa_secret || 'NST2026SECRETKEY';
+        if (res.success) {
+          this.tempNationalId = res.national_id || '';
+          if (res.google2fa_enabled === 1) {
+            this.loginStep.set('VERIFY_2FA');
+            this.adminService.showToast('กรุณากรอกรหัส OTP จากแอป Google Authenticator', 'success');
+          } else if (res.google2fa_enabled === 0) {
+            const mockQrUrl = res.qr_code_url || 'otpauth://totp/SSJ-Portal?secret=NSTPHOFFICE2026';
+            const mockSecret = res.google2fa_secret || 'NST2026SECRETKEY';
 
-        this.generateAndShowQRCode(mockQrUrl, mockSecret);
-        this.loginStep.set('SETUP_2FA');
-        this.adminService.showToast('รหัสผ่านถูกต้อง กรุณาตั้งค่าระบบความปลอดภัย 2FA', 'success');
+            this.generateAndShowQRCode(mockQrUrl, mockSecret);
+            this.loginStep.set('SETUP_2FA');
+            this.adminService.showToast('รหัสผ่านถูกต้อง กรุณาตั้งค่าระบบความปลอดภัย 2FA', 'success');
+          }
+        }
       },
       error: (err) => {
         this.isLoading.set(false);

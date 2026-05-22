@@ -11,6 +11,8 @@ export interface AuthResponse {
   message: string;
   token?: string;
   user?: User;
+  national_id?: string;
   qr_code_url?: string;
   google2fa_secret?: string;
+  google2fa_enabled?: number;
 }
