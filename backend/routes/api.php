@@ -21,6 +21,8 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])
     ->name('api.reset-password');
 Route::post('/password/check-token', [AuthController::class, 'checkToken'])
     ->name('api.check-token');
+Route::post('/verify-setup-2fa', [AuthController::class, 'verifySetup2FA'])
+    ->name('api.verify-setup-2fa');
 // === Protected Routes ===
 Route::middleware('auth:sanctum')->group(function () {
     // --- Auth Management ---

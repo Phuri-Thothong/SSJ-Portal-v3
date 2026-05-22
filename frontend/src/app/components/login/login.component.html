@@ -182,7 +182,7 @@
         } 
         
         @case ('SETUP_2FA') {
-          <div class="space-y-4 text-center animate-in zoom-in-95 duration-300">
+          <form (submit)="$event.preventDefault(); onVerifySetup2FA()" class="space-y-4 text-center animate-in zoom-in-95 duration-300">
             <div class="text-center mb-2">
               <h4 class="text-sm font-black text-slate-700 uppercase tracking-widest">เปิดใช้งานระบบความปลอดภัย 2FA</h4>
             </div>
@@ -208,16 +208,23 @@
                 @for (digit of otpInputs(); track $index) {
                   <input 
                     type="text" 
-                    maxlength="1" 
-                    [(ngModel)]="otpInputs()[$index]" 
-                    (keyup)="onOtpKeyUp($event, $index)" 
+                    maxlength="1"
+                    [(ngModel)]="otpInputs()[$index]"
+                    [name]="'otp_' + $index" 
+                    (input)="onOtpKeyUp($event, $index)"
+                    (keydown)="onOtpKeyDown($event, $index)" 
                     class="w-10 h-12 text-center text-xl font-black bg-white/50 border-2 border-white rounded-xl focus:border-teal-400 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all text-slate-700 shadow-sm" 
-                    inputmode="numeric" />
+                    inputmode="numeric"
+                    pattern="[0-9]*" />
                 }
               </div>
             </div>
 
-            <button class="w-full py-4 bg-linear-to-r from-emerald-600 to-teal-400 text-white font-black rounded-full hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer mt-2">
+            <button 
+              type="submit"
+              (click)="onVerifySetup2FA()"
+              class="w-full py-4 bg-linear-to-r from-emerald-600 to-teal-400 text-white font-black rounded-full hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer mt-2"
+            >
               ยืนยันการผูกบัญชีและเข้าใช้งาน
             </button>
             <button 
@@ -228,7 +235,7 @@
               <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
               กลับไปหน้าเข้าสู่ระบบ
             </button>
-          </div>
+          </form>
         }
 
         @case ('VERIFY_2FA') {

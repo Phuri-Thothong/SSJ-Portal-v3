@@ -52,10 +52,9 @@ export class LoginComponent {
             this.loginStep.set('VERIFY_2FA');
             this.adminService.showToast('กรุณากรอกรหัส OTP จากแอป Google Authenticator', 'success');
           } else if (res.google2fa_enabled === 0) {
-            const mockQrUrl = res.qr_code_url || 'otpauth://totp/SSJ-Portal?secret=NSTPHOFFICE2026';
-            const mockSecret = res.google2fa_secret || 'NST2026SECRETKEY';
-
-            this.generateAndShowQRCode(mockQrUrl, mockSecret);
+            const qrUrl = res.qr_code_url || '';
+            const secret = res.google2fa_secret || '';
+            this.generateAndShowQRCode(qrUrl, secret);
             this.loginStep.set('SETUP_2FA');
             this.adminService.showToast('รหัสผ่านถูกต้อง กรุณาตั้งค่าระบบความปลอดภัย 2FA', 'success');
           }
@@ -71,20 +70,58 @@ export class LoginComponent {
   }
 
   onOtpKeyUp(event: any, index: number) {
-    const element = event.target;
-    const value = element.value;
+    const element = event.target as HTMLInputElement;
+    let value = element.value;
+
+    if (/[^0-9]/g.test(value)) {
+      value = value.replace(/[^0-9]/g, ''),
+      element.value = value;
+      this.otpInputs()[index] = value;
+    }
+
+    this.otpCode = this.otpInputs().join('');
 
     if (value && index < 5) {
       const next = element.nextElementSibling as HTMLInputElement;
       if (next) next.focus();
     }
+  }
 
-    if (event.key === 'Backspace' && index > 0 && !value) {
+  onOtpKeyDown(event: KeyboardEvent, index: number) {
+    const element = event.target as HTMLInputElement;
+
+    if (event.key === 'Backspace' && index > 0 && !element.value) {
       const prev = element.previousElementSibling as HTMLInputElement;
       if (prev) prev.focus();
+      setTimeout(() => prev.select(), 0);
     }
+  }
 
+  onVerifySetup2FA(): void{
+    if (this.isLoading()) {
+      return;
+    }
     this.otpCode = this.otpInputs().join('');
+    if (this.otpCode.length != 6) {
+      this.adminService.showToast('กรุณากรอกรหัสความปลอดภัยให้ครบ 6 หลัก', 'danger');
+      return;
+    }
+    this.isLoading.set(true);
+    this.authService.verifySetup2FA(this.tempNationalId, this.otpCode).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.adminService.showToast('เปิดใช้งานระบบ 2FA และเข้าสู่ระบบสำเร็จ', 'success');
+          this.otpInputs.set(['', '', '', '', '', '']);
+          this.otpCode = '';
+          this.router.navigate(['/portal']); 
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const errorMessage = err.error?.message || 'รหัสผ่านชั่วคราวไม่ถูกต้อง';
+        this.adminService.showToast(errorMessage, 'danger');
+      },
+    });
   }
 
   async generateAndShowQRCode(qrCodeUrl: string, secret: string) {

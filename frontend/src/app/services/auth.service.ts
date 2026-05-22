@@ -82,4 +82,18 @@ export class AuthService {
   checkResetToken(payload: { token: string; email: string }) {
     return this.http.post<any>(`${this.apiURL}/password/check-token`, payload);
   }
+
+  verifySetup2FA(nationalId: string, otpCode: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiURL}/verify-setup-2fa`, {
+      national_id: nationalId,
+      otp_code: otpCode,
+    }).pipe(
+      tap((res) => {
+        if (res.success && res.token && res.user) {
+          localStorage.setItem('ssj_token', res.token);
+          this.currentUser.set(res.user);
+        }
+      })
+    );
+  }
 }
