@@ -343,4 +343,38 @@ class AuthController extends Controller
             'message' => 'รหัสความปลอดภัยไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
         ], 400);
     }
+
+    public function verifyDaily2FA(Request $request)
+    {
+        $request->validate([
+            'national_id' => 'required|string',
+            'otp_code' => 'required|string|size:6',
+        ]);
+
+        $user = User::where('national_id', $request->national_id)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลผู้ใช้งานในระบบ'
+            ], 404);
+        }
+
+        $google2fa = app('pragmarx.google2fa');
+        $valid = $google2fa->verifyKey($user->google2fa_secret, $request->otp_code, 1);
+
+        if ($valid) {
+            $token = $user->createToken('ssj_portal_token')->plainTextToken;
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => $user,
+                'message' => 'ยืนยันตัวตนสำเร็จ ยินดีต้อนรับเข้าสู่ระบบ',
+            ], 200);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'รหัส OTP ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง',
+        ], 400);
+    }
 }

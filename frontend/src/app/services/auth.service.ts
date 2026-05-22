@@ -96,4 +96,18 @@ export class AuthService {
       })
     );
   }
+
+  verifyDaily2FA(nationalId: string, otpCode: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiURL}/verify-daily-2fa`, {
+      national_id: nationalId,
+      otp_code: otpCode,
+    }).pipe(
+      tap((res) => {
+        if (res.success && res.token && res.user) {
+          localStorage.setItem('ssj_token', res.token);
+          this.currentUser.set(res.user);
+        }
+      })
+    );
+  }
 }

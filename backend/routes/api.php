@@ -23,6 +23,8 @@ Route::post('/password/check-token', [AuthController::class, 'checkToken'])
     ->name('api.check-token');
 Route::post('/verify-setup-2fa', [AuthController::class, 'verifySetup2FA'])
     ->name('api.verify-setup-2fa');
+    Route::post('/verify-daily-2fa', [AuthController::class, 'verifyDaily2FA'])
+    ->name('api.verify-daily-2fa');
 // === Protected Routes ===
 Route::middleware('auth:sanctum')->group(function () {
     // --- Auth Management ---

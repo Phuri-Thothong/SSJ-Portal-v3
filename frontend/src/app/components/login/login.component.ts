@@ -118,7 +118,34 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        const errorMessage = err.error?.message || 'รหัสผ่านชั่วคราวไม่ถูกต้อง';
+        const errorMessage = err.error?.message || 'รหัส OTP ไม่ถูกต้อง';
+        this.adminService.showToast(errorMessage, 'danger');
+      },
+    });
+  }
+
+  onVerifyDaily2FA(): void{
+    if (this.isLoading()) {
+      return;
+    }
+    this.otpCode = this.otpInputs().join('');
+    if (this.otpCode.length != 6) {
+      this.adminService.showToast('กรุณากรอกรหัสความปลอดภัยให้ครบ 6 หลัก', 'danger');
+      return;
+    }
+    this.isLoading.set(true);
+    this.authService.verifyDaily2FA(this.tempNationalId, this.otpCode).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.adminService.showToast('ยินดีต้อนรับเข้าสู่ระบบพอร์ทัล สสจ. นครศรีฯ', 'success');
+          this.otpInputs.set(['', '', '', '', '', '']);
+          this.otpCode = '';
+          this.router.navigate(['/portal']); 
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const errorMessage = err.error?.message || 'รหัส OTP ไม่ถูกต้อง';
         this.adminService.showToast(errorMessage, 'danger');
       },
     });
