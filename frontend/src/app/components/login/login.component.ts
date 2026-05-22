@@ -31,7 +31,8 @@ export class LoginComponent {
   qrCodeImage = signal<string>('');
   google2faSecret = signal<string>('');
   isRememberDevice = signal<boolean>(false);
-  otpCode = signal<string>('');
+  otpInputs = signal<string[]>(['', '', '', '', '', '']);
+  otpCode = '';
   tempNationalId = '';
   showActivateModal = false;
 
@@ -45,10 +46,12 @@ export class LoginComponent {
 
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
-        if (res.success) {
-          this.adminService.showToast('ยินดีต้อนรับเข้าสู่ระบบ', 'success');
-          this.router.navigate(['/portal']);
-        }
+        const mockQrUrl = res.qr_code_url || 'otpauth://totp/SSJ-Portal?secret=NSTPHOFFICE2026';
+        const mockSecret = res.google2fa_secret || 'NST2026SECRETKEY';
+
+        this.generateAndShowQRCode(mockQrUrl, mockSecret);
+        this.loginStep.set('SETUP_2FA');
+        this.adminService.showToast('รหัสผ่านถูกต้อง กรุณาตั้งค่าระบบความปลอดภัย 2FA', 'success');
       },
       error: (err) => {
         this.isLoading.set(false);
@@ -57,6 +60,23 @@ export class LoginComponent {
       },
       complete: () => this.isLoading.set(false)
     });
+  }
+
+  onOtpKeyUp(event: any, index: number) {
+    const element = event.target;
+    const value = element.value;
+
+    if (value && index < 5) {
+      const next = element.nextElementSibling as HTMLInputElement;
+      if (next) next.focus();
+    }
+
+    if (event.key === 'Backspace' && index > 0 && !value) {
+      const prev = element.previousElementSibling as HTMLInputElement;
+      if (prev) prev.focus();
+    }
+
+    this.otpCode = this.otpInputs().join('');
   }
 
   async generateAndShowQRCode(qrCodeUrl: string, secret: string) {
