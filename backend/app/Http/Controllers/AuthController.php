@@ -288,4 +288,34 @@ class AuthController extends Controller
             'message' => 'เปิดใช้งานบัญชีบุคลากรในระบบ สสจ. เรียบร้อยแล้ว',
         ], 200);
     }
+
+    public function generate2FALink(Request $request)
+    {
+        $request->validate([
+            'national_id' => 'required|exists:users,national_id',
+        ], [
+            'national_id.required' => 'กรุณากรอกเลขประจำตัวประชาชน',
+            'national_id.exists' => 'ไม่พบข้อมูลเลขประจำตัวประชาชนนี้ในระบบบุคลากร',
+        ]);
+
+        $user = User::where('national_id', $request->national_id)->first();
+
+        if (empty($user->google2fa_secret)) {
+            $user->google2fa_secret = app('pragmarx.google2fa')->generateSecretKey();
+            $user->save();
+        }
+
+        $qrCodeUrl = app('pragmarx.google2fa')->getQRCodeUrl(
+            'SSJ NakhonSi Portal',
+            $user->username ?? $user->email ?? 'Staff',
+            $user->google2fa_secret,
+        );
+
+        return response()->json([
+            'success' => true,
+            'google2fa_secret' => $user->google2fa_secret,
+            'qr_code_url' => $qrCodeUrl,
+            'message' => 'สร้างคีย์ลับและลิงก์ QR Code สำเร็จ กรุณานำแอปสแกนยืนยัน',
+        ], 200);
+    }
 }
