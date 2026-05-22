@@ -82,10 +82,4 @@ export class AuthService {
   checkResetToken(payload: { token: string; email: string }) {
     return this.http.post<any>(`${this.apiURL}/password/check-token`, payload);
   }
-
-  generate2FALink(nationalId: string): Observable<any> {
-    return this.http.post(`${this.apiURL}/auth/generate-2fa`, {
-      national_id: nationalId
-    });
-  }
 }

@@ -24,13 +24,32 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             /** @var \App\Models\User $user */
             $user = Auth::user();
-            $token = $user->createToken('ssj_portal_token')->plainTextToken;
+            if ($user->google2fa_enabled == 0) {
+                if (empty($user->google2fa_secret)) {
+                    $user->google2fa_secret = app('pragmarx.google2fa')->generateSecretKey();
+                    $user->save();
+                }
+                $qrCodeUrl = app('pragmarx.google2fa')->getQRCodeUrl(
+                    'SSJ NakhonSi Portal',
+                    $user->username,
+                    $user->google2fa_secret
+                );
+                return response()->json([
+                    'success' => true,
+                    'google2fa_enabled' => 0,
+                    'national_id' => $user->national_id,
+                    'qr_code_url' => $qrCodeUrl,
+                    'google2fa_secret' => $user->google2fa_secret,
+                    'message' => 'กรุณาตั้งค่าระบบความปลอดภัย 2FA ครั้งแรก'
+                ], 200);
+        } else {
             return response()->json([
-                'success' => true,
-                'token' => $token,
-                'message' => 'เข้าสู่ระบบสำเร็จ',
-                'user' => $user,
-            ], 200);
+                    'success' => true,
+                    'google2fa_enabled' => 1,
+                    'national_id' => $user->national_id,
+                    'message' => 'กรุณากรอกรหัสความปลอดภัยจากแอป Google Authenticator'
+                ], 200);
+            }
         }
         return response()->json([
             'success' => false,
@@ -286,36 +305,6 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'เปิดใช้งานบัญชีบุคลากรในระบบ สสจ. เรียบร้อยแล้ว',
-        ], 200);
-    }
-
-    public function generate2FALink(Request $request)
-    {
-        $request->validate([
-            'national_id' => 'required|exists:users,national_id',
-        ], [
-            'national_id.required' => 'กรุณากรอกเลขประจำตัวประชาชน',
-            'national_id.exists' => 'ไม่พบข้อมูลเลขประจำตัวประชาชนนี้ในระบบบุคลากร',
-        ]);
-
-        $user = User::where('national_id', $request->national_id)->first();
-
-        if (empty($user->google2fa_secret)) {
-            $user->google2fa_secret = app('pragmarx.google2fa')->generateSecretKey();
-            $user->save();
-        }
-
-        $qrCodeUrl = app('pragmarx.google2fa')->getQRCodeUrl(
-            'SSJ NakhonSi Portal',
-            $user->username ?? $user->email ?? 'Staff',
-            $user->google2fa_secret,
-        );
-
-        return response()->json([
-            'success' => true,
-            'google2fa_secret' => $user->google2fa_secret,
-            'qr_code_url' => $qrCodeUrl,
-            'message' => 'สร้างคีย์ลับและลิงก์ QR Code สำเร็จ กรุณานำแอปสแกนยืนยัน',
         ], 200);
     }
 }
