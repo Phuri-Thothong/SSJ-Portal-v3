@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\ServiceController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TwoFactorController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TwoFactorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
