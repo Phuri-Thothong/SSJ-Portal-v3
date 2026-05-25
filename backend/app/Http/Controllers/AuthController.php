@@ -42,13 +42,34 @@ class AuthController extends Controller
                     'google2fa_secret' => $user->google2fa_secret,
                     'message' => 'กรุณาตั้งค่าระบบความปลอดภัย 2FA ครั้งแรก'
                 ], 200);
-        } else {
-            return response()->json([
-                    'success' => true,
-                    'google2fa_enabled' => 1,
-                    'national_id' => $user->national_id,
-                    'message' => 'กรุณากรอกรหัสความปลอดภัยจากแอป Google Authenticator'
-                ], 200);
+            } else {
+                $need2FA = true;
+                if ($request->hasCookie('ssj_remember_device')) {
+                    try {
+                        $decryptedUserId = decrypt($request->cookie('ssj_remember_device'));
+                        if ((int)$decryptedUserId === (int)$user->id) {
+                            $need2FA = false;
+                        }
+                    } catch (\Exception $e) {}
+                }
+                if ($need2FA) {
+                    return response()->json([
+                        'success' => true,
+                        'google2fa_enabled' => 1,
+                        'national_id' => $user->national_id,
+                        'message' => 'กรุณากรอกรหัสความปลอดภัยจากแอป Google Authenticator'
+                    ], 200);
+                } else {
+                    $token = $user->createToken('ssj_portal_token')->plainTextToken;
+                    return response()->json([
+                        'success' => true,
+                        'google2fa_enabled' => null,
+                        'national_id' => $user->national_id,
+                        'token' => $token,
+                        'user' => $user,
+                        'message' => 'จำอุปกรณ์สำเร็จ ยินดีต้อนรับเข้าสู่ระบบพอร์ทัล สสจ.',
+                    ], 200);
+                }
             }
         }
         return response()->json([
@@ -349,6 +370,7 @@ class AuthController extends Controller
         $request->validate([
             'national_id' => 'required|string',
             'otp_code' => 'required|string|size:6',
+            'remember_device' => 'boolean',
         ]);
 
         $user = User::where('national_id', $request->national_id)->first();
@@ -365,12 +387,26 @@ class AuthController extends Controller
 
         if ($valid) {
             $token = $user->createToken('ssj_portal_token')->plainTextToken;
-            return response()->json([
+            $response = response()->json([
                 'success' => true,
                 'token' => $token,
                 'user' => $user,
                 'message' => 'ยืนยันตัวตนสำเร็จ ยินดีต้อนรับเข้าสู่ระบบ',
             ], 200);
+
+            if ($request->remember_device) {
+                $minutes = 30 * 24 *60;
+                $response->withCookie(cookie(
+                    'ssj_remember_device',
+                    encrypt($user->id),
+                    $minutes,
+                    '/',
+                    null,
+                    false,
+                    true,
+                ));
+            }
+            return $response;
         }
         return response()->json([
             'success' => false,

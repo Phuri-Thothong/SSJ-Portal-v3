@@ -47,6 +47,11 @@ export class LoginComponent {
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
         if (res.success) {
+          if (res.token) {
+            this.adminService.showToast(res.message, 'success');
+            this.router.navigate(['/portal']);
+            return;
+          }
           this.authService.rememberMeOption = this.credentials.remember;
           this.tempNationalId = res.national_id || '';
           if (res.google2fa_enabled === 1) {
@@ -135,7 +140,7 @@ export class LoginComponent {
       return;
     }
     this.isLoading.set(true);
-    this.authService.verifyDaily2FA(this.tempNationalId, this.otpCode).subscribe({
+    this.authService.verifyDaily2FA(this.tempNationalId, this.otpCode, this.isRememberDevice()).subscribe({
       next: (res) => {
         if (res.success) {
           this.adminService.showToast('ยินดีต้อนรับเข้าสู่ระบบพอร์ทัล สสจ. นครศรีฯ', 'success');

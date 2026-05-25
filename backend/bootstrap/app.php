@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+        $middleware->encryptCookies(except: [
+            'ssj_remember_device',
+        ]);
         $middleware->validateCsrfTokens(except: [
             'api/*',
         ]);
