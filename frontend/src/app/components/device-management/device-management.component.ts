@@ -1,12 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import { Component, inject, LOCALE_ID, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import localeTh from '@angular/common/locales/th';
+
+registerLocaleData(localeTh, 'th')
 
 @Component({
   selector: 'app-device-management',
   standalone: true,
   imports: [CommonModule],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'th' }
+  ],
   templateUrl: './device-management.component.html',
   styleUrl: './device-management.component.css',
 })
@@ -16,6 +22,8 @@ export class DeviceManagementComponent implements OnInit {
 
   public devices = signal<any[]>([]);
   public isLoading = signal(false);
+  public isModalOpen = signal(false);
+  public selectedDeviceId = signal<number | null>(null);
 
   ngOnInit() {
     this.fetchDevices();
@@ -62,19 +70,24 @@ export class DeviceManagementComponent implements OnInit {
   }
 
   onRevoke(id: number): void {
-    if (confirm('คุณต้องการสั่งยกเลิกการจดจำอุปกรณ์ที่เลือกใช่หรือไม่?\n(หากยกเลิกแล้ว อุปกรณ์ดังกล่าวจะต้องยืนยันรหัส OTP ใหม่ในการเข้าสู่ระบบครั้งถัดไป)')) {
-      this.authService.revokeDevice(id).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.adminService.showToast(res.message, 'success');
-            this.fetchDevices();
-          }
-        },
-        error: (err) => {
-          const errorMessage = err.error?.message || 'เกิดข้อผิดพลาดในการยกเลิกสิทธิ์อุปกรณ์';
-          this.adminService.showToast(errorMessage, 'danger');
+    this.selectedDeviceId.set(id);
+    this.isModalOpen.set(true);
+  }
+
+  confirmRevoke(): void {
+    const id = this.selectedDeviceId();
+    if (id === null) return;
+    this.authService.revokeDevice(id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.adminService.showToast(res.message, 'success');
+          this.fetchDevices();
         }
-      });
-    }
+      },
+      error: (err) => {
+        const errorMessage = err.error?.message || 'เกิดข้อผิดพลาดในการยกเลิกสิทธิ์อุปกรณ์';
+        this.adminService.showToast(errorMessage, 'danger');
+      }
+    });
   }
 }
