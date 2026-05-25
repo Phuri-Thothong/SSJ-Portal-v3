@@ -122,4 +122,16 @@ export class AuthService {
       })
     );
   }
+
+  getDevices(): Observable<any> {
+    return this.http.get<any>(`${this.apiURL}/devices`, {
+      withCredentials: true,
+    });
+  }
+
+  revokeDevice(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiURL}/devices/${id}`, {
+      withCredentials: true,
+    });
+  }
 }

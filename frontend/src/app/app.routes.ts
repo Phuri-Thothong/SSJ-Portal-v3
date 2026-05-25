@@ -5,6 +5,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { noAuthGuard } from './core/guards/no-auth.guard';
+import { DeviceManagementComponent } from './components/device-management/device-management.component';
 
 export const routes: Routes = [
     {
@@ -13,11 +14,17 @@ export const routes: Routes = [
         canActivate: [noAuthGuard],
         title: 'เข้าสู่ระบบ | NST SSJ Portal',
     },
-    {
+   {
         path: 'portal',
         component: ServicePortalComponent,
         canActivate: [authGuard],
         title: 'หน้าหลักระบบบริการ | NST SSJ Portal'
+    },
+    {
+        path: 'portal/devices',
+        component: DeviceManagementComponent,
+        canActivate: [authGuard],
+        title: 'จัดการอุปกรณ์ที่จดจำไว้ | NST SSJ Portal'
     },
     {
         path: 'forgot-password',

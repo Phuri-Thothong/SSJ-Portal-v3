@@ -39,7 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/devices', [AuthController::class, 'getRememberedDevices'])
         ->name('api.devices.index');
     Route::delete('/devices/{id}', [AuthController::class, 'revokeDevice'])
-        ->name('api.devices.delete');
+        ->name('api.devices.delete')
+        ->whereNumber('id');
 
     Route::prefix('services')->group(function () {
         // --- [ทุกคนดูได้] ทั้งแอดมินและเจ้าหน้าที่ทั่วไป ---

@@ -1,0 +1,37 @@
+<div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100 max-w-4xl mx-auto my-6">
+  <div class="flex items-center space-x-3 mb-2">
+    <span class="text-2xl">🔒</span>
+    <h2 class="text-xl font-bold text-gray-800">จัดการอุปกรณ์ที่ได้รับอนุมัติ</h2>
+  </div>
+  <p class="text-gray-500 text-sm mb-6">รายการคอมพิวเตอร์และเบราว์เซอร์ที่เปิดใช้งานระบบ "จดจำอุปกรณ์ 30 วัน" เพื่อข้ามการเรียกถามรหัสความปลอดภัย (OTP) รายวัน</p>
+
+  <div *ngIf="isLoading()" class="text-center py-8 text-gray-400 font-medium">
+    🔄 กำลังตรวจสอบรายชื่ออุปกรณ์ความปลอดภัย...
+  </div>
+
+  <div *ngIf="!isLoading() && devices().length === 0" class="text-center py-10 border-2 border-dashed border-gray-100 rounded-xl text-gray-400">
+    📦 ไม่พบอุปกรณ์อื่นที่เปิดระบบจดจำสิทธิ์ในขณะนี้
+  </div>
+
+  <div class="space-y-4" *ngIf="!isLoading() && devices().length > 0">
+    <div *ngFor="let device of devices()" class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-all rounded-xl border border-gray-200 gap-4">
+      <div class="flex items-start space-x-4">
+        <div class="p-3 bg-blue-50 text-blue-600 rounded-xl font-bold text-lg shadow-sm">
+          💻
+        </div>
+        <div class="space-y-1">
+          <h4 class="text-sm font-bold text-slate-700">
+            {{ parseDeviceName(device.device_name) }}
+          </h4>
+          <p class="text-xs text-slate-500 font-medium">
+            📍 IP Address: <span class="text-slate-700 font-semibold">{{ device.ip_address }}</span> | 
+            📅 วันที่ลงทะเบียน: <span class="text-slate-700 font-semibold">{{ device.created_at | date:'dd MMM yyyy เวลา HH:mm' }}</span>
+          </p>
+          <span class="inline-block text-[11px] bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full font-bold shadow-sm border border-emerald-100">
+            ⏳ กำหนดสิทธิ์เข้าถึงโดยไม่ต้องใช้ OTP ถึงวันที่: {{ device.expires_at | date:'dd MMM yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

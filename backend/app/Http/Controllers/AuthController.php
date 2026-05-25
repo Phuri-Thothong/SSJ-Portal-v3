@@ -440,7 +440,7 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function revokeDevice(Request $request, $id)
+    public function revokeDevice(Request $request, int $id)
     {
         $device = \App\Models\UserRememberDevice::where('id', $id)
             ->where('user_id', $request->user()->id)
