@@ -60,4 +60,21 @@ export class DeviceManagementComponent implements OnInit {
 
     return `${browser} บนระบบปฏิบัติการ ${os}`;
   }
+
+  onRevoke(id: number): void {
+    if (confirm('คุณต้องการสั่งยกเลิกการจดจำอุปกรณ์ที่เลือกใช่หรือไม่?\n(หากยกเลิกแล้ว อุปกรณ์ดังกล่าวจะต้องยืนยันรหัส OTP ใหม่ในการเข้าสู่ระบบครั้งถัดไป)')) {
+      this.authService.revokeDevice(id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.adminService.showToast(res.message, 'success');
+            this.fetchDevices();
+          }
+        },
+        error: (err) => {
+          const errorMessage = err.error?.message || 'เกิดข้อผิดพลาดในการยกเลิกสิทธิ์อุปกรณ์';
+          this.adminService.showToast(errorMessage, 'danger');
+        }
+      });
+    }
+  }
 }
