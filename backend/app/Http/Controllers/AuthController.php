@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserRememberDevice;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -44,10 +45,14 @@ class AuthController extends Controller
                 ], 200);
             } else {
                 $need2FA = true;
-                if ($request->hasCookie('ssj_remember_device')) {
+                $deviceToken = $request->cookie('ssj_remember_device');
+                if ($deviceToken) {
                     try {
-                        $decryptedUserId = decrypt($request->cookie('ssj_remember_device'));
-                        if ((int)$decryptedUserId === (int)$user->id) {
+                        $trustedDevice = \App\Models\UserRememberDevice::where('device_token', $deviceToken)
+                            ->where('user_id', $user->id)
+                            ->where('expires_at', '>', now())
+                            ->first();
+                        if ($trustedDevice) {
                             $need2FA = false;
                         }
                     } catch (\Exception $e) {}
@@ -67,7 +72,7 @@ class AuthController extends Controller
                         'national_id' => $user->national_id,
                         'token' => $token,
                         'user' => $user,
-                        'message' => 'จำอุปกรณ์สำเร็จ ยินดีต้อนรับเข้าสู่ระบบพอร์ทัล สสจ.',
+                        'message' => 'จำอุปกรณ์สำเร็จ ยินดีต้อนรับเข้าสู่ระบบ',
                     ], 200);
                 }
             }
@@ -391,15 +396,24 @@ class AuthController extends Controller
                 'success' => true,
                 'token' => $token,
                 'user' => $user,
-                'message' => 'ยืนยันตัวตนสำเร็จ ยินดีต้อนรับเข้าสู่ระบบ',
+                'message' => 'ยืนยันรหัสความปลอดภัยสำเร็จ ยินดีต้อนรับเข้าสู่ระบบ',
             ], 200);
 
             if ($request->remember_device) {
-                $minutes = 30 * 24 *60;
+                $deviceToken = Str::random(60);
+                $days = 30;
+
+                UserRememberDevice::create([
+                    'user_id' => $user->id,
+                    'device_token' => $deviceToken,
+                    'device_name' => $request->header('User-Agent') ? substr($request->header('User-Agent'), 0, 255) : 'Unknown Device',
+                    'ip_address' => $request->ip(),
+                    'expires_at' => now()->addDays($days),
+                ]);
                 $response->withCookie(cookie(
                     'ssj_remember_device',
-                    encrypt($user->id),
-                    $minutes,
+                    $deviceToken,
+                    $days * 24 * 60,
                     '/',
                     null,
                     false,
@@ -412,5 +426,35 @@ class AuthController extends Controller
             'success' => false,
             'message' => 'รหัส OTP ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง',
         ], 400);
+    }
+
+    public function getRememberedDevices(Request $request)
+    {
+        $devices = \App\Models\UserRememberDevice::where('user_id', $request->user()->id)
+            ->select('id', 'device_name', 'ip_address', 'expires_at', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json([
+            'success' => true,
+            'devices' => $devices,
+        ], 200);
+    }
+
+    public function revokeDevice(Request $request, $id)
+    {
+        $device = \App\Models\UserRememberDevice::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+        if (!$device) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลอุปกรณ์นี้ในระบบ หรือคุณไม่มีสิทธิ์จัดการอุปกรณ์นี้',
+            ], 404);
+        }
+        $device->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'ยกเลิกการจดจำอุปกรณ์ที่เลือกเรียบร้อยแล้ว',
+        ], 200);
     }
 }

@@ -36,6 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('api.2fa.setup');
     Route::post('/2fa/verify', [TwoFactorController::class, 'verify2FA'])
         ->name('api.2fa.verify');
+    Route::get('/devices', [AuthController::class, 'getRememberedDevices'])
+        ->name('api.devices.index');
+    Route::delete('/devices/{id}', [AuthController::class, 'revokeDevice'])
+        ->name('api.devices.delete');
 
     Route::prefix('services')->group(function () {
         // --- [ทุกคนดูได้] ทั้งแอดมินและเจ้าหน้าที่ทั่วไป ---
