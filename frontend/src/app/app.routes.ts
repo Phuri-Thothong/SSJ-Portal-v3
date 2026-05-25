@@ -14,17 +14,21 @@ export const routes: Routes = [
         canActivate: [noAuthGuard],
         title: 'เข้าสู่ระบบ | NST SSJ Portal',
     },
-   {
-        path: 'portal',
-        component: ServicePortalComponent,
-        canActivate: [authGuard],
-        title: 'หน้าหลักระบบบริการ | NST SSJ Portal'
-    },
     {
-        path: 'portal/devices',
-        component: DeviceManagementComponent,
+        path: 'portal',
         canActivate: [authGuard],
-        title: 'จัดการอุปกรณ์ที่จดจำไว้ | NST SSJ Portal'
+        children: [
+            {
+                path: '',
+                component: ServicePortalComponent,
+                title: 'หน้าหลักระบบบริการ | NST SSJ Portal',
+            },
+            {
+                path: 'devices',
+                component: DeviceManagementComponent,
+                title: 'จัดการอุปกรณ์ที่จดจำไว้ | NST SSJ Portal',
+            },
+        ]
     },
     {
         path: 'forgot-password',
