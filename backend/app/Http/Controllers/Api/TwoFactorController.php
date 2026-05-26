@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\UserRememberDevice;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
 
@@ -58,5 +60,38 @@ class TwoFactorController extends Controller
             'success' => false,
             'message' => 'รหัส OTP ไม่ถูกต้อง หรือหมดเวลา กรุณาลองใหม่',
         ], 400);
+    }
+
+    public function reset2FA(Request $request, int $userId)
+    {
+        if (!$request->user() || $request->user()->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'ปฏิเสธการเข้าถึง คุณไม่มีสิทธิ์ดำเนินการในส่วนนี้',
+            ], 403);
+        }
+        $targetUser = User::find($userId);
+        if (!$targetUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลผู้ใช้งานที่ระบุในระบบ',
+            ], 404);
+        }
+        try {
+            $targetUser->google2fa_secret = null;
+            $targetUser->google2fa_enabled = 0;
+            $targetUser->save();
+            UserRememberDevice::where('user_id', $targetUser->id)->delete();
+            return response()->json([
+                'success' => true,
+                'message' => "ทำการรีเซ็ตระบบความปลอดภัย 2FA ของคุณ {$targetUser->username} เรียบร้อยแล้ว",
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาดในการรีเซ็ตข้อมูลความปลอดภัย',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

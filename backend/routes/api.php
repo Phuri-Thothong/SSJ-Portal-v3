@@ -6,42 +6,66 @@ use App\Http\Controllers\Api\TwoFactorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// =====================
 // === Public Routes ===
+// =====================
+//ตรวจสอบชื่อผู้ใช้และรหัสผ่านด่านแรก
 Route::post('/login', [AuthController::class, 'login'])
     ->name('api.login');
+//การยืนยันสำหรับเปิดใช้งานบัญชีบุคลากร มี 3 ขั้นตอน
+//(1) ตรวจสอบยืนยันข้อมูลขั้นแรก-ตรวจสอบหมายเลขประจำตัวประชาชน
 Route::post('/verify-step1', [AuthController::class, 'verifyStep1'])
     ->name('api.verify-step1');
-    Route::post('/verify-step2', [AuthController::class, 'verifyStep2'])
+//(2) ตรวจสอบยืนยันข้อมูลขั้นที่สอง-ตรวจสอบชื่อผู้ใช้งาน, อีเมลติดต่อ และเบอร์โทรศัพท์
+Route::post('/verify-step2', [AuthController::class, 'verifyStep2'])
     ->name('api.verify-step2');
+//(3) ตรวจสอบยืนยันข้อมูลขั้นที่สาม-ตรวจสอบข้อมูลที่กรอกทั้งหมดอีกครั้ง และรหัสผ่านที่ตั้ง
 Route::post('/activate-account', [AuthController::class, 'activateAccount'])
     ->name('api.activate-account');
+//ส่งลิงก์คำขอรีเซ็ตรหัสผ่านเมื่อลืมรหัสผ่าน
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->name('api.forgot-password');
+//บันทึกเปลี่ยนรหัสผ่านใหม่ในระบบ
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])
     ->name('api.reset-password');
+//ตรวจสอบความถูกต้องของ Token ที่ใช้ในลิงก์เปลี่ยนรหัสผ่าน
 Route::post('/password/check-token', [AuthController::class, 'checkToken'])
     ->name('api.check-token');
+//ตรวจสอบรหัส OTP เพื่อผูกบัญชี 2FA ครั้งแรกสุด
 Route::post('/verify-setup-2fa', [AuthController::class, 'verifySetup2FA'])
     ->name('api.verify-setup-2fa');
-    Route::post('/verify-daily-2fa', [AuthController::class, 'verifyDaily2FA'])
+//ตรวจสอบรหัส OTP รายวันเพื่อล็อกอินเข้าสู่ระบบปกติ
+Route::post('/verify-daily-2fa', [AuthController::class, 'verifyDaily2FA'])
     ->name('api.verify-daily-2fa');
+
+// ========================
 // === Protected Routes ===
+// ========================
 Route::middleware('auth:sanctum')->group(function () {
-    // --- Auth Management ---
+    // --- Auth Management-จัดการเซสชันส่วนบุคคล ---
+    //ดึงข้อมูลโปรไฟล์ของเจ้าหน้าที่ที่กำลังล็อกอินในปัจจุบัน
     Route::get('/me', [AuthController::class, 'me'])
         ->name('api.me');
+    //ออกจากระบบและทำลาย Token ทิ้ง
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('api.logout');
+    //เรียกขอคีย์ลับและ QR Code ไปเปิดระบบ 2FA
     Route::post('/2fa/setup', [TwoFactorController::class, 'setup2FA'])
         ->name('api.2fa.setup');
+    //ตรวจสอบและกดยืนยันเปิดใช้งานระบบ 2FA
     Route::post('/2fa/verify', [TwoFactorController::class, 'verify2FA'])
         ->name('api.2fa.verify');
+    //แสดงรายการคอมพิวเตอร์/เบราว์เซอร์ทั้งหมดที่ระบบจดจำสิทธิ์ไว้
     Route::get('/devices', [AuthController::class, 'getRememberedDevices'])
         ->name('api.devices.index');
+    //สั่งถอนสิทธิ์การจดจำเครื่อง บังคับให้ต้องกรอก OTP
     Route::delete('/devices/{id}', [AuthController::class, 'revokeDevice'])
         ->name('api.devices.delete')
         ->whereNumber('id');
 
+    // =======================
+    // Services-จัดการข้อมูลบริการ
+    // =======================
     Route::prefix('services')->group(function () {
         // --- [ทุกคนดูได้] ทั้งแอดมินและเจ้าหน้าที่ทั่วไป ---
         //แสดงข้อมูลบริการทั้งหมด
@@ -87,5 +111,15 @@ Route::middleware('auth:sanctum')->group(function () {
                         ->withTrashed();
                 });
         });
+    });
+    // ============================================
+    // User Management-ระบบจัดการผู้ใช้งานสำหรับผู้ดูแลระบบ
+    // ============================================
+    Route::middleware('admin')->group(function () {
+        //--- [เฉพาะ ADMIN เท่านั้น] จัดการความปลอดภัยบัญชีพนักงาน ---
+        Route::post('/users/{userId}/reset-2fa', [TwoFactorController::class, 'reset2FA'])
+            ->name('api.users.reset-2fa')
+            ->whereNumber('userId');
+            
     });
 });
