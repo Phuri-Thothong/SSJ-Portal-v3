@@ -3,7 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 import { PasswordValidationService } from '../../services/password-validation.service';
 import { PasswordChecklistComponent } from '../shared/password-checklist/password-checklist.component';
 

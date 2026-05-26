@@ -1,7 +1,7 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { Component, inject, LOCALE_ID, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 import localeTh from '@angular/common/locales/th';
 
 registerLocaleData(localeTh, 'th')

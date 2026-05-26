@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 
 @Component({
   selector: 'app-add-service-card',

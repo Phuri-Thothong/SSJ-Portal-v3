@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { Service } from '../../models/service.model';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 
 @Component({
   selector: 'app-service-card',

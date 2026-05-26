@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 
 @Component({
   selector: 'app-admin-tool',

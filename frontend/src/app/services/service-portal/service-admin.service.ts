@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Service } from '../models/service.model';
-import { DataService } from './data.service';
+import { Service } from '../../models/service.model';
+import { DataService } from './service-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {

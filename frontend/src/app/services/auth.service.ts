@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthResponse, User } from '../models/user.model';
 import { catchError, finalize, Observable, of, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiURL = 'http://localhost:8000/api';
+  private apiUrl = environment.apiUrl;
 
   rememberMeOption: boolean = false;
   currentUser = signal<User | null>(null);
@@ -14,7 +15,7 @@ export class AuthService {
 
   login(credentials: any): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.apiURL}/login`, credentials, {
+      .post<AuthResponse>(`${this.apiUrl}/login`, credentials, {
         withCredentials: true,
       })
       .pipe(
@@ -32,32 +33,32 @@ export class AuthService {
   }
 
   verifyStep1(national_id: string): Observable<any> {
-    return this.http.post(`${this.apiURL}/verify-step1`, {
+    return this.http.post(`${this.apiUrl}/verify-step1`, {
        national_id: national_id, 
     });
   }
 
   verifyStep2(username: string, email: string): Observable<any> {
-    return this.http.post(`${this.apiURL}/verify-step2`, { 
+    return this.http.post(`${this.apiUrl}/verify-step2`, { 
       username: username,
       email: email,
     });
   }
 
   activateAccount(data: any): Observable<any> {
-    return this.http.post(`${this.apiURL}/activate-account`, data);
+    return this.http.post(`${this.apiUrl}/activate-account`, data);
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiURL}/forgot-password`, { email });
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
   }
   
   resetPassword(data: any): Observable<any> {
-    return this.http.post(`${this.apiURL}/reset-password`, data);
+    return this.http.post(`${this.apiUrl}/reset-password`, data);
   }
 
   logout() {
-    return this.http.post(`${this.apiURL}/logout`, {}).pipe(
+    return this.http.post(`${this.apiUrl}/logout`, {}).pipe(
       finalize(() => {
         localStorage.removeItem('ssj_token');
         sessionStorage.removeItem('ssj_token');
@@ -67,7 +68,7 @@ export class AuthService {
   }
 
   checkMe() {
-    return this.http.get<AuthResponse>(`${this.apiURL}/me`).pipe(
+    return this.http.get<AuthResponse>(`${this.apiUrl}/me`).pipe(
       tap((res) => {
         if (res.success && res.user) {
           this.currentUser.set(res.user);
@@ -81,11 +82,11 @@ export class AuthService {
   }
 
   checkResetToken(payload: { token: string; email: string }) {
-    return this.http.post<any>(`${this.apiURL}/password/check-token`, payload);
+    return this.http.post<any>(`${this.apiUrl}/password/check-token`, payload);
   }
 
   verifySetup2FA(nationalId: string, otpCode: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiURL}/verify-setup-2fa`, {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/verify-setup-2fa`, {
       national_id: nationalId,
       otp_code: otpCode,
     }).pipe(
@@ -103,7 +104,7 @@ export class AuthService {
   }
 
   verifyDaily2FA(nationalId: string, otpCode: string, rememberDevice: boolean): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiURL}/verify-daily-2fa`, {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/verify-daily-2fa`, {
       national_id: nationalId,
       otp_code: otpCode,
       remember_device: rememberDevice,
@@ -124,13 +125,13 @@ export class AuthService {
   }
 
   getDevices(): Observable<any> {
-    return this.http.get<any>(`${this.apiURL}/devices`, {
+    return this.http.get<any>(`${this.apiUrl}/devices`, {
       withCredentials: true,
     });
   }
 
   revokeDevice(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiURL}/devices/${id}`, {
+    return this.http.delete<any>(`${this.apiUrl}/devices/${id}`, {
       withCredentials: true,
     });
   }

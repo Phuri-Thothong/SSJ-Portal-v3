@@ -12,8 +12,8 @@ import { DeleteConfirmModalComponent } from '../delete-confirm-modal/delete-conf
 import { TrashBannerComponent } from '../trash-banner/trash-banner.component';
 import { ServiceSkeletonComponent } from '../service-skeleton/service-skeleton.component';
 import { RestoreConfirmModalComponent } from '../restore-confirm-modal/restore-confirm-modal.component';
-import { DataService } from '../../services/data.service';
-import { AdminService } from '../../services/admin.service';
+import { DataService } from '../../services/service-portal/service-data.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 import { SearchService } from '../../services/search.service';
 import { AuthService } from '../../services/auth.service';
 

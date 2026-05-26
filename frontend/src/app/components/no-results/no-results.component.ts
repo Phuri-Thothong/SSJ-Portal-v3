@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { SearchService } from '../../services/search.service';
-import { AdminService } from '../../services/admin.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
 
 @Component({
   selector: 'app-no-results',

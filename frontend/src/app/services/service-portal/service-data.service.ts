@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse, Service } from '../models/service.model';
+import { ApiResponse, Service } from '../../models/service.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
-  private apiURL = 'http://localhost:8000/api/services';
+  private apiUrl = `${environment.apiUrl}/services`;
   public isLoading = signal(false);
 
   services = signal<Service[]>([]);
@@ -15,11 +16,11 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
   getServices(): Observable<ApiResponse<Service[]>> {
-    return this.http.get<ApiResponse<Service[]>>(this.apiURL);
+    return this.http.get<ApiResponse<Service[]>>(this.apiUrl);
   }
 
   getTrashedServices(): Observable<ApiResponse<Service[]>> {
-    return this.http.get<ApiResponse<Service[]>>(`${this.apiURL}/trashed`);
+    return this.http.get<ApiResponse<Service[]>>(`${this.apiUrl}/trashed`);
   }
 
   refreshServices(isTrashMode: boolean = false) {
@@ -41,22 +42,22 @@ export class DataService {
   }
 
   createService(service: Service): Observable<ApiResponse<Service>> {
-    return this.http.post<ApiResponse<Service>>(this.apiURL, service);
+    return this.http.post<ApiResponse<Service>>(this.apiUrl, service);
   }
 
   updateService(id: number, service: Service): Observable<ApiResponse<Service>> {
-    return this.http.put<ApiResponse<Service>>(`${this.apiURL}/${id}`, service);
+    return this.http.put<ApiResponse<Service>>(`${this.apiUrl}/${id}`, service);
   }
 
   deleteService(id: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.apiURL}/${id}`);
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/${id}`);
   }
 
   restoreService(id: number): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.apiURL}/trashed/${id}/restore`, {});
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/trashed/${id}/restore`, {});
   }
   
   forceDeleteService(id: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.apiURL}/trashed/${id}/force-delete`);
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/trashed/${id}/force-delete`);
   } 
 }

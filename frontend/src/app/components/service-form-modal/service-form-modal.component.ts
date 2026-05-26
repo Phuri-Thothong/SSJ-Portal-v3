@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService } from '../../services/admin.service';
-import { DataService } from '../../services/data.service';
+import { AdminService } from '../../services/service-portal/service-admin.service';
+import { DataService } from '../../services/service-portal/service-data.service';
 
 @Component({
   selector: 'app-service-form-modal',
