@@ -82,11 +82,14 @@ export class DeviceManagementComponent implements OnInit {
         if (res.success) {
           this.adminService.showToast(res.message, 'success');
           this.fetchDevices();
+          this.isModalOpen.set(false);
+          this.selectedDeviceId.set(null);
         }
       },
       error: (err) => {
         const errorMessage = err.error?.message || 'เกิดข้อผิดพลาดในการยกเลิกสิทธิ์อุปกรณ์';
         this.adminService.showToast(errorMessage, 'danger');
+        this.isModalOpen.set(false);
       }
     });
   }
