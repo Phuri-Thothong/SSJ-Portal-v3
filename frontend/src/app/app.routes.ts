@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { noAuthGuard } from './core/guards/no-auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { LoginComponent } from './components/login/login.component';
 import { ServicePortalComponent } from './components/service-portal/service-portal.component';
-import { authGuard } from './core/guards/auth.guard';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-import { noAuthGuard } from './core/guards/no-auth.guard';
 import { DeviceManagementComponent } from './components/device-management/device-management.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +29,12 @@ export const routes: Routes = [
                 path: 'devices',
                 component: DeviceManagementComponent,
                 title: 'จัดการอุปกรณ์ที่จดจำไว้ | NST SSJ Portal',
+            },
+            {
+                path: 'users',
+                component: UserManagementComponent,
+                canActivate: [adminGuard],
+                title: 'จัดการผู้ใช้งาน | NST SSJ Portal',
             },
         ]
     },
