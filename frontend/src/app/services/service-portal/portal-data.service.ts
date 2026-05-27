@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class DataService {
+export class PortalDataService {
   private apiUrl = `${environment.apiUrl}/services`;
   public isLoading = signal(false);
 

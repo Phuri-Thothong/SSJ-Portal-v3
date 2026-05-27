@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 
 @Component({
   selector: 'app-admin-tool',
@@ -10,10 +10,10 @@ import { AdminService } from '../../services/service-portal/service-admin.servic
   styleUrl: './admin-tool.component.css',
 })
 export class AdminToolComponent {
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
   isHovered = false;
 
   toggleMode() {
-    this.adminService.toggleAdminMode();
+    this.portalAdminService.toggleAdminMode();
   }
 }

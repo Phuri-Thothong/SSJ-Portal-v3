@@ -3,7 +3,7 @@
 >
   <div
     class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm"
-    (click)="adminService.closeModal()"
+    (click)="portalAdminService.closeModal()"
   ></div>
 
   <div
@@ -19,7 +19,7 @@
         {{ this.isEditMode ? 'แก้ไขข้อมูลบริการ' : 'เพิ่มบริการใหม่' }}
       </h3>
       <button
-        (click)="adminService.closeModal()"
+        (click)="portalAdminService.closeModal()"
         class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/50 text-slate-400 hover:text-slate-600 transition-colors"
       >
         <i class="fa-solid fa-xmark text-xl"></i>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="overflow-y-auto pr-2 custom-scrollbar space-y-6">
-      @if (adminService.activeService(); as service) {
+      @if (portalAdminService.activeService(); as service) {
         <div id="error-title" class="space-y-1.5">
           <label class="block text-sm font-semibold text-slate-600 ml-1">ชื่อบริการ</label>
           <input
@@ -79,13 +79,13 @@
           <div
             class="grid grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 bg-white/30 rounded-xl border border-white/20 custom-scrollbar"
           >
-            @for (icon of adminService.availableIcons; track icon) {
+            @for (icon of portalAdminService.availableIcons; track icon) {
               <button
                 (click)="selectIcon(icon)"
                 type="button"
                 class="h-10 flex items-center justify-center rounded-lg border transition-all"
                 [ngClass]="
-                  adminService.activeService()?.icon === icon
+                  portalAdminService.activeService()?.icon === icon
                     ? 'bg-blue-100/50 text-blue-600 border-blue-500 shadow-sm shadow-blue-200 scale-105'
                     : 'bg-white/40 text-slate-400 border-transparent hover:bg-white hover:text-blue-500'
                 "
@@ -182,7 +182,7 @@
         <div class="space-y-4">
           <label class="block text-sm font-semibold text-slate-600 ml-1">เลือกโทนสีการ์ด</label>
           <div class="grid grid-cols-6 gap-3 p-3">
-            @for (grad of adminService.availableGradients; track grad) {
+            @for (grad of portalAdminService.availableGradients; track grad) {
               <button
                 (click)="selectGradient(grad.from, grad.to)"
                 type="button"
@@ -252,7 +252,7 @@
 
     <div class="flex gap-4 mt-8 shrink-0">
       <button
-        (click)="adminService.closeModal()"
+        (click)="portalAdminService.closeModal()"
         class="flex-1 py-4 rounded-2xl font-bold text-slate-500 hover:bg-white/60 transition-all border border-transparent hover:border-white/50"
       >
         ยกเลิก

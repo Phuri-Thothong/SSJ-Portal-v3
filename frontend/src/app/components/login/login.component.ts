@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ActivateAccountComponent } from "../activate-account/activate-account.component";
@@ -16,7 +16,7 @@ import * as QRCode from 'qrcode';
 })
 export class LoginComponent {
   private authService = inject(AuthService);
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
   private router = inject(Router);
 
   credentials = {
@@ -39,7 +39,7 @@ export class LoginComponent {
   onLogin(event: Event) {
     event.preventDefault();
     if (!this.credentials.username || !this.credentials.password) {
-      this.adminService.showToast('กรุณากรอกข้อมูลให้ครบถ้วน', 'danger');
+      this.portalAdminService.showToast('กรุณากรอกข้อมูลให้ครบถ้วน', 'danger');
       return;
     }
     this.isLoading.set(true);
@@ -48,7 +48,7 @@ export class LoginComponent {
       next: (res) => {
         if (res.success) {
           if (res.token) {
-            this.adminService.showToast(res.message, 'success');
+            this.portalAdminService.showToast(res.message, 'success');
             this.router.navigate(['/portal']);
             return;
           }
@@ -56,20 +56,20 @@ export class LoginComponent {
           this.tempNationalId = res.national_id || '';
           if (res.google2fa_enabled === 1) {
             this.loginStep.set('VERIFY_2FA');
-            this.adminService.showToast('กรุณากรอกรหัส OTP จากแอป Google Authenticator', 'success');
+            this.portalAdminService.showToast('กรุณากรอกรหัส OTP จากแอป Google Authenticator', 'success');
           } else if (res.google2fa_enabled === 0) {
             const qrUrl = res.qr_code_url || '';
             const secret = res.google2fa_secret || '';
             this.generateAndShowQRCode(qrUrl, secret);
             this.loginStep.set('SETUP_2FA');
-            this.adminService.showToast('รหัสผ่านถูกต้อง กรุณาตั้งค่าระบบความปลอดภัย 2FA', 'success');
+            this.portalAdminService.showToast('รหัสผ่านถูกต้อง กรุณาตั้งค่าระบบความปลอดภัย 2FA', 'success');
           }
         }
       },
       error: (err) => {
         this.isLoading.set(false);
         const errorMessage = err.error?.message || 'การเชื่อมต่อล้มเหลว';
-        this.adminService.showToast(errorMessage, 'danger');
+        this.portalAdminService.showToast(errorMessage, 'danger');
       },
       complete: () => this.isLoading.set(false)
     });
@@ -109,14 +109,14 @@ export class LoginComponent {
     }
     this.otpCode = this.otpInputs().join('');
     if (this.otpCode.length != 6) {
-      this.adminService.showToast('กรุณากรอกรหัสความปลอดภัยให้ครบ 6 หลัก', 'danger');
+      this.portalAdminService.showToast('กรุณากรอกรหัสความปลอดภัยให้ครบ 6 หลัก', 'danger');
       return;
     }
     this.isLoading.set(true);
     this.authService.verifySetup2FA(this.tempNationalId, this.otpCode).subscribe({
       next: (res) => {
         if (res.success) {
-          this.adminService.showToast('เปิดใช้งานระบบ 2FA และเข้าสู่ระบบสำเร็จ', 'success');
+          this.portalAdminService.showToast('เปิดใช้งานระบบ 2FA และเข้าสู่ระบบสำเร็จ', 'success');
           this.otpInputs.set(['', '', '', '', '', '']);
           this.otpCode = '';
           this.router.navigate(['/portal']); 
@@ -125,7 +125,7 @@ export class LoginComponent {
       error: (err) => {
         this.isLoading.set(false);
         const errorMessage = err.error?.message || 'รหัส OTP ไม่ถูกต้อง';
-        this.adminService.showToast(errorMessage, 'danger');
+        this.portalAdminService.showToast(errorMessage, 'danger');
       },
     });
   }
@@ -136,14 +136,14 @@ export class LoginComponent {
     }
     this.otpCode = this.otpInputs().join('');
     if (this.otpCode.length != 6) {
-      this.adminService.showToast('กรุณากรอกรหัสความปลอดภัยให้ครบ 6 หลัก', 'danger');
+      this.portalAdminService.showToast('กรุณากรอกรหัสความปลอดภัยให้ครบ 6 หลัก', 'danger');
       return;
     }
     this.isLoading.set(true);
     this.authService.verifyDaily2FA(this.tempNationalId, this.otpCode, this.isRememberDevice()).subscribe({
       next: (res) => {
         if (res.success) {
-          this.adminService.showToast('ยินดีต้อนรับเข้าสู่ระบบพอร์ทัล สสจ. นครศรีฯ', 'success');
+          this.portalAdminService.showToast('ยินดีต้อนรับเข้าสู่ระบบพอร์ทัล สสจ. นครศรีฯ', 'success');
           this.otpInputs.set(['', '', '', '', '', '']);
           this.otpCode = '';
           this.router.navigate(['/portal']); 
@@ -152,7 +152,7 @@ export class LoginComponent {
       error: (err) => {
         this.isLoading.set(false);
         const errorMessage = err.error?.message || 'รหัส OTP ไม่ถูกต้อง';
-        this.adminService.showToast(errorMessage, 'danger');
+        this.portalAdminService.showToast(errorMessage, 'danger');
       },
     });
   }

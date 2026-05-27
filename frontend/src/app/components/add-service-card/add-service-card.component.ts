@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 
 @Component({
   selector: 'app-add-service-card',
@@ -24,5 +24,5 @@ import { AdminService } from '../../services/service-portal/service-admin.servic
   styleUrl: './add-service-card.component.css',
 })
 export class AddServiceCardComponent {
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
 }

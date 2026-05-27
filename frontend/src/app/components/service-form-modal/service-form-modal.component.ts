@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService } from '../../services/service-portal/service-admin.service';
-import { DataService } from '../../services/service-portal/service-data.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
+import { PortalDataService } from '../../services/service-portal/portal-data.service';
 
 @Component({
   selector: 'app-service-form-modal',
@@ -12,10 +12,10 @@ import { DataService } from '../../services/service-portal/service-data.service'
   styleUrl: './service-form-modal.component.css',
 })
 export class ServiceFormModalComponent {
-  public adminService = inject(AdminService);
-  private dataService = inject(DataService);
+  public portalAdminService = inject(PortalAdminService);
+  private portalDataService = inject(PortalDataService);
   get isEditMode(): boolean {
-    return this.adminService.modalMode() === 'edit';
+    return this.portalAdminService.modalMode() === 'edit';
   }
 
   isShowCustomPicker = signal(false);
@@ -24,12 +24,12 @@ export class ServiceFormModalComponent {
   formErrors = signal<any>(null);
 
   selectIcon(icon: string) {
-    const data = this.adminService.activeService();
+    const data = this.portalAdminService.activeService();
     if (data) data.icon = icon;
   }
 
   selectGradient(from: string, to: string) {
-    const data = this.adminService.activeService();
+    const data = this.portalAdminService.activeService();
     if (data) {
       data.color_from = from;
       data.color_to = to;
@@ -42,7 +42,7 @@ export class ServiceFormModalComponent {
   }
 
   handleSave() {
-    const data = this.adminService.activeService();
+    const data = this.portalAdminService.activeService();
     // ถ้าไม่มีข้อมูล หรือเป็นโหมดแก้ไขแต่ไม่มี ID ให้เด้งออก
     if (!data || (this.isEditMode && !data.id)) return;
 
@@ -55,15 +55,15 @@ export class ServiceFormModalComponent {
     this.formErrors.set(null);
 
     const request$ = this.isEditMode
-      ? this.dataService.updateService(data.id!, data)
-      : this.dataService.createService(data);
+      ? this.portalDataService.updateService(data.id!, data)
+      : this.portalDataService.createService(data);
 
     request$.subscribe({
       next: (res) => {
         if (res.success) {
-          this.adminService.showToast(res.message ?? 'ดำเนินการสำเร็จ');
-          this.adminService.closeModal();
-          this.dataService.refreshServices();
+          this.portalAdminService.showToast(res.message ?? 'ดำเนินการสำเร็จ');
+          this.portalAdminService.closeModal();
+          this.portalDataService.refreshServices();
         }
       },
       error: (err) => {
@@ -83,7 +83,7 @@ export class ServiceFormModalComponent {
           if (err.status === 500) errorMsg = 'เซิร์ฟเวอร์เกิดข้อผิดพลาด';
           if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
           if (err.status === 404) errorMsg = 'ไม่พบที่อยู่ API';
-          this.adminService.showToast(errorMsg, 'danger');
+          this.portalAdminService.showToast(errorMsg, 'danger');
         }
       },
     });

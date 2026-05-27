@@ -1,14 +1,14 @@
 <app-navbar />
 <div class="min-h-screen flex flex-col">
   <div class="grow p-6 md:p-12 max-w-7xl mx-auto w-full transition-all duration-500"
-    [class.opacity-40]="dataService.isLoading()"
-    [class.pointer-events-none]="dataService.isLoading()"
+    [class.opacity-40]="portalDataService.isLoading()"
+    [class.pointer-events-none]="portalDataService.isLoading()"
   >
-    @if (adminService.isTrashMode()) {
+    @if (portalAdminService.isTrashMode()) {
       <app-trash-banner />
     }
     <app-hero-banner />
-    @if (dataService.isLoading()) {
+    @if (portalDataService.isLoading()) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         @for (i of [1,2,3,4,5,6,7,8]; track i) {
           <app-service-skeleton />
@@ -21,14 +21,14 @@
             <!-- <ชื่อคอมโพเนนต์ลูก [prop.ของลูก]="obj.ของแม่"/> -->
             <app-service-card 
               [service]="service"
-              [isInTrash]="adminService.isTrashMode()" />
+              [isInTrash]="portalAdminService.isTrashMode()" />
           }
-          @if (adminService.isAdminMode() && !adminService.isTrashMode()) {
+          @if (portalAdminService.isAdminMode() && !portalAdminService.isTrashMode()) {
             <app-add-service-card />
           }
         </div>
       } @else {
-        @if (adminService.isAdminMode() && !adminService.isTrashMode()){
+        @if (portalAdminService.isAdminMode() && !portalAdminService.isTrashMode()){
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <app-add-service-card />
           </div>
@@ -43,12 +43,12 @@
     <app-admin-tool />
   }
 </div>
-@if (adminService.activeService() && (adminService.modalMode() === 'add' || adminService.modalMode() === 'edit')) {
+@if (portalAdminService.activeService() && (portalAdminService.modalMode() === 'add' || portalAdminService.modalMode() === 'edit')) {
   <app-service-form-modal />
 }
-@if (adminService.activeService() && (adminService.modalMode() === 'delete' || adminService.modalMode() === 'force')) {
+@if (portalAdminService.activeService() && (portalAdminService.modalMode() === 'delete' || portalAdminService.modalMode() === 'force')) {
   <app-delete-confirm-modal />
 }
-@if (adminService.activeService() && adminService.modalMode() === 'restore') {
+@if (portalAdminService.activeService() && portalAdminService.modalMode() === 'restore') {
   <app-restore-confirm-modal />
 }

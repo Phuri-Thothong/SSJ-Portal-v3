@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { Service } from '../../models/service.model';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 
 @Component({
   selector: 'app-service-card',
@@ -14,7 +14,7 @@ export class ServiceCardComponent {
   //รับ obj. จากคอมโพเนนต์ App มาเป็น prop.
   @Input() service!: Service;
   @Input() isInTrash: boolean = false;
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
 
   mouseX = 0;
   mouseY = 0;
@@ -27,22 +27,22 @@ export class ServiceCardComponent {
 
   handleEdit(event: Event) {
     event.stopPropagation();
-    this.adminService.openModal('edit', this.service);
+    this.portalAdminService.openModal('edit', this.service);
   }
 
   handleDelete(event: Event) {
     event.stopPropagation();
-    this.adminService.openModal('delete', this.service);
+    this.portalAdminService.openModal('delete', this.service);
   }
 
   handleRestore(event: Event) {
     event.stopPropagation();
-    this.adminService.openModal('restore', this.service);
+    this.portalAdminService.openModal('restore', this.service);
   }
 
   handleForceDelete(event: Event) {
     event.stopPropagation();
-    this.adminService.openModal('force', this.service);
+    this.portalAdminService.openModal('force', this.service);
   }
 
   getStatusConfig() {

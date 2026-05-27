@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 
 @Component({
   selector: 'app-restore-confirm-modal',
@@ -10,13 +10,13 @@ import { AdminService } from '../../services/service-portal/service-admin.servic
   styleUrl: './restore-confirm-modal.component.css',
 })
 export class RestoreConfirmModalComponent {
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
 
   onConfirm() {
-    this.adminService.confirmRestore();
+    this.portalAdminService.confirmRestore();
   }
 
   onCancel() {
-    this.adminService.closeModal();
+    this.portalAdminService.closeModal();
   }
 }

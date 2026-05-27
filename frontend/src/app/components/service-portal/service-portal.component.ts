@@ -12,8 +12,8 @@ import { DeleteConfirmModalComponent } from '../delete-confirm-modal/delete-conf
 import { TrashBannerComponent } from '../trash-banner/trash-banner.component';
 import { ServiceSkeletonComponent } from '../service-skeleton/service-skeleton.component';
 import { RestoreConfirmModalComponent } from '../restore-confirm-modal/restore-confirm-modal.component';
-import { DataService } from '../../services/service-portal/service-data.service';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalDataService } from '../../services/service-portal/portal-data.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 import { SearchService } from '../../services/search.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -40,19 +40,19 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ServicePortalComponent implements OnInit {
   // รับข้อมูล Array ที่ได้จาก Backend
-  public dataService = inject(DataService);
-  public adminService = inject(AdminService);
+  public portalDataService = inject(PortalDataService);
+  public portalAdminService = inject(PortalAdminService);
   public searchService = inject(SearchService);
   public authService = inject(AuthService);
 
   ngOnInit() {
     this.authService.checkMe().subscribe();
-    this.dataService.refreshServices();
+    this.portalDataService.refreshServices();
   }
 
   filteredServices = computed(() => {
     const term = this.searchService.searchTerm().toLowerCase();
-    const allServices = this.dataService.services();;
+    const allServices = this.portalDataService.services();;
 
     if (!term) return allServices;
 

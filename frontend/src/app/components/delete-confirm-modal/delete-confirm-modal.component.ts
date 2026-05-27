@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 
 @Component({
   selector: 'app-delete-confirm-modal',
@@ -10,20 +10,20 @@ import { AdminService } from '../../services/service-portal/service-admin.servic
   styleUrl: './delete-confirm-modal.component.css',
 })
 export class DeleteConfirmModalComponent {
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
   get isSoftDelete(): boolean {
-    return this.adminService.modalMode() === 'delete';
+    return this.portalAdminService.modalMode() === 'delete';
   }
 
   onConfirm() {
     if (this.isSoftDelete) {
-      this.adminService.confirmSoftDelete();
+      this.portalAdminService.confirmSoftDelete();
     } else {
-      this.adminService.confirmForceDelete();
+      this.portalAdminService.confirmForceDelete();
     }    
   }
 
   onCancel() {
-    this.adminService.closeModal();
+    this.portalAdminService.closeModal();
   }
 }

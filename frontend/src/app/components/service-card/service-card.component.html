@@ -16,7 +16,7 @@
       >
         <i class="fa-solid fa-trash"></i>
       </button>
-    } @else if (adminService.isAdminMode()) {
+    } @else if (portalAdminService.isAdminMode()) {
       <button
         (click)="handleEdit($event)"
         class="w-10 h-10 bg-amber-400 hover:bg-amber-500 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-90"

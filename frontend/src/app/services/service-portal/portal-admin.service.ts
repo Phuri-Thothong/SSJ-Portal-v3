@@ -1,10 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Service } from '../../models/service.model';
-import { DataService } from './service-data.service';
+import { PortalDataService } from './portal-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class AdminService {
-  private dataService = inject(DataService);
+export class PortalAdminService {
+  private dataService = inject(PortalDataService);
   isAdminMode = signal(false);
   isTrashMode = signal(false);
 

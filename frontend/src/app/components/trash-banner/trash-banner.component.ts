@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { AdminService } from '../../services/service-portal/service-admin.service';
+import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 
 @Component({
   selector: 'app-trash-banner',
@@ -9,5 +9,5 @@ import { AdminService } from '../../services/service-portal/service-admin.servic
   styleUrl: './trash-banner.component.css',
 })
 export class TrashBannerComponent {
-  public adminService = inject(AdminService);
+  public portalAdminService = inject(PortalAdminService);
 }
