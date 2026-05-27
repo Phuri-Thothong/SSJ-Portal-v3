@@ -1,10 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Service } from '../../models/service.model';
 import { PortalDataService } from './portal-data.service';
+import { ToastService } from '../toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class PortalAdminService {
   private dataService = inject(PortalDataService);
+  private toastService = inject(ToastService);
   isAdminMode = signal(false);
   isTrashMode = signal(false);
 
@@ -13,12 +15,6 @@ export class PortalAdminService {
   // Modal ที่กำลังเปิดอยู่
   modalMode = signal<'add' | 'edit' | 'delete' | 'restore' | 'force' | null>(null);
   
-  toastState = signal({
-    show: false,
-    message: '',
-    type: 'success' as 'success' | 'danger',
-  });
-
   readonly availableIcons = [
     'fa-solid fa-house',
     'fa-solid fa-gear',
@@ -116,7 +112,7 @@ export class PortalAdminService {
     this.dataService.deleteService(service.id).subscribe({
       next: (res) => {
         if (res.success) {
-          this.showToast(res.message || 'ย้ายข้อมูลไปยังถังขยะเรียบร้อยแล้ว');
+         this.toastService.showToast(res.message || 'ย้ายข้อมูลไปยังถังขยะเรียบร้อยแล้ว');
           this.closeModal();
           this.dataService.refreshServices(false);
         }
@@ -124,7 +120,7 @@ export class PortalAdminService {
       error: (err) => {
         let errorMsg = 'ไม่สามารถลบข้อมูลได้ในขณะนี้';
         if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
-        this.showToast(errorMsg, 'danger');
+       this.toastService.showToast(errorMsg, 'danger');
         console.error('Delete error:', err);
       },
     });
@@ -136,7 +132,7 @@ export class PortalAdminService {
     this.dataService.restoreService(service.id).subscribe({
       next: (res) => {
         if (res.success) {
-          this.showToast(res.message || 'กู้คืนข้อมูลเรียบร้อยแล้ว');
+         this.toastService.showToast(res.message || 'กู้คืนข้อมูลเรียบร้อยแล้ว');
           this.closeModal();
           this.dataService.refreshServices(this.isTrashMode());
         }
@@ -144,7 +140,7 @@ export class PortalAdminService {
       error: (err) => {
         let errorMsg = 'ไม่สามารถกู้คืนข้อมูลได้ในขณะนี้';
         if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
-        this.showToast(errorMsg, 'danger');
+       this.toastService.showToast(errorMsg, 'danger');
         console.error('Restore error:', err);
       },
     });
@@ -156,7 +152,7 @@ export class PortalAdminService {
     this.dataService.forceDeleteService(service.id).subscribe({
       next: (res) => {
         if (res.success) {
-          this.showToast(res.message || 'ลบข้อมูลออกจากถังขยะเรียบร้อยแล้ว');
+         this.toastService.showToast(res.message || 'ลบข้อมูลออกจากถังขยะเรียบร้อยแล้ว');
           this.closeModal();
           this.dataService.refreshServices(this.isTrashMode());
         }
@@ -164,31 +160,9 @@ export class PortalAdminService {
       error: (err) => {
         let errorMsg = 'ไม่สามารถลบข้อมูลออกจากถังขยะได้ในขณะนี้';
         if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
-        this.showToast(errorMsg, 'danger');
+       this.toastService.showToast(errorMsg, 'danger');
         console.error('Force Delete error:', err);
       },
     });
-  }
-
-  showToast(message: string, type: 'success' | 'danger' = 'success') {
-    this.toastState.set({ show: true, message, type });
-    this.playNotificationSound(type);
-    setTimeout(() => this.hideToast(), 5000);
-  }
-
-  hideToast() {
-    this.toastState.set({ ...this.toastState(), show: false });
-  }
-
-  private playNotificationSound(type: 'success' | 'danger') {
-    try {
-      const audioPath =
-        type === 'success' ? '/assets/sounds/success.mp3' : '/assets/sounds/error.mp3';
-      const audio = new Audio(audioPath);
-      audio.volume = 1;
-      audio.play();
-    } catch (error) {
-      console.warn('ไม่สามารถเล่นเสียงแจ้งเตือนได้:', error);
-    }
   }
 }

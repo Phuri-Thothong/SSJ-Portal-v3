@@ -3,21 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user.model';
 import { environment } from '../../../environments/environment';
 import { UserAccountService } from './user-account.service';
+import { ToastService } from '../toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserSecurityAdminService {
   private http = inject(HttpClient);
   private userService = inject(UserAccountService);
+  private toastService = inject(ToastService);
 
   activeUser = signal<User | null>(null);
   
   modalMode = signal<'reset2fa' | null>(null);
-
-  toastState = signal({
-    show: false,
-    message: '',
-    type: 'success' as 'success' | 'danger',
-  });
 
   openModal(mode: 'reset2fa', user: User) {
     this.modalMode.set(mode);
@@ -39,7 +35,7 @@ export class UserSecurityAdminService {
     ).subscribe({
       next: (res) => {
         if (res.success) {
-          this.showToast(res.message || 'ทำการรีเซ็ตระบบความปลอดภัย 2FA เรียบร้อยแล้ว');
+          this.toastService.showToast(res.message || 'ทำการรีเซ็ตระบบความปลอดภัย 2FA เรียบร้อยแล้ว');
           this.closeModal();
           this.userService.refreshUsers();
         }
@@ -47,30 +43,9 @@ export class UserSecurityAdminService {
       error: (err) => {
         let errorMsg = 'ระบบเกิดข้อผิดพลาด ไม่สามารถรีเซ็ตข้อมูลความปลอดภัยได้ในขณะนี้';
         if (err.status === 403) errorMsg = 'คุณไม่มีสิทธิ์ในการดำเนินการในส่วนนี้';
-        this.showToast(errorMsg, 'danger');
+        this.toastService.showToast(errorMsg, 'danger');
         console.error('Reset 2FA error:', err);
       }
     });
-  }
-
-  showToast(message: string, type: 'success' | 'danger' = 'success') {
-    this.toastState.set({ show: true, message, type });
-    this.playNotificationSound(type);
-    setTimeout(() => this.hideToast(), 5000);
-  }
-
-  hideToast() {
-    this.toastState.set({ ...this.toastState(), show: false });
-  }
-
-  private playNotificationSound(type: 'success' | 'danger') {
-    try {
-      const audioPath = type === 'success' ? '/assets/sounds/success.mp3' : '/assets/sounds/error.mp3';
-      const audio = new Audio(audioPath);
-      audio.volume = 1;
-      audio.play();
-    } catch (error) {
-      console.warn('ไม่สามารถเล่นเสียงแจ้งเตือนได้:', error);
-    }
   }
 }

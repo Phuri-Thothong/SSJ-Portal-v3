@@ -1,4 +1,4 @@
-@if (adminService.toastState(); as toast) {
+@if (toastService.toastState(); as toast) {
   @if (toast.show) {
     <div
       class="fixed top-24 left-1/2 -translate-x-1/2 z-3000 animate-in fade-in slide-in-from-top-4 duration-500"
@@ -34,7 +34,7 @@
         </div>
 
         <button
-          (click)="adminService.hideToast()"
+          (click)="toastService.hideToast()"
           class="ml-4 text-slate-400 hover:text-slate-600 transition-colors"
         >
           <i class="fa-solid fa-xmark"></i>

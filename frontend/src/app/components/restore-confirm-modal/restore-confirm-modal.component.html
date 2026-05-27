@@ -14,7 +14,7 @@
         <i class="fa-solid fa-rotate-left"></i>
       </div>
       <h3 class="text-xl font-bold text-slate-800 mb-3">กู้คืนบริการ?</h3>
-      @if (adminService.activeService(); as service) {
+      @if (portalAdminService.activeService(); as service) {
         <p class="text-sm text-slate-700 mb-8 leading-relaxed">
           คุณต้องการนำบริการ
           <span class="font-bold text-teal-700">"{{ service.title }}"</span>

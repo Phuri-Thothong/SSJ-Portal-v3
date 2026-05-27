@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { PortalAdminService } from '../../../services/service-portal/portal-admin.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-toast',
@@ -10,5 +10,5 @@ import { PortalAdminService } from '../../../services/service-portal/portal-admi
   styleUrl: './toast.component.css',
 })
 export class ToastComponent {
-  public adminService = inject(PortalAdminService);
+  public toastService = inject(ToastService);
 }

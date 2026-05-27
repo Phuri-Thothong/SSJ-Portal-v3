@@ -3,9 +3,9 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 import { PasswordValidationService } from '../../services/password-validation.service';
 import { PasswordChecklistComponent } from '../shared/password-checklist/password-checklist.component';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,7 +16,7 @@ import { PasswordChecklistComponent } from '../shared/password-checklist/passwor
 })
 export class ResetPasswordComponent implements OnInit {
   private authService = inject(AuthService);
-  public portalAdminService = inject(PortalAdminService);
+  private toastService = inject(ToastService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private passwordValidator = inject(PasswordValidationService);
@@ -65,7 +65,7 @@ export class ResetPasswordComponent implements OnInit {
         this.isTokenValid.set(false);
         this.isCheckingToken.set(false);
         const errorMsg = err.error?.message || 'ลิงก์กู้คืนรหัสผ่านหมดอายุหรือไม่ถูกต้อง';
-        this.portalAdminService.showToast(errorMsg, 'danger');
+        this.toastService.showToast(errorMsg, 'danger');
       }
     });
   }
@@ -75,17 +75,17 @@ export class ResetPasswordComponent implements OnInit {
     this.isSubmitted.set(true);
 
     if (!this.formData.password || !this.formData.confirmPassword) {
-      this.portalAdminService.showToast('กรุณากรอกรหัสผ่านใหม่ให้ครบถ้วน', 'danger');
+      this.toastService.showToast('กรุณากรอกรหัสผ่านใหม่ให้ครบถ้วน', 'danger');
       return;
     }
 
     if (!this.isPasswordValid) {
-      this.portalAdminService.showToast('กรุณาตั้งรหัสผ่านให้ตรงตามเงื่อนไข', 'danger');
+      this.toastService.showToast('กรุณาตั้งรหัสผ่านให้ตรงตามเงื่อนไข', 'danger');
       return; 
     }
 
     if (this.formData.password !== this.formData.confirmPassword) {
-      this.portalAdminService.showToast('รหัสผ่านที่กรอกทั้งสองช่องไม่ตรงกัน', 'danger');
+      this.toastService.showToast('รหัสผ่านที่กรอกทั้งสองช่องไม่ตรงกัน', 'danger');
       return;
     }
 
@@ -101,7 +101,7 @@ export class ResetPasswordComponent implements OnInit {
     this.authService.resetPassword(payload).subscribe({
       next: (res) => {
         if (res.success) {
-          this.portalAdminService.showToast(res.message, 'success');
+          this.toastService.showToast(res.message, 'success');
           setTimeout(() => {
             this.router.navigate(['/login']);
           }, 3000);
@@ -110,7 +110,7 @@ export class ResetPasswordComponent implements OnInit {
       error: (err) => {
         this.isLoading.set(false);
         const errorMsg = err.error?.message || 'การรีเซ็ตรหัสผ่านล้มเหลว';
-        this.portalAdminService.showToast(errorMsg, 'danger');
+        this.toastService.showToast(errorMsg, 'danger');
       },
       complete: () => this.isLoading.set(false),
     });

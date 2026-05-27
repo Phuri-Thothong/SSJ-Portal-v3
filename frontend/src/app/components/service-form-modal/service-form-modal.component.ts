@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 import { PortalDataService } from '../../services/service-portal/portal-data.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-service-form-modal',
@@ -14,6 +15,7 @@ import { PortalDataService } from '../../services/service-portal/portal-data.ser
 export class ServiceFormModalComponent {
   public portalAdminService = inject(PortalAdminService);
   private portalDataService = inject(PortalDataService);
+  private toastService = inject(ToastService);
   get isEditMode(): boolean {
     return this.portalAdminService.modalMode() === 'edit';
   }
@@ -61,7 +63,7 @@ export class ServiceFormModalComponent {
     request$.subscribe({
       next: (res) => {
         if (res.success) {
-          this.portalAdminService.showToast(res.message ?? 'ดำเนินการสำเร็จ');
+          this.toastService.showToast(res.message ?? 'ดำเนินการสำเร็จ');
           this.portalAdminService.closeModal();
           this.portalDataService.refreshServices();
         }
@@ -83,7 +85,7 @@ export class ServiceFormModalComponent {
           if (err.status === 500) errorMsg = 'เซิร์ฟเวอร์เกิดข้อผิดพลาด';
           if (err.status === 0) errorMsg = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
           if (err.status === 404) errorMsg = 'ไม่พบที่อยู่ API';
-          this.portalAdminService.showToast(errorMsg, 'danger');
+          this.toastService.showToast(errorMsg, 'danger');
         }
       },
     });

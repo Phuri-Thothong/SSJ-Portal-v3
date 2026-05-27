@@ -1,7 +1,7 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { Component, inject, LOCALE_ID, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
+import { ToastService } from '../../services/toast.service';
 import localeTh from '@angular/common/locales/th';
 
 registerLocaleData(localeTh, 'th')
@@ -18,7 +18,7 @@ registerLocaleData(localeTh, 'th')
 })
 export class DeviceManagementComponent implements OnInit {
   private authService = inject(AuthService);
-  private portalAdminService = inject(PortalAdminService);
+  private toastService = inject(ToastService);
 
   public devices = signal<any[]>([]);
   public isLoading = signal(false);
@@ -39,7 +39,7 @@ export class DeviceManagementComponent implements OnInit {
       },
       error: (err) => {
         const errorMessage = err.error?.message || 'ไม่สามารถดึงข้อมูลอุปกรณ์ได้';
-        this.portalAdminService.showToast(errorMessage, 'danger');
+        this.toastService.showToast(errorMessage, 'danger');
       },
       complete: () => this.isLoading.set(false)
     });
@@ -80,7 +80,7 @@ export class DeviceManagementComponent implements OnInit {
     this.authService.revokeDevice(id).subscribe({
       next: (res) => {
         if (res.success) {
-          this.portalAdminService.showToast(res.message, 'success');
+          this.toastService.showToast(res.message, 'success');
           this.fetchDevices();
           this.isModalOpen.set(false);
           this.selectedDeviceId.set(null);
@@ -88,7 +88,7 @@ export class DeviceManagementComponent implements OnInit {
       },
       error: (err) => {
         const errorMessage = err.error?.message || 'เกิดข้อผิดพลาดในการยกเลิกสิทธิ์อุปกรณ์';
-        this.portalAdminService.showToast(errorMessage, 'danger');
+        this.toastService.showToast(errorMessage, 'danger');
         this.isModalOpen.set(false);
       }
     });
