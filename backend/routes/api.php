@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TwoFactorController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -115,8 +116,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // ============================================
     // User Management-ระบบจัดการผู้ใช้งานสำหรับผู้ดูแลระบบ
     // ============================================
+    //--- [เฉพาะ ADMIN เท่านั้น] จัดการความปลอดภัยบัญชีพนักงาน ---
     Route::middleware('admin')->group(function () {
-        //--- [เฉพาะ ADMIN เท่านั้น] จัดการความปลอดภัยบัญชีพนักงาน ---
+        //แสดงข้อมูลผู้ใช้ทั้งหมด
+        Route::get('/users', [UserController::class, 'index']);
+        //รีเซ็ตระบบความปลอดภัย 2FA
         Route::post('/users/{userId}/reset-2fa', [TwoFactorController::class, 'reset2FA'])
             ->name('api.users.reset-2fa')
             ->whereNumber('userId');
