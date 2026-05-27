@@ -2,8 +2,11 @@ export interface User {
   id: number;
   name: string;
   username: string;
+  email: string;
+  national_id: string;
   workgroup?: string;
   role: 'admin' | 'user';
+  google2fa_enabled: number;
 }
 
 export interface AuthResponse {

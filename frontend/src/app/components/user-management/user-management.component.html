@@ -1,0 +1,78 @@
+<div class="user-management-container">
+  
+  <div class="page-header">
+    <h2>ระบบบริหารจัดการผู้ใช้งาน</h2>
+    <p>ตรวจสอบสถานะสิทธิ์ ควบคุมดูแล และกู้คืนระบบความปลอดภัย 2FA สำหรับเจ้าหน้าที่ สสจ. (รอดำเนินการ: {{ pending2FACount() }} ราย)</p>
+  </div>
+
+  <div class="table-controls">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="ค้นหาชื่อผู้ใช้, อีเมล หรือเลขบัตรประชาชน...">
+    </div>
+  </div>
+
+  <div *ngIf="userAccountService.isLoading()" class="loading-box">
+    <i class="fa-solid fa-spinner fa-spin"></i> กำลังดึงข้อมูลเจ้าหน้าที่จากระบบสารสนเทศ...
+  </div>
+
+  <div *ngIf="!userAccountService.isLoading()" class="table-responsive">
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>ชื่อ-นามสกุล / กลุ่มงาน</th>
+          <th>ไปรษณีย์อิเล็กทรอนิกส์ (Email)</th>
+          <th>ชื่อผู้ใช้งาน (Username)</th>
+          <th>สถานะความปลอดภัย 2FA</th>
+          <th>สิทธิ์ผู้ใช้งาน (Role)</th>
+          <th *ngIf="authService.currentUser()?.role === 'admin'" class="text-center">การจัดการ (Actions)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of userAccountService.users()">
+          <td>
+            <div class="user-profile">
+              <span class="avatar-fallback">{{ user.name.substring(0, 2) }}</span>
+              <div class="user-name-group">
+                <span class="display-name">{{ user.name }}</span>
+                <small *ngIf="user.workgroup" class="workgroup-text">{{ user.workgroup }}</small>
+              </div>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td><code>{{ user.username }}</code></td>
+          
+          <td>
+            <span *ngIf="user.google2fa_enabled === 1" class="badge badge-success">
+              <i class="fa-solid fa-circle-check"></i> เปิดใช้งานแล้ว
+            </span>
+            <span *ngIf="user.google2fa_enabled === 0" class="badge badge-warning">
+              <i class="fa-solid fa-circle-exclamation"></i> อยู่ระหว่างการตั้งค่า
+            </span>
+          </td>
+          
+          <td>
+            <span class="role-text" [class.role-admin]="user.role === 'admin'">
+              {{ user.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่ทั่วไป' }}
+            </span>
+          </td>
+          
+          <td *ngIf="authService.currentUser()?.role === 'admin'" class="text-center">
+            <button class="btn-icon btn-reset" (click)="openResetModal(user)" title="รีเซ็ตระบบความปลอดภัย 2FA">
+              <i class="fa-solid fa-shield-halved"></i>
+            </button>
+            <button class="btn-icon btn-edit" title="แก้ไขสิทธิ์ผู้ใช้งาน">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="userAccountService.users().length === 0">
+          <td colspan="6" class="text-center empty-row">
+            <i class="fa-solid fa-folder-open"></i> ไม่พบข้อมูลผู้ใช้งานในระบบ
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
