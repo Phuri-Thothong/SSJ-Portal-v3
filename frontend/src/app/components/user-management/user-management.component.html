@@ -1,35 +1,33 @@
 <div class="user-management-container">
-  
-  <div class="page-header">
-    <h2>ระบบบริหารจัดการผู้ใช้งาน</h2>
-    <p>ตรวจสอบสถานะสิทธิ์ ควบคุมดูแล และกู้คืนระบบความปลอดภัย 2FA สำหรับเจ้าหน้าที่ สสจ. (รอดำเนินการ: {{ pending2FACount() }} ราย)</p>
+  <div class="page-header mb-6">
+    <h2 class="text-2xl font-bold text-slate-800 leading-snug">ระบบบริหารจัดการผู้ใช้งาน</h2>
+    <p class="text-sm text-slate-500 font-medium mt-1">
+      ตรวจสอบสถานะสิทธิ์ ควบคุมดูแล และกู้คืนระบบความปลอดภัย 2FA สำหรับเจ้าหน้าที่ สสจ. (รอดำเนินการ: {{ pending2FACount() }} ราย)
+    </p>
   </div>
-
-  <div class="table-controls">
+  <div class="table-controls mb-4">
     <div class="search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
       <input type="text" placeholder="ค้นหาชื่อผู้ใช้, อีเมล หรือเลขบัตรประชาชน...">
     </div>
   </div>
-
-  <div *ngIf="userAccountService.isLoading()" class="loading-box">
-    <i class="fa-solid fa-spinner fa-spin"></i> กำลังดึงข้อมูลเจ้าหน้าที่จากระบบสารสนเทศ...
+  <div *ngIf="userAccountService.isLoading()" class="loading-box text-base">
+    <i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังดึงข้อมูลเจ้าหน้าที่จากระบบสารสนเทศ...
   </div>
-
   <div *ngIf="!userAccountService.isLoading()" class="table-responsive">
-    <table class="user-table">
+    <table class="user-table w-full text-sm">
       <thead>
-        <tr>
-          <th>ชื่อ-นามสกุล / อีเมล</th>
-          <th>สถานะความปลอดภัย 2FA</th>
-          <th>กลุ่มงาน</th>
-          <th>ชื่อผู้ใช้งาน</th>
-          <th>สิทธิ์ผู้ใช้งาน</th>
-          <th *ngIf="authService.currentUser()?.role === 'admin'" style="text-align: center;">การจัดการ</th>
+        <tr class="text-sm">
+          <th class="font-bold">ชื่อ-นามสกุล / อีเมล</th>
+          <th class="font-bold">สถานะความปลอดภัย 2FA</th>
+          <th class="font-bold">กลุ่มงาน</th>
+          <th class="font-bold">ชื่อผู้ใช้งาน</th>
+          <th class="font-bold">สิทธิ์ผู้ใช้งาน</th>
+          <th *ngIf="authService.currentUser()?.role === 'admin'" class="font-bold text-center">การจัดการ</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of userAccountService.users()">
+        <tr *ngFor="let user of userAccountService.users()" class="text-sm">
           <td>
             <div class="user-profile flex items-center gap-3">      
               <div class="w-9 h-9 shrink-0">
@@ -47,43 +45,40 @@
                 </div>
               </div>
               <div class="user-name-group flex flex-col gap-0.5">
-                <span class="display-name font-medium text-slate-800">{{ user.name }}</span>
-                <small class="workgroup-text text-slate-500 text-xs">{{ user.email }}</small>
+                <span class="display-name font-semibold text-slate-800 text-sm leading-tight">{{ user.name }}</span>
+                <small class="workgroup-text text-slate-500 text-xs font-medium">{{ user.email }}</small>
               </div>
             </div>
-          </td>        
+          </td>             
           <td>
-            <span *ngIf="user.google2fa_enabled == 1" class="badge badge-success">
+            <span *ngIf="user.google2fa_enabled == 1" class="badge badge-success text-xs font-bold">
               <i class="fa-solid fa-circle-check"></i> เปิดใช้งานแล้ว
             </span>
-            <span *ngIf="user.google2fa_enabled == 0" class="badge badge-warning">
+            <span *ngIf="user.google2fa_enabled == 0" class="badge badge-warning text-xs font-bold">
               <i class="fa-solid fa-circle-exclamation"></i> อยู่ระหว่างการตั้งค่า
             </span>
-          </td>
-          <td>{{ user.workgroup }}</td>
-          <td><code>{{ user.username }}</code></td>
-          
+          </td>      
+          <td class="text-slate-700 font-medium text-sm">{{ user.workgroup }}</td>
+          <td><code class="text-rose-600 bg-rose-50/50 px-1.5 py-0.5 rounded text-sm font-bold font-mono">{{ user.username }}</code></td>    
           <td>
-            <span class="role-text" [class.role-admin]="user.role === 'admin'">
+            <span class="role-text text-sm font-bold" [class.role-admin]="user.role === 'admin'">
               {{ user.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่ทั่วไป' }}
             </span>
-          </td>
-          
+          </td>         
           <td *ngIf="authService.currentUser()?.role === 'admin'">
-            <div class="action-group">
-              <button class="btn-icon btn-reset" (click)="openResetModal(user)" title="รีเซ็ตระบบความปลอดภัย 2FA">
+            <div class="action-group flex items-center justify-center gap-2">
+              <button class="btn-icon btn-reset text-base" (click)="openResetModal(user)" title="รีเซ็ตระบบความปลอดภัย 2FA">
                 <i class="fa-solid fa-shield-halved"></i>
               </button>
-              <button class="btn-icon btn-edit" title="แก้ไขสิทธิ์ผู้ใช้งาน">
+              <button class="btn-icon btn-edit text-base" title="แก้ไขสิทธิ์ผู้ใช้งาน">
                 <i class="fa-solid fa-pen"></i>
               </button>
             </div>
           </td>
         </tr>
-
         <tr *ngIf="userAccountService.users().length === 0">
-          <td colspan="6" class="text-center empty-row">
-            <i class="fa-solid fa-folder-open"></i> ไม่พบข้อมูลผู้ใช้งานในระบบ
+          <td colspan="6" class="text-center empty-row text-sm text-slate-400 py-8">
+            <i class="fa-solid fa-folder-open mr-1.5"></i> ไม่พบข้อมูลผู้ใช้งานในระบบ
           </td>
         </tr>
       </tbody>
