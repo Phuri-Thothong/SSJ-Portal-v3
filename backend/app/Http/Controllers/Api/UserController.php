@@ -22,6 +22,7 @@ class UserController extends Controller
                 'name',
                 'username',
                 'email',
+                'profile_image',
                 'national_id',
                 'workgroup',
                 'role',

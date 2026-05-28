@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('username')->unique()->nullable();
             $table->string('password')->nullable();
             $table->string('email')->unique()->nullable();
+            $table->string('profile_image')->nullable();
             $table->string('phone')->nullable();
             $table->boolean('is_activated')->default(false);
             $table->timestamp('activated_at')->nullable();

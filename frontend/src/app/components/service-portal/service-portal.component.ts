@@ -16,6 +16,7 @@ import { PortalDataService } from '../../services/service-portal/portal-data.ser
 import { PortalAdminService } from '../../services/service-portal/portal-admin.service';
 import { SearchService } from '../../services/search.service';
 import { AuthService } from '../../services/auth.service';
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-service-portal',
@@ -34,7 +35,8 @@ import { AuthService } from '../../services/auth.service';
     TrashBannerComponent,
     ServiceSkeletonComponent,
     RestoreConfirmModalComponent,
-  ],
+    RouterModule
+],
   templateUrl: './service-portal.component.html',
   styleUrl: './service-portal.component.css',
 })

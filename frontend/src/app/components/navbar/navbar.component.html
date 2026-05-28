@@ -1,33 +1,22 @@
 <nav class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm px-6 py-3">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    
+  <div class="max-w-7xl mx-auto flex items-center justify-between">    
+    <div class="flex items-center space-x-6 min-w-0">
+      <a routerLink="/portal" class="flex items-center space-x-2.5 min-w-0 active:scale-95 transition-transform cursor-pointer select-none" title="กลับสู่หน้าหลัก">
+        <img src="assets/logo.png" alt="SSJ NST Logo" class="h-9 w-auto object-contain drop-shadow-sm" />
+        <span class="hidden lg:inline-block text-sm font-extrabold text-slate-800 tracking-tight leading-none">
+          NST SSJ Portal
+        </span>
+      </a>
+    </div>
     <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 min-w-0.5">
-      <span class="hidden sm:inline text-xs text-slate-400 px-3 font-medium">
-        ขนาดตัวอักษร
-      </span>
-
+      <span class="hidden sm:inline text-xs text-slate-400 px-3 font-medium">ขนาดตัวอักษร</span>
       <div class="flex space-x-1">
-        <button (click)="fontSizeService.setSize('small')"
-                class="px-2 sm:px-3 py-1 rounded-lg text-sm transition-all cursor-pointer"
-                [class]="fontSizeService.currentSize() === 'small' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
-          ก
-        </button>
-
-        <button (click)="fontSizeService.setSize('medium')"
-                class="px-2 sm:px-3 py-1 rounded-lg text-base transition-all cursor-pointer"
-                [class]="fontSizeService.currentSize() === 'medium' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
-          ก
-        </button>
-
-        <button (click)="fontSizeService.setSize('large')"
-                class="px-2 sm:px-3 py-1 rounded-lg text-lg transition-all cursor-pointer"
-                [class]="fontSizeService.currentSize() === 'large' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">
-          ก
-        </button>
+        <button (click)="fontSizeService.setSize('small')" class="px-2 sm:px-3 py-1 rounded-lg text-sm transition-all cursor-pointer" [class]="fontSizeService.currentSize() === 'small' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">ก</button>
+        <button (click)="fontSizeService.setSize('medium')" class="px-2 sm:px-3 py-1 rounded-lg text-base transition-all cursor-pointer" [class]="fontSizeService.currentSize() === 'medium' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">ก</button>
+        <button (click)="fontSizeService.setSize('large')" class="px-2 sm:px-3 py-1 rounded-lg text-lg transition-all cursor-pointer" [class]="fontSizeService.currentSize() === 'large' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 hover:bg-white/50'">ก</button>
       </div>
     </div>
-
-    <div class="flex items-center space-x-3 border-l pl-8 border-slate-200">
+    <div class="relative flex items-center space-x-3 border-l pl-8 border-slate-200">  
       <div class="text-right hidden sm:block">
         <p class="text-sm font-bold text-slate-800 leading-none">
           {{ authService.currentUser()?.name || 'กำลังโหลด...' }}
@@ -36,15 +25,57 @@
           {{ authService.currentUser()?.workgroup || 'กลุ่มงาน' }}
         </p>
       </div>
-      <div class="h-10 w-10 bg-linear-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white shadow-md ring-2 ring-white cursor-pointer hover:scale-110 transition-transform">
-        <i class="text-base fa-solid fa-user-tie"></i>
-      </div>
-      <button (click)="onLogout()"
-        class="h-10 w-10 rounded-full bg-slate-100 hover:bg-rose-600 text-slate-500 hover:text-rose-50 border border-slate-200 hover:border-rose-200 shadow-xs flex items-center justify-center transition-all cursor-pointer active:scale-95"
-              title="ออกจากระบบ">
-        <i class="fa-solid fa-right-from-bracket text-sm"></i>
+      <button 
+        (click)="toggleProfileMenu(); $event.stopPropagation()"
+        class="h-10 w-10 bg-linear-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white shadow-md ring-2 ring-white cursor-pointer hover:scale-105 active:scale-95 transition-all overflow-hidden focus:outline-none"
+      >
+        <img 
+          *ngIf="authService.currentUser()?.profile_image" 
+          [src]="authService.currentUser()?.profile_image" 
+          alt="Avatar" 
+          class="w-full h-full object-cover"
+        />
+        <span *ngIf="!authService.currentUser()?.profile_image" class="text-xs font-bold font-sans">
+          {{ authService.currentUser()?.name?.substring(0, 2) }}
+        </span>
       </button>
+      <div 
+        *ngIf="isProfileMenuOpen()"
+        class="absolute right-0 top-12 w-64 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-100 py-2 z-50 transition-all duration-150 animate-in fade-in slide-in-from-top-2"
+      >
+        <a 
+          routerLink="/portal/profile" 
+          (click)="isProfileMenuOpen.set(false)"
+          class="flex items-center space-x-3 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all"
+        >
+          <span class="text-slate-400 text-base w-5 text-center"><i class="fa-solid fa-user-gear"></i></span>
+          <span>แก้ไขโปรไฟล์ส่วนตัว</span>
+        </a>
+        <a 
+          routerLink="/portal/devices" 
+          (click)="isProfileMenuOpen.set(false)"
+          class="flex items-center space-x-3 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all"
+        >
+          <span class="text-slate-400 text-base w-5 text-center"><i class="fa-solid fa-user-lock"></i></span>
+          <span>จัดการอุปกรณ์ที่ได้รับอนุมัติ</span>
+        </a>
+        <a 
+          *ngIf="authService.currentUser()?.role === 'admin'"
+          routerLink="/portal/users" 
+          (click)="isProfileMenuOpen.set(false)"
+          class="flex items-center space-x-3 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-t border-slate-50 mt-1 pt-2 transition-all"
+        >
+          <span class="text-amber-500 text-base w-5 text-center"><i class="fa-solid fa-users-gear"></i></span>
+          <span>ระบบบริหารจัดการผู้ใช้งาน</span>
+        </a>
+        <button 
+          (click)="onLogout(); isProfileMenuOpen.set(false)"
+          class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm font-semibold text-rose-500 hover:bg-rose-50 border-t border-slate-50 mt-1 pt-2 transition-all text-left"
+        >
+          <span class="text-rose-400 text-base w-5 text-center"><i class="fa-solid fa-right-from-bracket"></i></span>
+          <span>ออกจากระบบพอร์ทัล</span>
+        </button>
+      </div>
     </div>
-
   </div>
 </nav>
