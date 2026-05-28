@@ -5,6 +5,7 @@ import { UserSecurityAdminService } from '../../services/user-security/user-secu
 import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { ResetTwofaModalComponent } from "../reset-twofa-modal/reset-twofa-modal.component";
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-user-management',
@@ -17,6 +18,28 @@ export class UserManagementComponent implements OnInit {
   public userAccountService = inject(UserAccountService);
   public userSecurityAdminService = inject(UserSecurityAdminService);
   public authService = inject(AuthService);
+  public searchService = inject(SearchService);
+  
+  filteredUsers = computed(() => {
+    const users = this.userAccountService.users();
+    const search = this.searchService.searchTerm().toLowerCase().trim();
+    if (!search) {
+      return users;
+    }
+    return users.filter(user => {
+      const nameMatch = user.name?.toLowerCase().includes(search);
+      const emailMatch = user.email?.toLowerCase().includes(search);
+      const nationalIdMatch = user.national_id?.includes(search);
+      const usernameMatch = user.username?.toLowerCase().includes(search);
+
+      return nameMatch || emailMatch || nationalIdMatch || usernameMatch;
+    });
+  });
+
+  onSearchChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchService.updateSearchTerm(value);
+  }
 
   pending2FACount = computed(() => {
     const allUsers = this.userAccountService.users();

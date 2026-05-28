@@ -8,7 +8,12 @@
   <div class="table-controls mb-4">
     <div class="search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" placeholder="ค้นหาชื่อผู้ใช้, อีเมล หรือเลขบัตรประชาชน...">
+      <input 
+        type="text" 
+        [value]="searchService.searchTerm()"
+        (input)="onSearchChange($event)"
+        placeholder="ค้นหาชื่อผู้ใช้, อีเมล หรือเลขบัตรประชาชน..."
+      >
     </div>
   </div>
   <div *ngIf="userAccountService.isLoading()" class="loading-box text-base">
@@ -16,6 +21,14 @@
   </div>
   <div *ngIf="!userAccountService.isLoading()" class="table-responsive">
     <table class="user-table w-full text-sm">
+      <colgroup>
+        <col style="width: 25%;"> 
+        <col style="width: 20%;"> 
+        <col style="width: 20%;"> 
+        <col style="width: 12%;"> 
+        <col style="width: 13%;"> 
+        <col style="width: 10%;"> 
+      </colgroup>
       <thead>
         <tr class="text-sm">
           <th class="font-bold">ชื่อ-นามสกุล / อีเมล</th>
@@ -27,7 +40,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of userAccountService.users()" class="text-sm">
+        <tr *ngFor="let user of filteredUsers()" class="text-sm">
           <td>
             <div class="user-profile flex items-center gap-3">      
               <div class="w-9 h-9 shrink-0">
@@ -76,9 +89,9 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="userAccountService.users().length === 0">
+        <tr *ngIf="filteredUsers().length === 0">
           <td colspan="6" class="text-center empty-row text-sm text-slate-400 py-8">
-            <i class="fa-solid fa-folder-open mr-1.5"></i> ไม่พบข้อมูลผู้ใช้งานในระบบ
+            <i class="fa-solid fa-folder-open mr-1.5"></i> ไม่พบข้อมูลผู้ใช้งานที่ตรงกับเงื่อนไขการค้นหา
           </td>
         </tr>
       </tbody>
