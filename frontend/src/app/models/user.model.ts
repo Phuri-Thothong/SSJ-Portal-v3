@@ -7,6 +7,7 @@ export interface User {
   workgroup?: string;
   role: 'admin' | 'user';
   google2fa_enabled: number;
+  profile_image?: string;
 }
 
 export interface AuthResponse {

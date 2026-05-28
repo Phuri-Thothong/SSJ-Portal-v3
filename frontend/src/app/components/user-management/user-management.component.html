@@ -20,36 +20,48 @@
     <table class="user-table">
       <thead>
         <tr>
-          <th>ชื่อ-นามสกุล / กลุ่มงาน</th>
-          <th>ไปรษณีย์อิเล็กทรอนิกส์ (Email)</th>
-          <th>ชื่อผู้ใช้งาน (Username)</th>
+          <th>ชื่อ-นามสกุล / อีเมล</th>
           <th>สถานะความปลอดภัย 2FA</th>
-          <th>สิทธิ์ผู้ใช้งาน (Role)</th>
-          <th *ngIf="authService.currentUser()?.role === 'admin'" class="text-center">การจัดการ (Actions)</th>
+          <th>กลุ่มงาน</th>
+          <th>ชื่อผู้ใช้งาน</th>
+          <th>สิทธิ์ผู้ใช้งาน</th>
+          <th *ngIf="authService.currentUser()?.role === 'admin'" style="text-align: center;">การจัดการ</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let user of userAccountService.users()">
           <td>
-            <div class="user-profile">
-              <span class="avatar-fallback">{{ user.name.substring(0, 2) }}</span>
-              <div class="user-name-group">
-                <span class="display-name">{{ user.name }}</span>
-                <small *ngIf="user.workgroup" class="workgroup-text">{{ user.workgroup }}</small>
+            <div class="user-profile flex items-center gap-3">      
+              <div class="w-9 h-9 shrink-0">
+                <img 
+                  *ngIf="user.profile_image" 
+                  [src]="user.profile_image" 
+                  alt="Profile" 
+                  class="w-full h-full rounded-full object-cover border border-slate-200 shadow-sm"
+                />
+                <div 
+                  *ngIf="!user.profile_image" 
+                  class="w-full h-full bg-slate-200 text-slate-600 font-bold text-xs rounded-full flex items-center justify-center border border-slate-300 shadow-inner select-none"
+                >
+                  {{ user.name.substring(0, 2) }}
+                </div>
+              </div>
+              <div class="user-name-group flex flex-col gap-0.5">
+                <span class="display-name font-medium text-slate-800">{{ user.name }}</span>
+                <small class="workgroup-text text-slate-500 text-xs">{{ user.email }}</small>
               </div>
             </div>
-          </td>
-          <td>{{ user.email }}</td>
-          <td><code>{{ user.username }}</code></td>
-          
+          </td>        
           <td>
-            <span *ngIf="user.google2fa_enabled === 1" class="badge badge-success">
+            <span *ngIf="user.google2fa_enabled == 1" class="badge badge-success">
               <i class="fa-solid fa-circle-check"></i> เปิดใช้งานแล้ว
             </span>
-            <span *ngIf="user.google2fa_enabled === 0" class="badge badge-warning">
+            <span *ngIf="user.google2fa_enabled == 0" class="badge badge-warning">
               <i class="fa-solid fa-circle-exclamation"></i> อยู่ระหว่างการตั้งค่า
             </span>
           </td>
+          <td>{{ user.workgroup }}</td>
+          <td><code>{{ user.username }}</code></td>
           
           <td>
             <span class="role-text" [class.role-admin]="user.role === 'admin'">
@@ -57,13 +69,15 @@
             </span>
           </td>
           
-          <td *ngIf="authService.currentUser()?.role === 'admin'" class="text-center">
-            <button class="btn-icon btn-reset" (click)="openResetModal(user)" title="รีเซ็ตระบบความปลอดภัย 2FA">
-              <i class="fa-solid fa-shield-halved"></i>
-            </button>
-            <button class="btn-icon btn-edit" title="แก้ไขสิทธิ์ผู้ใช้งาน">
-              <i class="fa-solid fa-pen"></i>
-            </button>
+          <td *ngIf="authService.currentUser()?.role === 'admin'">
+            <div class="action-group">
+              <button class="btn-icon btn-reset" (click)="openResetModal(user)" title="รีเซ็ตระบบความปลอดภัย 2FA">
+                <i class="fa-solid fa-shield-halved"></i>
+              </button>
+              <button class="btn-icon btn-edit" title="แก้ไขสิทธิ์ผู้ใช้งาน">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+            </div>
           </td>
         </tr>
 
@@ -76,3 +90,4 @@
     </table>
   </div>
 </div>
+<app-reset-twofa-modal></app-reset-twofa-modal>

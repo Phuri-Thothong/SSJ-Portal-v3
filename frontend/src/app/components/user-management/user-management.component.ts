@@ -4,11 +4,12 @@ import { UserAccountService } from '../../services/user-security/user-account.se
 import { UserSecurityAdminService } from '../../services/user-security/user-security-admin.service';
 import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
+import { ResetTwofaModalComponent } from "../reset-twofa-modal/reset-twofa-modal.component";
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ResetTwofaModalComponent],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
@@ -18,7 +19,8 @@ export class UserManagementComponent implements OnInit {
   public authService = inject(AuthService);
 
   pending2FACount = computed(() => {
-    return this.userAccountService.users().filter(user => user.google2fa_enabled === 0).length;
+    const allUsers = this.userAccountService.users();
+    return allUsers.filter(user => user.google2fa_enabled == 0 || !user.google2fa_enabled).length;
   });
 
   ngOnInit(): void {

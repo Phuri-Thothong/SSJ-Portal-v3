@@ -1,0 +1,66 @@
+<div 
+  class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all duration-200"
+  *ngIf="userAdminService.modalMode() === 'reset2fa'"
+  (click)="userAdminService.closeModal()"
+>
+  <div 
+    class="glass-card max-w-md w-full p-8 shadow-2xl border-2 border-white/60 bg-white/95 relative overflow-hidden"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="absolute -right-10 -top-10 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl"></div>  
+    <div class="text-center relative z-10">     
+      <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 shadow-inner border border-amber-200">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>   
+      <h3 class="text-xl font-bold mb-3 text-slate-800">
+        ยืนยันการรีเซ็ตระบบความปลอดภัย 2FA?
+      </h3>   
+      <p class="text-sm text-slate-700 mb-6 leading-relaxed">
+        คุณต้องการสั่งดำเนินการล้างคีย์การยืนยันตัวตนสองชั้น
+        <br />ผ่าน Google Authenticator ของเจ้าหน้าที่รายนี้ใช่หรือไม่?
+      </p>
+      <div class="mb-6 p-4 bg-slate-50 border border-slate-200 border-l-4 border-l-amber-500 rounded-xl shadow-inner text-left" *ngIf="userAdminService.activeUser() as user">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 shrink-0">
+            <img 
+                *ngIf="user.profile_image" 
+                [src]="user.profile_image" 
+                alt="Profile" 
+                class="w-full h-full rounded-xl object-cover border border-slate-200 shadow-sm"
+            />
+            <div 
+                *ngIf="!user.profile_image" 
+                class="w-full h-full bg-slate-200 text-slate-600 font-bold text-sm rounded-xl flex items-center justify-center border border-slate-300 shadow-sm select-none"
+            >
+                {{ user.name.substring(0, 2) }}
+            </div>
+            </div>
+            <div class="text-left space-y-1">
+            <span class="block font-bold text-slate-700 text-[15px] leading-none">{{ user.name }}</span>
+            <span class="text-xs text-slate-400 font-medium block">
+                ชื่อผู้ใช้งาน: <code class="text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded font-mono font-bold">{{ user.username }}</code>
+            </span>
+            </div>
+        </div>
+        </div>
+      <p class="text-[11px] text-rose-600 font-bold bg-rose-50 border border-rose-100 p-3 rounded-xl leading-relaxed text-left mb-6">
+        <i class="fa-solid fa-circle-exclamation mr-1"></i>
+        *** เจ้าหน้าที่คนดังกล่าวจะถูกบังคับให้ต้องทำรายการสแกน QR Code ใหม่อีกครั้งในการเข้าสู่ระบบรอบถัดไป ***
+      </p>
+      <div class="flex gap-3">
+        <button
+          (click)="userAdminService.closeModal()"
+          class="flex-1 py-3 px-4 rounded-2xl text-sm font-bold text-slate-600 hover:bg-slate-200/50 hover:text-slate-800 transition-all active:scale-95"
+        >
+          ยกเลิก
+        </button>
+        <button
+          (click)="userAdminService.confirmReset2FA()"
+          class="flex-1 py-3 px-4 rounded-2xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-1.5"
+        >
+          <i class="fa-solid fa-broom"></i> ล้างคีย์ความปลอดภัย
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
