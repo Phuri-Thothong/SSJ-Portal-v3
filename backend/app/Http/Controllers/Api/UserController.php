@@ -39,7 +39,32 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'national_id' => 'required|digits:13',
+            'name' => 'required|string|max:255',
+            'workgroup' => 'required|string',
+            'role' => 'required|in:user,admin',
+        ]);
+        $users = User::firstOrCreate(
+            ['national_id' => $validated['national_id']],
+            [
+                'name' => $validated['name'],
+                'workgroup' => $validated['workgroup'],
+                'role' => $validated['role'],
+                'is_activated' => false,
+                'password' => null,
+            ]
+        );
+        if ($users->wasRecentlyCreated) {
+            return response()->json([
+                'success' => true,
+                'message' => 'เตรียมข้อมูลพนักงานใหม่สำเร็จ',
+            ], 200);
+        }
+        return response()->json([
+                'success' => false,
+                'message' => 'ไม่สามารถเพิ่มได้ เนื่องจากมีเลขบัตรประชาชนนี้ในระบบแล้ว',
+            ], 422);
     }
 
     public function show(string $id)

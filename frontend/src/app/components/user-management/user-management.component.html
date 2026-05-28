@@ -5,7 +5,7 @@
       ตรวจสอบสถานะสิทธิ์ ควบคุมดูแล และกู้คืนระบบความปลอดภัย 2FA สำหรับเจ้าหน้าที่ สสจ. (รอดำเนินการ: {{ pending2FACount() }} ราย)
     </p>
   </div>
-  <div class="table-controls mb-4">
+  <div class="table-controls mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <div class="search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
       <input 
@@ -14,6 +14,17 @@
         (input)="onSearchChange($event)"
         placeholder="ค้นหาชื่อผู้ใช้, อีเมล หรือเลขบัตรประชาชน..."
       >
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <button class="h-10 flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl border border-emerald-500 shadow-sm transition-all active:scale-95 cursor-pointer">
+        <i class="fa-solid fa-file-excel"></i>
+        <span>นำเข้าไฟล์ Excel/CSV</span>
+      </button>
+      <button class="h-10 flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:opacity-90 text-white font-semibold text-sm rounded-xl shadow-md transition-all active:scale-95 cursor-pointer">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>เพิ่มพนักงานใหม่</span>
+      </button>
+      
     </div>
   </div>
   <div *ngIf="userAccountService.isLoading()" class="loading-box text-base">

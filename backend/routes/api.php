@@ -120,6 +120,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('admin')->group(function () {
         //แสดงข้อมูลผู้ใช้ทั้งหมด
         Route::get('/users', [UserController::class, 'index']);
+        //เพิ่มข้อมูลผู้ใช้คนใหม่
+        Route::post('/users', [UserController::class, 'store']);
         //รีเซ็ตระบบความปลอดภัย 2FA
         Route::post('/users/{userId}/reset-2fa', [TwoFactorController::class, 'reset2FA'])
             ->name('api.users.reset-2fa')
