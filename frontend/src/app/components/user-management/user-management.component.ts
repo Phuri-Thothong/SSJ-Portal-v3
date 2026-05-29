@@ -6,11 +6,12 @@ import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { ResetTwofaModalComponent } from "../reset-twofa-modal/reset-twofa-modal.component";
 import { SearchService } from '../../services/search.service';
+import { UserFormModalComponent } from "../user-form-modal/user-form-modal.component";
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ResetTwofaModalComponent],
+  imports: [CommonModule, ResetTwofaModalComponent, UserFormModalComponent],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
@@ -50,7 +51,17 @@ export class UserManagementComponent implements OnInit {
     this.userAccountService.refreshUsers();
   }
 
-  openResetModal(user: User) {
+  openAddUserModal() {
+    this.userSecurityAdminService.openModal('add');
+  }
+
+  handleEditUser(event: Event, user: any) {
+    event.stopPropagation();
+    this.userSecurityAdminService.openModal('edit', user);
+  }
+
+  handleReset2FA(event: Event, user: any) {
+    event.stopPropagation();
     this.userSecurityAdminService.openModal('reset2fa', user);
   }
 }

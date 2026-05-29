@@ -11,13 +11,22 @@ export class UserSecurityAdminService {
   private userService = inject(UserAccountService);
   private toastService = inject(ToastService);
 
-  activeUser = signal<User | null>(null);
+  activeUser = signal<Partial<User> | null>(null);
   
-  modalMode = signal<'reset2fa' | null>(null);
+  modalMode = signal<'reset2fa' | 'add' | 'edit' | null>(null);
 
-  openModal(mode: 'reset2fa', user: User) {
+  openModal(mode: 'reset2fa' | 'add' | 'edit', user?: User) {
     this.modalMode.set(mode);
-    this.activeUser.set(user);
+    if (mode === 'add') {
+      this.activeUser.set({
+        name: '',
+        national_id: '',
+        workgroup: '',
+        role: 'user'
+      });
+    } else if (user) {
+      this.activeUser.set({...user});
+    }
   }
 
   closeModal() {

@@ -20,3 +20,9 @@ export interface AuthResponse {
   google2fa_secret?: string;
   google2fa_enabled?: number;
 }
+
+export interface UserApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T;
+}

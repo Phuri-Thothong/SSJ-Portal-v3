@@ -32,7 +32,7 @@
                 *ngIf="!user.profile_image" 
                 class="w-full h-full bg-slate-200 text-slate-600 font-bold text-sm rounded-xl flex items-center justify-center border border-slate-300 shadow-sm select-none"
             >
-                {{ user.name.substring(0, 2) }}
+                {{ user.name?.substring(0, 2) }}
             </div>
             </div>
             <div class="text-left space-y-1">

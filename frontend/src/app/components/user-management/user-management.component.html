@@ -20,9 +20,12 @@
         <i class="fa-solid fa-file-excel"></i>
         <span>นำเข้าไฟล์ Excel/CSV</span>
       </button>
-      <button class="h-10 flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:opacity-90 text-white font-semibold text-sm rounded-xl shadow-md transition-all active:scale-95 cursor-pointer">
+      <button 
+        class="h-10 flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:opacity-90 text-white font-semibold text-sm rounded-xl shadow-md transition-all active:scale-95 cursor-pointer"
+        (click)="openAddUserModal()"
+      >
         <i class="fa-solid fa-user-plus"></i>
-        <span>เพิ่มพนักงานใหม่</span>
+        <span>เพิ่มผู้ใช้ใหม่</span>
       </button>
       
     </div>
@@ -65,7 +68,7 @@
                   *ngIf="!user.profile_image" 
                   class="w-full h-full bg-slate-200 text-slate-600 font-bold text-xs rounded-full flex items-center justify-center border border-slate-300 shadow-inner select-none"
                 >
-                  {{ user.name.substring(0, 2) }}
+                  {{ user.name ? user.name.substring(0, 2) : '??' }}
                 </div>
               </div>
               <div class="user-name-group flex flex-col gap-0.5">
@@ -91,13 +94,21 @@
           </td>         
           <td *ngIf="authService.currentUser()?.role === 'admin'">
             <div class="action-group flex items-center justify-center gap-2">
-              <button class="btn-icon btn-reset text-base" (click)="openResetModal(user)" title="รีเซ็ตระบบความปลอดภัย 2FA">
+              <button 
+                class="btn-icon btn-reset text-base" 
+                (click)="handleReset2FA($event, user)" 
+                title="รีเซ็ตระบบความปลอดภัย 2FA"
+              >
                 <i class="fa-solid fa-shield-halved"></i>
               </button>
-              <button class="btn-icon btn-edit text-base" title="แก้ไขสิทธิ์ผู้ใช้งาน">
+              <button 
+                class="btn-icon btn-edit text-base"
+                (click)="handleEditUser($event, user)" 
+                title="แก้ไขข้อมูลผู้ใช้"
+              >
                 <i class="fa-solid fa-pen"></i>
               </button>
-            </div>
+            </div>  
           </td>
         </tr>
         <tr *ngIf="filteredUsers().length === 0">
@@ -109,4 +120,9 @@
     </table>
   </div>
 </div>
-<app-reset-twofa-modal></app-reset-twofa-modal>
+@if (userSecurityAdminService.activeUser() && (userSecurityAdminService.modalMode() === 'add' || userSecurityAdminService.modalMode() === 'edit')) {
+  <app-user-form-modal />
+}
+@if (userSecurityAdminService.activeUser() && userSecurityAdminService.modalMode() === 'reset2fa') {
+  <app-reset-twofa-modal />
+}

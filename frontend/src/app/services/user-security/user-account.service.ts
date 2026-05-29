@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../../models/user.model';
+import { User, UserApiResponse } from '../../models/user.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -9,13 +9,13 @@ import { environment } from '../../../environments/environment';
 })
 export class UserAccountService {
   private http = inject(HttpClient);
-  private apiURL = `${environment.apiUrl}/users`;
+  private apiUrl = `${environment.apiUrl}/users`;
 
   public isLoading = signal<boolean>(false);
   public users = signal<User[]>([]);
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiURL);
+    return this.http.get<User[]>(this.apiUrl);
   }
 
   refreshUsers() {
@@ -30,5 +30,13 @@ export class UserAccountService {
         console.error('ไม่สามารถดึงข้อมูลเจ้าหน้าที่ได้: ', err);
       }
     });
+  }
+
+  createUser(user: Partial<User>): Observable<UserApiResponse<User>> {
+    return this.http.post<UserApiResponse<User>>(this.apiUrl, user);
+  }
+
+  updateUser(id: number, user: Partial<User>): Observable<UserApiResponse<User>> {
+    return this.http.put<UserApiResponse<User>>(`${this.apiUrl}/${id}`, user);
   }
 }

@@ -4,7 +4,6 @@ import { HeroBannerComponent } from '../hero-banner/hero-banner.component';
 import { CommonModule } from '@angular/common';
 import { NoResultsComponent } from '../no-results/no-results.component';
 import { FooterComponent } from '../footer/footer.component';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { AdminToolComponent } from '../admin-tool/admin-tool.component';
 import { AddServiceCardComponent } from '../add-service-card/add-service-card.component';
 import { ServiceFormModalComponent } from '../service-form-modal/service-form-modal.component';
@@ -27,7 +26,6 @@ import { RouterModule } from "@angular/router";
     HeroBannerComponent,
     NoResultsComponent,
     FooterComponent,
-    NavbarComponent,
     AdminToolComponent,
     AddServiceCardComponent,
     ServiceFormModalComponent,
