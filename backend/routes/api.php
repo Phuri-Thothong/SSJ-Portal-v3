@@ -118,14 +118,21 @@ Route::middleware('auth:sanctum')->group(function () {
     // ============================================
     //--- [เฉพาะ ADMIN เท่านั้น] จัดการความปลอดภัยบัญชีพนักงาน ---
     Route::middleware('admin')->group(function () {
-        //แสดงข้อมูลผู้ใช้ทั้งหมด
-        Route::get('/users', [UserController::class, 'index']);
-        //เพิ่มข้อมูลผู้ใช้คนใหม่
-        Route::post('/users', [UserController::class, 'store']);
-        //รีเซ็ตระบบความปลอดภัย 2FA
-        Route::post('/users/{userId}/reset-2fa', [TwoFactorController::class, 'reset2FA'])
-            ->name('api.users.reset-2fa')
-            ->whereNumber('userId');
-            
+        Route::prefix('users')->group(function () {
+            //แสดงข้อมูลผู้ใช้ทั้งหมด
+            Route::get('/', [UserController::class, 'index'])
+                ->name('api.users.index');
+            //เพิ่มข้อมูลผู้ใช้คนใหม่
+            Route::post('/', [UserController::class, 'store'])
+                ->name('api.users.store');
+            //แก้ไขข้อมูลผู้ใช้
+            Route::put('/{id}', [UserController::class, 'update'])
+                ->name('api.users.update')
+                ->whereNumber('id');
+            //รีเซ็ตระบบความปลอดภัย 2FA
+            Route::post('/{userId}/reset-2fa', [TwoFactorController::class, 'reset2FA'])
+                ->name('api.users.reset-2fa')
+                ->whereNumber('userId');
+        }); 
     });
 });

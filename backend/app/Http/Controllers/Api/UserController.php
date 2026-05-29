@@ -72,9 +72,24 @@ class UserController extends Controller
         //
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'workgroup' => 'required|string|max:255',
+            'role' => 'required|in:user,admin',
+        ]);
+        $user->update([
+            'name' => $validated['name'],
+            'workgroup' => $validated['workgroup'],
+            'role' => $validated['role'],
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'ปรับปรุงข้อมูลและสิทธิ์ของเจ้าหน้าที่เรียบร้อยแล้ว',
+            'data' => $user,
+        ], 200);
     }
 
     public function destroy(string $id)
