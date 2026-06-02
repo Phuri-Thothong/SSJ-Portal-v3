@@ -43,6 +43,15 @@ export class ServiceFormModalComponent {
     this.isShowCustomPicker.update((v) => !v);
   }
 
+  clearFieldError(fieldName: string) {
+    const currentErrors = this.formErrors();
+    if (currentErrors && currentErrors[fieldName]) {
+      const updatedErrors = { ...currentErrors };
+      delete updatedErrors[fieldName];
+      this.formErrors.set(Object.keys(updatedErrors).length > 0 ? updatedErrors : null);
+    }
+  }
+
   handleSave() {
     const data = this.portalAdminService.activeService();
     // ถ้าไม่มีข้อมูล หรือเป็นโหมดแก้ไขแต่ไม่มี ID ให้เด้งออก

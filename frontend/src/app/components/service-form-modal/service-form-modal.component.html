@@ -33,6 +33,7 @@
           <input
             type="text"
             [(ngModel)]="service.title"
+            (ngModelChange)="clearFieldError('title')"
             placeholder="ระบุชื่อบริการ..."
             class="text-sm leading-[1.8] w-full px-5 py-3 rounded-2xl border border-white/50 bg-white/50 focus:ring-4 outline-none transition-all"
             [ngClass]="
@@ -121,6 +122,7 @@
           <input
             type="text"
             [(ngModel)]="service.link_url"
+            (ngModelChange)="clearFieldError('link_url')"
             placeholder="ใส่ลิงก์ปลายทาง"
             class="text-sm leading-[1.8] w-full px-5 py-3 rounded-2xl border border-white/50 bg-white/50 focus:ring-4 outline-none transition-all"
             [ngClass]="
