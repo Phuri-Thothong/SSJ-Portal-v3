@@ -75,6 +75,16 @@ export class UserFormModalComponent {
     }
     this.isDropdownOpen.set(false);
     this.searchTermWorkgroup.set('');
+    this.clearFieldError('workgroup');
+  }
+
+  clearFieldError(fieldName: string) {
+    const currentErrors = this.formErrors();
+    if (currentErrors && currentErrors[fieldName]) {
+      const updatedErrors = { ...currentErrors };
+      delete updatedErrors[fieldName];
+      this.formErrors.set(Object.keys(updatedErrors).length > 0 ? updatedErrors : null);
+    }
   }
 
   get isEditMode(): boolean {
