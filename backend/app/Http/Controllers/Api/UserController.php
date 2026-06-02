@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -37,14 +39,9 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'national_id' => 'required|digits:13',
-            'name' => 'required|string|max:255',
-            'workgroup' => 'required|string',
-            'role' => 'required|in:user,admin',
-        ]);
+        $validated = $request->validated();
         $users = User::firstOrCreate(
             ['national_id' => $validated['national_id']],
             [
@@ -72,14 +69,10 @@ class UserController extends Controller
         //
     }
 
-    public function update(Request $request, int $id)
+    public function update(UpdateUserRequest $request, int $id)
     {
         $user = User::findOrFail($id);
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'workgroup' => 'required|string|max:255',
-            'role' => 'required|in:user,admin',
-        ]);
+        $validated = $request->validated();
         $user->update([
             'name' => $validated['name'],
             'workgroup' => $validated['workgroup'],
